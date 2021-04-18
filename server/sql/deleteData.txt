@@ -1,0 +1,2 @@
+DELETE FROM comprobante_fiscal 
+WHERE rfc_emisor = 'SUCC961125A15';

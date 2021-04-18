@@ -4,7 +4,7 @@
   "description": "Web System that keeps track of Workers PDF Tax Receipts. Made with PostgreSQL, Express, React, NodeJS and Python",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server/app.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/Solpapaya/QR-project-PERN#readme",
   "dependencies": {
+    "busboy": "^0.3.1",
     "express": "^4.17.1",
     "pg": "^8.6.0"
   },
