@@ -1,0 +1,35 @@
+{
+  "name": "qr-project-pern",
+  "version": "1.0.0",
+  "description": "Web System that keeps track of Workers PDF Tax Receipts. Made with PostgreSQL, Express, React, NodeJS and Python",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Solpapaya/QR-project-PERN.git"
+  },
+  "keywords": [
+    "QR-code",
+    "Web-system",
+    "NodeJS",
+    "Python",
+    "React",
+    "Express",
+    "PostgreSQL"
+  ],
+  "author": "Daniel Rafael Solorio Paredes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Solpapaya/QR-project-PERN/issues"
+  },
+  "homepage": "https://github.com/Solpapaya/QR-project-PERN#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
