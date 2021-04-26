@@ -22,3 +22,19 @@ SELECT primer_nombre || ' ' || COALESCE(segundo_nombre || ' ', '')
 || primer_apellido || ' ' || segundo_apellido AS nombre_completo
 FROM persona 
 WHERE rfc = 'SUCC961125A15';
+
+SELECT primer_nombre, segundo_nombre,
+primer_apellido, segundo_apellido, rfc 
+FROM persona
+WHERE primer_nombre ILIKE 'a%'
+OR segundo_nombre ILIKE 'a%'
+OR primer_apellido ILIKE 'a%'
+OR segundo_apellido ILIKE 'a%' ORDER BY primer_apellido;
+
+SELECT primer_nombre, segundo_nombre,
+primer_apellido, segundo_apellido, rfc 
+FROM persona
+WHERE primer_nombre ILIKE 'w%'
+OR segundo_nombre ILIKE 'w%'
+OR primer_apellido ILIKE 'w%'
+OR segundo_apellido ILIKE 'w%' ORDER BY primer_apellido;

@@ -1,0 +1,17 @@
+CREATE TABLE persona (
+ id BIGSERIAL NOT NULL,
+ primer_nombre VARCHAR(50) NOT NULL,
+ segundo_nombre VARCHAR(50),
+ primer_apellido VARCHAR(50) NOT NULL,
+ segundo_apellido VARCHAR(50) NOT NULL,
+ rfc VARCHAR(13) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE comprobante_fiscal (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    fecha_emision DATE NOT NULL,    
+    rfc_emisor VARCHAR(13) NOT NULL,
+    CONSTRAINT fk_persona
+        FOREIGN KEY(rfc_emisor)
+            REFERENCES persona(rfc)
+);

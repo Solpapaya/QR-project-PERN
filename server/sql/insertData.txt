@@ -1,2 +1,19 @@
 INSERT INTO comprobante_fiscal (fecha_emision, rfc_emisor) VALUES
 ('2019-01-04', 'SUCC961125A15');
+
+INSERT INTO persona (primer_nombre, segundo_nombre, primer_apellido, 
+segundo_apellido, rfc) VALUES
+('Antoine', null, 'Griezmann', 'Podolski', 'GRPA920113WSD') 
+RETURNING primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rfc;
+
+INSERT INTO persona (primer_nombre, segundo_nombre, primer_apellido, 
+segundo_apellido, rfc) VALUES
+('Juan', null, 'Griezmann', 'Podol', 'GRPA920113WSD');
+
+INSERT INTO persona (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rfc) VALUES 
+('Carmina', null, 'Sumano', 'Chavez', 'SUCC961125A15'),
+('Israel', 'Jezrael', 'Mendez', 'Frutero', 'MEFI851023M9A');
+
+INSERT INTO comprobante_fiscal (fecha_emision, rfc_emisor) VALUES 
+('2020-10-12', 'MEFI851023M9A'),
+('2019-01-04', 'SUCC961125A15');

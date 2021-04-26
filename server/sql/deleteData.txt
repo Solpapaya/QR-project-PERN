@@ -1,2 +1,7 @@
 DELETE FROM comprobante_fiscal 
 WHERE rfc_emisor = 'SUCC961125A15';
+
+DELETE FROM persona
+WHERE rfc = 'GRPA920113WSD';
+
+DELETE FROM persona WHERE rfc = 'SOPD970125HDF';
