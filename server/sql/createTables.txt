@@ -4,7 +4,8 @@ CREATE TABLE persona (
  segundo_nombre VARCHAR(50),
  primer_apellido VARCHAR(50) NOT NULL,
  segundo_apellido VARCHAR(50) NOT NULL,
- rfc VARCHAR(13) NOT NULL PRIMARY KEY
+ rfc VARCHAR(13) NOT NULL PRIMARY KEY,
+ activo BOOLEAN NOT NULL 
 );
 
 CREATE TABLE comprobante_fiscal (
@@ -14,4 +15,24 @@ CREATE TABLE comprobante_fiscal (
     CONSTRAINT fk_persona
         FOREIGN KEY(rfc_emisor)
             REFERENCES persona(rfc)
+);
+
+
+CREATE TABLE person (
+ id BIGSERIAL NOT NULL,
+ first_name VARCHAR(50) NOT NULL,
+ second_name VARCHAR(50),
+ surname VARCHAR(50) NOT NULL,
+ second_surname VARCHAR(50) NOT NULL,
+ rfc VARCHAR(13) NOT NULL PRIMARY KEY,
+ active BOOLEAN NOT NULL 
+);
+
+CREATE TABLE tax_receipt (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    date DATE NOT NULL,    
+    rfc_emitter VARCHAR(13) NOT NULL,
+    CONSTRAINT fk_person
+        FOREIGN KEY(rfc_emitter)
+            REFERENCES person(rfc)
 );

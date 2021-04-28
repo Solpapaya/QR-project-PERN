@@ -138,8 +138,58 @@ app.delete("/people/:rfc", async (req, res) => {
 
 app.get("/people", async (req, res) => {
   // Get Name or RFC user wants to search
-  const { search } = req.query;
+  const { search, active } = req.query;
   try {
+    // // If the user wants to search for a specific person who is active or inactive
+    // if (search && active) {
+    //   const results = await db.query(
+    //     `SELECT * FROM person
+    //            WHERE (first_name ILIKE $1
+    //            OR second_name ILIKE $1
+    //            OR surname ILIKE $1
+    //            OR second_surname ILIKE $1
+    //            OR rfc ILIKE $1)
+    //            AND
+    //            (active = $2)
+    //            ORDER BY surname`,
+    //     [search + "%", active]
+    //   );
+    //   if (results.rowCount === 0) {
+    //     return res.status(404).json({
+    //       success: false,
+    //       msg: `No matches for ${search}`,
+    //     });
+    //   }
+    //   res.status(200).json({
+    //     success: true,
+    //     length: results.rows.length,
+    //     data: {
+    //       people: results.rows,
+    //     },
+    //   });
+    // }
+    // // If the user wants to search only active or inactive people
+    // else if (active) {
+    //   const results = await db.query(
+    //     `SELECT * FROM person
+    //            WHERE active = $1
+    //            ORDER BY surname`,
+    //     [active]
+    //   );
+    //   if (results.rowCount === 0) {
+    //     return res.status(404).json({
+    //       success: false,
+    //       msg: active == "1" ? "No active people" : "No inactive people",
+    //     });
+    //   }
+    //   res.status(200).json({
+    //     success: true,
+    //     length: results.rows.length,
+    //     data: {
+    //       people: results.rows,
+    //     },
+    //   });
+    // }
     // If the user wants to search for a specific person or RFC
     if (search) {
       const results = await db.query(

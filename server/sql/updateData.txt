@@ -1,3 +1,3 @@
 UPDATE persona SET primer_nombre = 'Juan', segundo_nombre = 'Guillermo',
-primer_apellido = 'Cuadrado', segundo_apellido = 'Hernandez', rfc = 'CUHJ900322KAR' 
-WHERE rfc = 'SOPD970125HDF';
+primer_apellido = 'Cuadrado', segundo_apellido = 'Hernandez', rfc = 'CUHJ900322KAR', activo = 'f' 
+WHERE rfc = 'GRPA920113WSD';

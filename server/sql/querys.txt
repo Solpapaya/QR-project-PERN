@@ -38,3 +38,23 @@ WHERE primer_nombre ILIKE 'w%'
 OR segundo_nombre ILIKE 'w%'
 OR primer_apellido ILIKE 'w%'
 OR segundo_apellido ILIKE 'w%' ORDER BY primer_apellido;
+
+SELECT primer_nombre, segundo_nombre,
+primer_apellido, segundo_apellido, rfc
+FROM persona
+WHERE primer_nombre ILIKE 'c%'
+OR segundo_nombre ILIKE 'c%'
+OR primer_apellido ILIKE 'c%'
+OR segundo_apellido ILIKE 'c%'
+OR rfc ILIKE 'c%'
+ORDER BY primer_apellido;
+
+`SELECT primer_nombre, segundo_nombre,
+               primer_apellido, segundo_apellido, rfc
+               FROM persona
+               WHERE primer_nombre ILIKE $1%
+               OR segundo_nombre ILIKE $1%
+               OR primer_apellido ILIKE $1%
+               OR segundo_apellido ILIKE $1%
+               OR rfc ILIKE $1%
+               ORDER BY primer_apellido`,

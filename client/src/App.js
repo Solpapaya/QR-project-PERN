@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { PeopleContextProvider } from "./context/PeopleContext";
+import AddPerson from "./routes/AddPerson";
+
+// pages
+import Home from "./routes/Home";
+import PersonDetailPage from "./routes/PersonDetailPage";
+import UpdatePage from "./routes/UpdatePage";
 
 function App() {
+  const [isInitialSearch, setIsInitialSearch] = useState(false);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PeopleContextProvider>
+      <div className="container">
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Home
+                isInitialSearch={isInitialSearch}
+                setIsInitialSearch={setIsInitialSearch}
+              />
+            </Route>
+            <Route exact path="/people/:rfc/update">
+              <UpdatePage />
+            </Route>
+            <Route exact path="/create/people">
+              <AddPerson />
+            </Route>
+            <Route exact path="/people/:rfc">
+              <PersonDetailPage />
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </PeopleContextProvider>
   );
 }
 

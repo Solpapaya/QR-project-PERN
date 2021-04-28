@@ -10,10 +10,22 @@ INSERT INTO persona (primer_nombre, segundo_nombre, primer_apellido,
 segundo_apellido, rfc) VALUES
 ('Juan', null, 'Griezmann', 'Podol', 'GRPA920113WSD');
 
-INSERT INTO persona (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rfc) VALUES 
-('Carmina', null, 'Sumano', 'Chavez', 'SUCC961125A15'),
-('Israel', 'Jezrael', 'Mendez', 'Frutero', 'MEFI851023M9A');
+INSERT INTO persona (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rfc, activo) VALUES 
+('Carmina', null, 'Sumano', 'Chavez', 'SUCC961125A15', '1'),
+('Israel', 'Jezrael', 'Mendez', 'Frutero', 'MEFI851023M9A', '1'),
+('Francisco', null, 'Griezmann', 'Podol', 'GRPA920113WSD', '1'),
+('Juan', 'Guillermo', 'Cuadrado', 'Ruiz', 'CURJ650502FRT', '1');
 
 INSERT INTO comprobante_fiscal (fecha_emision, rfc_emisor) VALUES 
+('2020-10-12', 'MEFI851023M9A'),
+('2019-01-04', 'SUCC961125A15');
+
+INSERT INTO person (first_name, second_name, surname, second_surname, rfc, active) VALUES 
+('Carmina', null, 'Sumano', 'Chavez', 'SUCC961125A15', '1'),
+('Israel', 'Jezrael', 'Mendez', 'Frutero', 'MEFI851023M9A', '1'),
+('Francisco', null, 'Griezmann', 'Podol', 'GRPA920113WSD', '1'),
+('Juan', 'Guillermo', 'Cuadrado', 'Ruiz', 'CURJ650502FRT', '1');
+
+INSERT INTO tax_receipt (date, rfc_emitter) VALUES 
 ('2020-10-12', 'MEFI851023M9A'),
 ('2019-01-04', 'SUCC961125A15');
