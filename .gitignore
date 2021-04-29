@@ -4,6 +4,8 @@
 # Server
 /server/node_modules
 /server/py/poppler-21.02.0
+/server/functions/permutationsCopy.js
+/server/functions/permutationsTest.js
 
 # ------------------------------------------------------------------- #
 # Client

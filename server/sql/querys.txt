@@ -58,3 +58,38 @@ ORDER BY primer_apellido;
                OR segundo_apellido ILIKE $1%
                OR rfc ILIKE $1%
                ORDER BY primer_apellido`,
+
+SELECT * FROM person
+WHERE first_name || ' ' || COALESCE (second_name || ' ', '') || 
+surname || ' ' || second_surname ILIKE '%sol% %p%';
+
+SELECT * FROM person
+WHERE first_name || ' ' || COALESCE (second_name || ' ', '') || 
+second_surname || ' ' || surname ILIKE '%p% %s%'
+OR first_name || ' ' || COALESCE (second_name || ' ', '') || 
+surname || ' ' || second_surname ILIKE '%p% %s%';
+
+SELECT * FROM person WHERE first_name || ' ' || COALESCE (second_name || ' ', '') ILIKE '%d% %r%' OR first_name || ' ' || surname ILIKE '%d% %r%' OR first_name || ' ' || second_surname ILIKE '%d% %r%' OR COALESCE (second_name || ' ', '') first_name ILIKE 
+'%d% %r%' OR COALESCE (second_name || ' ', '') surname ILIKE '%d% %r%' OR COALESCE (second_name || ' ', '') second_surname ILIKE '%d% %r%' OR surname || ' ' || first_name ILIKE '%d% %r%' OR surname || ' ' || COALESCE (second_name || ' ', '') ILIKE '%d% %r%' OR surname 
+|| ' ' || second_surname ILIKE '%d% %r%' OR second_surname || ' ' || first_name ILIKE '%d% %r%' OR second_surname || ' ' || COALESCE (second_name || ' ', '') ILIKE '%d% %r%' OR second_surname || ' ' || surname ILIKE '%d% %r%';
+
+SELECT * FROM person WHERE COALESCE (second_name || ' ', '') first_name ILIKE '%d% %r%'
+
+SELECT * FROM person
+WHERE first_name || ' ' || second_name || ' ' || 
+second_surname || ' ' || surname ILIKE '%p% %s%'
+
+SELECT * FROM person WHERE first_name || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR first_name || ' ' || surname ILIKE $1 OR first_name || ' ' || second_surname ILIKE $1 OR COALESCE (second_name || ' ', '') || first_name ILIKE $1 OR COALESCE (second_name || ' ', '') || surname ILIKE $1 OR COALESCE (second_name || ' ', '') || second_surname ILIKE $1 OR surname || ' ' || first_name ILIKE $1 OR surname || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR surname || ' ' || second_surname ILIKE $1 OR second_surname || ' ' || first_name ILIKE $1 OR second_surname || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR second_surname || ' ' || surname ILIKE $1
+
+SELECT * FROM person
+WHERE first_name || ' ' || COALESCE (second_name || ' ', '') ||
+second_surname || ' ' || surname ILIKE $1
+OR first_name || ' ' || COALESCE (second_name || ' ', '') || 
+surname || ' ' || second_surname ILIKE $1 
+
+
+SELECT * FROM person WHERE first_name || ' ' || COALESCE (second_name || ' ', '') || surname ILIKE $1 OR first_name || ' ' || COALESCE (second_name || ' ', '') || second_surname ILIKE $1 OR first_name || ' ' || surname || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR first_name || ' ' || surname || ' ' || second_surname ILIKE $1 OR first_name || ' ' || second_surname || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR first_name || ' ' || second_surname || ' ' || surname ILIKE $1 OR COALESCE (second_name || ' ', '') || first_name || ' ' || surname ILIKE $1 OR COALESCE (second_name || ' ', '') || first_name || ' ' || second_surname ILIKE $1 OR COALESCE (second_name || ' ', '') || surname || ' ' || first_name ILIKE $1 OR COALESCE (second_name || ' ', '') || surname || ' ' || second_surname ILIKE $1
+OR COALESCE (second_name || ' ', '') || second_surname || ' ' || first_name ILIKE $1 OR COALESCE (second_name || ' ', '') || second_surname || ' ' || surname ILIKE $1 OR surname || ' ' || first_name || ' ' || COALESCE (second_name ||
+' ', '') ILIKE $1 OR surname || ' ' || first_name || ' ' || second_surname ILIKE $1 OR surname || ' ' || COALESCE (second_name || ' ', '') || first_name ILIKE $1 OR surname || ' ' || COALESCE (second_name || ' ', '') || second_surname ILIKE $1 OR surname || ' ' || second_surname || ' ' || first_name ILIKE $1 OR surname || ' ' || second_surname || '
+' || COALESCE (second_name || ' ', '') ILIKE $1 OR second_surname || ' ' || first_name || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR second_surname || ' ' || first_name || ' ' || surname ILIKE $1 OR second_surname || ' ' ||
+COALESCE (second_name || ' ', '') || first_name ILIKE $1 OR second_surname || ' ' || COALESCE (second_name || ' ', '') || surname ILIKE $1 OR second_surname || ' ' || surname || ' ' || first_name ILIKE $1 OR second_surname || ' ' || surname || ' ' || COALESCE (second_name || ' ', '') ILIKE $1

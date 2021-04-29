@@ -43,6 +43,9 @@ app.use(express.urlencoded({ extended: false }));
 // parse json
 app.use(express.json());
 
+// Function used for searching people if the search string has more than 1 word
+const { runPermutations } = require("./functions/permutations");
+
 app.put("/people/:rfc", async (req, res) => {
   try {
     const {
@@ -142,29 +145,82 @@ app.get("/people", async (req, res) => {
   try {
     // If the user wants to search for a specific person or RFC
     if (search) {
-      const results = await db.query(
-        `SELECT * FROM person
-               WHERE first_name ILIKE $1
-               OR second_name ILIKE $1
-               OR surname ILIKE $1
-               OR second_surname ILIKE $1
-               OR rfc ILIKE $1
-               ORDER BY surname`,
-        [search + "%"]
-      );
-      if (results.rowCount === 0) {
-        return res.status(404).json({
-          success: false,
-          msg: `No matches for ${search}`,
+      // If the search only contains one word
+      if (search.split(" ").length === 0) {
+        const results = await db.query(
+          `SELECT * FROM person
+                 WHERE first_name ILIKE $1
+                 OR second_name ILIKE $1
+                 OR surname ILIKE $1
+                 OR second_surname ILIKE $1
+                 OR rfc ILIKE $1
+                 ORDER BY surname`,
+          [search + "%"]
+        );
+        if (results.rowCount === 0) {
+          return res.status(404).json({
+            success: false,
+            msg: `No matches for ${search}`,
+          });
+        }
+        res.status(200).json({
+          success: true,
+          length: results.rows.length,
+          data: {
+            people: results.rows,
+          },
         });
       }
-      res.status(200).json({
-        success: true,
-        length: results.rows.length,
-        data: {
-          people: results.rows,
-        },
-      });
+      // If the search only contains more than word (Meaning, the user wants to search for
+      // a first_name and a surname or second_name with a second_surname or a first_name with
+      // surname and second_name, etc...)
+      else {
+        const words = search.split(" ");
+        let strToSearch = "";
+        for (let i = 0; i < words.length; i++) {
+          if (i === words.length - 1) {
+            strToSearch += `${words[i]}%`;
+          } else {
+            strToSearch += `${words[i]}% `;
+          }
+        }
+
+        let indexes = [];
+        let initialQuery = "SELECT * FROM person WHERE ";
+        let firstPermutation = true;
+        const arr = ["first_name", "second_name", "surname", "second_surname"];
+
+        // Creates a query that will look for all possible combinations in which you can order
+        // the first_name, second_name, surname and second_surname with the number of words
+        // the user has given.
+        // I.E if the user passes Sol Dan this 2 words could be either Sol-> first_name and Dan -> surname
+        // or Sol-> first_name and Dan-> second_surname or Dan-> first_name and Sol -> surname
+        // So, this query looks for all possible combinations because the user could be looking
+        // for a person by inserting his first_name and second_surname or second_surname and surname
+        // but its still the same person that he wants to search, the only difference is the order
+        // of the words
+        const query = runPermutations(
+          words.length,
+          indexes,
+          initialQuery,
+          firstPermutation,
+          arr
+        );
+
+        const results = await db.query(query, [strToSearch]);
+        if (results.rowCount === 0) {
+          return res.status(404).json({
+            success: false,
+            msg: `No matches for ${search}`,
+          });
+        }
+        res.status(200).json({
+          success: true,
+          data: {
+            people: results.rows,
+          },
+        });
+      }
     }
     // If there is no specific search, it returns all workers on the database
     else {
@@ -178,6 +234,7 @@ app.get("/people", async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ success: false, msg: "Error Getting People" });
   }
 });
