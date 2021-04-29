@@ -5,6 +5,7 @@ import { fetchData } from "../functions/fetchData";
 
 const SearchPerson = () => {
   const [search, setSearch] = useState("");
+  const [noMatch, setNoMatch] = useState(null);
   const { setIsSearchSuccessful } = useContext(SearchContext);
   const { setPeople } = useContext(PeopleContext);
   const searchRef = useRef(null);
@@ -22,7 +23,11 @@ const SearchPerson = () => {
 
     setSearch(search);
 
-    if (e.target.value !== " " && search[search.length - 1] !== " ") {
+    if (
+      e.target.value !== " " &&
+      search[search.length - 1] !== " " &&
+      !search.includes(noMatch)
+    ) {
       search = search.trim();
       // Preventing search with more than 4 words
       if (search.split(" ").length < 5) {
@@ -32,9 +37,11 @@ const SearchPerson = () => {
           const response = await fetchData("get", url);
           setPeople(response.data.people);
           setIsSearchSuccessful(true);
+          setNoMatch(null);
         } catch (err) {
           setPeople([]);
           setIsSearchSuccessful(false);
+          setNoMatch(search);
         }
       } else {
         // Tell user is not allowed search with more than 4 words
