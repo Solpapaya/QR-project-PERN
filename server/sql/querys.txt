@@ -93,3 +93,11 @@ OR COALESCE (second_name || ' ', '') || second_surname || ' ' || first_name ILIK
 ' ', '') ILIKE $1 OR surname || ' ' || first_name || ' ' || second_surname ILIKE $1 OR surname || ' ' || COALESCE (second_name || ' ', '') || first_name ILIKE $1 OR surname || ' ' || COALESCE (second_name || ' ', '') || second_surname ILIKE $1 OR surname || ' ' || second_surname || ' ' || first_name ILIKE $1 OR surname || ' ' || second_surname || '
 ' || COALESCE (second_name || ' ', '') ILIKE $1 OR second_surname || ' ' || first_name || ' ' || COALESCE (second_name || ' ', '') ILIKE $1 OR second_surname || ' ' || first_name || ' ' || surname ILIKE $1 OR second_surname || ' ' ||
 COALESCE (second_name || ' ', '') || first_name ILIKE $1 OR second_surname || ' ' || COALESCE (second_name || ' ', '') || surname ILIKE $1 OR second_surname || ' ' || surname || ' ' || first_name ILIKE $1 OR second_surname || ' ' || surname || ' ' || COALESCE (second_name || ' ', '') ILIKE $1
+
+SELECT * FROM person
+WHERE first_name ILIKE 'sop%'
+OR second_name ILIKE 'sop%'
+OR surname ILIKE 'sop%'
+OR second_surname ILIKE 'sop%'
+OR rfc ILIKE 'sop%'
+ORDER BY surname

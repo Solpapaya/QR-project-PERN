@@ -146,7 +146,7 @@ app.get("/people", async (req, res) => {
     // If the user wants to search for a specific person or RFC
     if (search) {
       // If the search only contains one word
-      if (search.split(" ").length === 0) {
+      if (search.split(" ").length === 1) {
         const results = await db.query(
           `SELECT * FROM person
                  WHERE first_name ILIKE $1
@@ -199,13 +199,15 @@ app.get("/people", async (req, res) => {
         // for a person by inserting his first_name and second_surname or second_surname and surname
         // but its still the same person that he wants to search, the only difference is the order
         // of the words
-        const query = runPermutations(
+        let query = runPermutations(
           words.length,
           indexes,
           initialQuery,
           firstPermutation,
           arr
         );
+
+        query += "ORDER BY surname";
 
         const results = await db.query(query, [strToSearch]);
         if (results.rowCount === 0) {

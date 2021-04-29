@@ -1,10 +1,4 @@
 const runPermutations = (words, indexes, query, firstPermutation, arr) => {
-  // const words = 2;
-  // let indexes = [];
-  // let query = "SELECT * FROM person WHERE ";
-  // let firstPermutation = true;
-  // const arr = ["first_name", "second_name", "surname", "second_surname"];
-
   const permutations = (executions) => {
     if (executions === 0) {
       // console.log(indexes);
