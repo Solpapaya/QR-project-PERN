@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { PeopleContext } from "../context/PeopleContext";
 import { useHistory } from "react-router-dom";
 import { fetchData } from "../functions/fetchData";
+import { compareValues } from "../functions/compareValues";
 
 const PeopleTable = () => {
   const { people, setPeople, filteredPeople } = useContext(PeopleContext);
+  const [lastSort, setLastSort] = useState("Primer Apellido");
 
   let history = useHistory();
 
@@ -37,15 +39,51 @@ const PeopleTable = () => {
     history.push(`/people/${rfc}`);
   };
 
+  const sort = (e) => {
+    const sortBy = e.target.textContent;
+    if (sortBy !== lastSort) {
+      let sortedPeople = [];
+      switch (sortBy) {
+        case "Primer Nombre":
+          sortedPeople = [...people].sort(compareValues("first_name"));
+          break;
+        case "Segundo Nombre":
+          sortedPeople = [...people].sort(compareValues("second_name"));
+          break;
+        case "Primer Apellido":
+          sortedPeople = [...people].sort(compareValues("surname"));
+          break;
+        case "Segundo Apellido":
+          sortedPeople = [...people].sort(compareValues("second_surname"));
+          break;
+        case "RFC":
+          sortedPeople = [...people].sort(compareValues("rfc"));
+          break;
+      }
+      setLastSort(sortBy);
+      setPeople(sortedPeople);
+    }
+  };
+
   return (
     <table className="table table-hover table-dark">
       <thead>
         <tr className="bg-primary">
-          <th scope="col">Primer Nombre</th>
-          <th scope="col">Segundo Nombre</th>
-          <th scope="col">Primer Apellido</th>
-          <th scope="col">Segundo Apellido</th>
-          <th scope="col">RFC</th>
+          <th onClick={sort} scope="col">
+            Primer Nombre
+          </th>
+          <th onClick={sort} scope="col">
+            Segundo Nombre
+          </th>
+          <th onClick={sort} scope="col">
+            Primer Apellido
+          </th>
+          <th onClick={sort} scope="col">
+            Segundo Apellido
+          </th>
+          <th onClick={sort} scope="col">
+            RFC
+          </th>
           <th scope="col">Activo</th>
           <th scope="col">Editar</th>
           <th scope="col">Habilitar / Deshabilitar</th>
