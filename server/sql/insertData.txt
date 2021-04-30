@@ -29,4 +29,9 @@ INSERT INTO person (first_name, second_name, surname, second_surname, rfc, activ
 
 INSERT INTO tax_receipt (date, rfc_emitter) VALUES 
 ('2020-10-12', 'MEFI851023M9A'),
-('2019-01-04', 'SUCC961125A15');
+('2019-01-04', 'SUCC961125A15'),
+('2019-02-04', 'SUCC961125A15'),
+('2019-03-04', 'SUCC961125A15'),
+('2019-04-04', 'SUCC961125A15'),
+('2019-09-04', 'SUCC961125A15'),
+('2019-10-04', 'SUCC961125A15');

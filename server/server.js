@@ -263,6 +263,55 @@ app.get("/people/:rfc", async (req, res) => {
   }
 });
 
+app.get("/taxreceipts/:rfc", async (req, res) => {
+  const { rfc } = req.params;
+  try {
+    const results = await db.query(
+      `SELECT id, extract(month from date) AS month, extract(year from date) AS year FROM tax_receipt WHERE rfc_emitter = $1 ORDER BY extract(year from date) DESC`,
+      [rfc]
+    );
+    if (results.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        msg: `No tax receipts for person with RFC ${rfc}`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      length: results.rows.length,
+      data: {
+        tax_receipts: results.rows,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Person" });
+  }
+});
+
+app.delete("/taxreceipts", async (req, res) => {
+  try {
+    const { rfc, id } = req.query;
+    const results = await db.query(
+      `DELETE FROM tax_receipt WHERE rfc_emitter = $1 AND id = $2 RETURNING *`,
+      [rfc, id]
+    );
+    // If there was no tax_receipt with the specified RFC and ID
+    if (results.rowCount === 0) {
+      return res.status(404).json({ success: false, msg: `No Tax Receipt` });
+    }
+    // If there was a worker with the specified RFC, informs the user that the delete
+    // operation was successful and returns the name and RFC of the deleted worker
+    res.status(200).json({
+      success: true,
+      data: {
+        person: results.rows[0],
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Deleting Tax Receipt" });
+  }
+});
+
 // POST request when user wants to upload a PDF Tax Receipt
 app.post("/taxreceipt", async (req, res) => {
   try {

@@ -14,7 +14,7 @@ const PeopleTable = () => {
     const newPerson = { ...person, active: !person.active };
     try {
       const response = await fetchData("put", `/people/${rfc}`, newPerson);
-      console.log(response);
+      // console.log(response);
       const newPeople = people.map((person) => {
         if (person.rfc === rfc) {
           return { ...person, active: !person.active };
@@ -24,7 +24,7 @@ const PeopleTable = () => {
       setPeople(newPeople);
     } catch (err) {
       // Create Alert
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -48,7 +48,7 @@ const PeopleTable = () => {
           <th scope="col">RFC</th>
           <th scope="col">Activo</th>
           <th scope="col">Editar</th>
-          <th scope="col">Deshabilitar</th>
+          <th scope="col">Habilitar / Deshabilitar</th>
         </tr>
       </thead>
       <tbody>
@@ -83,7 +83,7 @@ const PeopleTable = () => {
                   onClick={(e) => disableHandler(e, { ...person })}
                   className="btn btn-danger"
                 >
-                  Deshabilitar
+                  {active ? "Deshabilitar" : "Habilitar"}
                 </button>
               </td>
             </tr>

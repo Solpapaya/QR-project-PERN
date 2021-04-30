@@ -1,30 +1,31 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import PeopleFinder from "../apis/PeopleFinder";
+import { fetchData } from "../functions/fetchData";
 
 const UpdatePerson = () => {
   const rfcParam = useParams().rfc;
   let history = useHistory();
   const [person, setPerson] = useState({
-    primer_nombre: "",
-    segundo_nombre: "",
-    primer_apellido: "",
-    segundo_apellido: "",
+    first_name: "",
+    second_name: "",
+    surname: "",
+    second_surname: "",
     rfc: "",
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await PeopleFinder.get(`/people/${rfcParam}`);
-      const foundPerson = response.data.data.person;
-      if (foundPerson.segundo_nombre) {
-        setPerson({ ...foundPerson });
-      } else {
-        setPerson({ ...foundPerson, segundo_nombre: "" });
-      }
-    };
+  const getPerson = async () => {
+    const response = await fetchData("get", `/people/${rfcParam}`);
+    const foundPerson = response.data.person;
+    if (foundPerson.second_name) {
+      setPerson({ ...foundPerson });
+    } else {
+      setPerson({ ...foundPerson, second_name: "" });
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    getPerson();
   }, []);
 
   const changePerson = (e) => {
@@ -35,56 +36,55 @@ const UpdatePerson = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await PeopleFinder.put(`/people/${rfcParam}`, {
-      firstName: person.primer_nombre,
-      secondName: person.segundo_nombre,
-      surname: person.primer_apellido,
-      secondSurname: person.segundo_apellido,
-      rfc: person.rfc,
-    });
-    history.push("/");
+    try {
+      const response = await PeopleFinder.put(`/people/${rfcParam}`, person);
+      // Show message that informs the user the person has been updated successfully
+    } catch (error) {
+      // Show alert the person couldn't have been updated
+    }
+    // history.push("/");
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="primer_nombre">Primer Nombre : </label>
+          <label htmlFor="first_name">Primer Nombre : </label>
           <input
             type="text"
             className="form-control"
-            id="primer_nombre"
-            value={person.primer_nombre}
+            id="first_name"
+            value={person.first_name}
             onChange={changePerson}
           />
         </div>
         <div className="form-group">
-          <label htmlFor="segundo_nombre">Segundo Nombre : </label>
+          <label htmlFor="second_name">Segundo Nombre : </label>
           <input
             type="text"
             className="form-control"
-            id="segundo_nombre"
-            value={person.segundo_nombre}
+            id="second_name"
+            value={person.second_name}
             onChange={changePerson}
           />
         </div>
         <div className="form-group">
-          <label htmlFor="primer_apellido">Primer Apellido : </label>
+          <label htmlFor="surname">Primer Apellido : </label>
           <input
             type="text"
             className="form-control"
-            id="primer_apellido"
-            value={person.primer_apellido}
+            id="surname"
+            value={person.surname}
             onChange={changePerson}
           />
         </div>
         <div className="form-group">
-          <label htmlFor="segundo_apellido">Segundo Apellido : </label>
+          <label htmlFor="second_surname">Segundo Apellido : </label>
           <input
             type="text"
             className="form-control"
-            id="segundo_apellido"
-            value={person.segundo_apellido}
+            id="second_surname"
+            value={person.second_surname}
             onChange={changePerson}
           />
         </div>

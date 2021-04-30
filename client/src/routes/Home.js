@@ -10,7 +10,7 @@ import { fetchData } from "../functions/fetchData";
 const Home = ({ isInitialSearch, setIsInitialSearch }) => {
   const { setPeople } = useContext(PeopleContext);
   const getAllPeople = async () => {
-    console.count("Fetching Data");
+    // console.count("Fetching Data");
     try {
       const response = await fetchData("get", "/people");
       setPeople(response.data.people);

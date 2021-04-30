@@ -5,6 +5,8 @@ import { fetchData } from "../functions/fetchData";
 
 const SearchPerson = () => {
   const [search, setSearch] = useState("");
+  // State used for preventing making requests to the server after knowing that the
+  // name typed by the user doesn't exist in the database
   const [noMatch, setNoMatch] = useState(null);
   const { setIsSearchSuccessful } = useContext(SearchContext);
   const { setPeople } = useContext(PeopleContext);
@@ -31,7 +33,7 @@ const SearchPerson = () => {
       search = search.trim();
       // Preventing search with more than 4 words
       if (search.split(" ").length < 5) {
-        console.log("Searching person");
+        // console.log("Searching person");
         const url = `/people?search=${search}`;
         try {
           const response = await fetchData("get", url);
@@ -53,7 +55,7 @@ const SearchPerson = () => {
   };
 
   useEffect(() => {
-    console.log(searchRef.current.focus());
+    searchRef.current.focus();
   }, []);
 
   return (

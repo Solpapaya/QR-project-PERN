@@ -101,3 +101,7 @@ OR surname ILIKE 'sop%'
 OR second_surname ILIKE 'sop%'
 OR rfc ILIKE 'sop%'
 ORDER BY surname
+
+SELECT id, extract(month from date) AS month, extract(year from date) AS year  FROM tax_receipt WHERE rfc_emitter = 'SUCC961125A15';
+
+SELECT id, extract(month from date) AS month, extract(year from date) AS year FROM tax_receipt WHERE rfc_emitter = 'SUCC961125A15' ORDER BY extract(year from date) DESC;
