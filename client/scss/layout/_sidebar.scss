@@ -1,0 +1,121 @@
+.sidebar {
+  display: grid;
+  background: $blueBackground;
+  width: $baseUnit * 4;
+  height: 100vh;
+  grid-template-rows: repeat(4, minmax(min-content, max-content)) 1fr;
+
+  @include onethousand {
+    width: 20rem;
+  }
+
+  .logo-container {
+    width: inherit;
+    display: flex;
+    justify-content: center;
+    padding-top: $baseUnit * 3;
+    padding-bottom: $baseUnit * 6;
+
+    .logo {
+      font-size: $baseUnit * 2;
+      color: $white;
+
+      @include onethousand {
+        font-size: $baseUnit * 4;
+      }
+    }
+  }
+
+  .sidebar-item-container {
+    width: inherit;
+    display: flex;
+    justify-content: center;
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      // width: 100%;
+      // text-align: start;
+      // padding: $baseUnit $baseUnit*1.5;
+      padding: $baseUnit 0;
+      color: darken($color: $white, $amount: 20%);
+      font-size: $baseUnit - 0.2rem;
+      font-weight: $thin;
+      z-index: 1;
+
+      &:hover {
+        color: $white;
+        font-weight: $regular;
+      }
+
+      .btn-text {
+        display: none;
+
+        @include onethousand {
+          display: inline;
+        }
+      }
+    }
+
+    .sidebar-item-icon {
+      @include onethousand {
+        margin-right: $baseUnit;
+
+        &.fa-edit {
+          margin-right: $baseUnit - 0.525rem;
+        }
+      }
+    }
+  }
+
+  .sidebar-item-container.selected {
+    background-color: $grayBackground;
+    border-right: 12px solid $grayBackground;
+    margin: -12px 0;
+
+    .sidebar-item {
+      color: $black;
+      font-weight: $bold;
+    }
+
+    .sidebar-item-icon {
+      color: blue;
+    }
+  }
+}
+
+.right-bottom-border {
+  position: relative;
+  border-bottom: 12px solid $grayBackground;
+  border-right: 12px solid $grayBackground;
+  border-bottom-right-radius: 3rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    right: -12px;
+    border: 15px solid $grayBackground;
+    border-color: transparent $grayBackground $grayBackground transparent;
+  }
+}
+
+.right-top-border {
+  position: relative;
+  border-top: 12px solid $grayBackground;
+  border-right: 12px solid $grayBackground;
+  border-top-right-radius: 3rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    border: 15px solid $grayBackground;
+    border-color: $grayBackground $grayBackground transparent transparent;
+  }
+}
+
+.right-border {
+  border-right: 12px solid $grayBackground;
+}

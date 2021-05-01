@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
 import { PeopleContextProvider } from "./context/PeopleContext";
 import AddPerson from "./routes/AddPerson";
 
@@ -11,8 +12,28 @@ import UpdatePage from "./routes/UpdatePage";
 function App() {
   const [isInitialSearch, setIsInitialSearch] = useState(false);
   return (
-    <PeopleContextProvider>
-      <div className="container">
+    <div className="main-layout">
+      <Sidebar />
+      <PeopleContextProvider>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Home
+                isInitialSearch={isInitialSearch}
+                setIsInitialSearch={setIsInitialSearch}
+              />
+            </Route>
+          </Switch>
+        </Router>
+      </PeopleContextProvider>
+    </div>
+  );
+}
+
+export default App;
+
+{
+  /* <div className="container">
         <Router>
           <Switch>
             <Route exact path="/">
@@ -32,9 +53,5 @@ function App() {
             </Route>
           </Switch>
         </Router>
-      </div>
-    </PeopleContextProvider>
-  );
+      </div> */
 }
-
-export default App;

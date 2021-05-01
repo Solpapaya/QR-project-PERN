@@ -1,8 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
-import Header from "../components/Header";
 import PeopleList from "../components/PeopleList";
 import { SearchContextProvider } from "../context/SearchContext";
-import PeopleFinder from "../apis/PeopleFinder";
 import { PeopleContext } from "../context/PeopleContext";
 import SearchForm from "../components/SearchForm";
 import { fetchData } from "../functions/fetchData";
@@ -24,11 +22,14 @@ const Home = ({ isInitialSearch, setIsInitialSearch }) => {
     getAllPeople();
   }, []);
   return (
-    <div>
-      <Header />
+    <div className="search-container">
+      <div className="search-header">
+        <h2>Lista de Personas</h2>
+        <button className="add-btn">Agregar Nueva Persona</button>
+      </div>
       <SearchContextProvider>
         <SearchForm />
-        {isInitialSearch && <PeopleList />}
+        {/* {isInitialSearch && <PeopleList />} */}
       </SearchContextProvider>
     </div>
   );

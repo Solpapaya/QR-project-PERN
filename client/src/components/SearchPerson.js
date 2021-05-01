@@ -59,13 +59,16 @@ const SearchPerson = () => {
   }, []);
 
   return (
-    <div className="mb-4 text-center">
+    <div className="search-input-container">
+      <i className="fas fa-search sidebar-item-icon"></i>
+
       <input
+        className="search-input"
         type="text"
         value={search}
         onChange={onChangeHandler}
         ref={searchRef}
-        placeholder="Nombre o RFC"
+        placeholder="Busca por Nombre o RFC"
       />
     </div>
   );

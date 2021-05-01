@@ -4,7 +4,7 @@ import PeopleFilter from "./PeopleFilter";
 
 const SearchForm = () => {
   return (
-    <div style={{ display: "flex" }}>
+    <div className="search-inputs">
       <SearchPerson />
       <PeopleFilter />
     </div>
