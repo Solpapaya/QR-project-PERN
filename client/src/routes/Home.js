@@ -29,7 +29,7 @@ const Home = ({ isInitialSearch, setIsInitialSearch }) => {
       </div>
       <SearchContextProvider>
         <SearchForm />
-        {/* {isInitialSearch && <PeopleList />} */}
+        {isInitialSearch && <PeopleList />}
       </SearchContextProvider>
     </div>
   );

@@ -58,6 +58,16 @@
   overflow: hidden;
   transition: 0.3s all ease-in-out;
 
+  &.filter {
+    max-width: 17rem;
+    min-width: 17rem;
+  }
+
+  &.sort {
+    max-width: 22rem;
+    min-width: 22rem;
+  }
+
   &::after {
     content: "";
     position: absolute;
@@ -71,19 +81,7 @@
     right: 2rem;
   }
 
-  &.filter {
-    max-width: 17rem;
-    min-width: 17rem;
-  }
-
-  input {
-    width: 1px;
-    height: 1px;
-    position: absolute;
-    opacity: 0.01;
-  }
-
-  label {
+  li {
     position: relative;
     display: flex;
     min-height: 3.5rem;
@@ -98,10 +96,17 @@
 }
 
 .search-filter-container.expanded {
-  min-height: 14rem;
-  max-height: 14rem;
+  &.filter {
+    min-height: 14rem;
+    max-height: 14rem;
+  }
 
-  label {
+  &.sort {
+    min-height: 17.5rem;
+    max-height: 17.5rem;
+  }
+
+  li {
     border-bottom: 2px solid #c0c4e0;
     border-right: 2px solid #c0c4e0;
     border-left: 2px solid #c0c4e0;

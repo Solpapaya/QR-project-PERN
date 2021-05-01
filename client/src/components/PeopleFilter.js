@@ -3,79 +3,110 @@ import { SearchContext } from "../context/SearchContext";
 
 const PeopleFilter = () => {
   const { filter, setFilter } = useContext(SearchContext);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { sort, setSort } = useContext(SearchContext);
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+  const [isSortExpanded, setIsSortExpanded] = useState(false);
 
   const clickFilterHandler = (e) => {
-    const newFilter = e.target.getAttribute("for");
+    const newFilter = e.target.id;
     if (newFilter !== filter) {
       setFilter(newFilter);
     }
-    setIsExpanded(!isExpanded);
+    setIsFilterExpanded(!isFilterExpanded);
+  };
+
+  const clickSortHandler = (e) => {
+    const newSort = e.target.id;
+    if (newSort !== sort) {
+      setSort(newSort);
+    }
+    setIsSortExpanded(!isSortExpanded);
   };
 
   const clickDefaultFilterHandler = (e) => {
-    setIsExpanded(!isExpanded);
+    if (e.target.id === "default-filter") {
+      setIsFilterExpanded(!isFilterExpanded);
+    } else {
+      setIsSortExpanded(!isSortExpanded);
+    }
   };
 
   return (
     <>
-      <div
+      <ul
         className={
-          isExpanded
+          isFilterExpanded
             ? "search-filter-container filter expanded"
             : "search-filter-container filter"
         }
       >
-        <input
-          type="radio"
-          name="filterBy"
-          value="default"
-          checked="checked"
-          id="default"
-        />
-        <label for="default" onClick={clickDefaultFilterHandler}>
+        <li id="default-filter" onClick={clickDefaultFilterHandler}>
           Filtrar Por
-        </label>
-        <input type="radio" name="filterBy" value="all" id="all" />
-        <label
-          for="all"
+        </li>
+        <li
+          id="all"
           onClick={clickFilterHandler}
           className={filter === "all" ? "selected" : ""}
         >
           Todos
-        </label>
-        <input type="radio" name="filterBy" value="active" id="active" />
-        <label
-          for="active"
+        </li>
+        <li
+          id="active"
           onClick={clickFilterHandler}
           className={filter === "active" ? "selected" : ""}
         >
           Activos
-        </label>
-        <input type="radio" name="filterBy" value="inactive" id="inactive" />
-        <label
-          for="inactive"
+        </li>
+        <li
+          id="inactive"
           onClick={clickFilterHandler}
           className={filter === "inactive" ? "selected" : ""}
         >
           Inactivos
-        </label>
-      </div>
+        </li>
+      </ul>
 
-      <div className="search-filter-container">
-        <select
-          // onChange={(e) => setFilter(e.target.value)}
-          className="search-filter"
-          name="people_filter"
-          id="people_filter"
+      <ul
+        className={
+          isSortExpanded
+            ? "search-filter-container sort expanded"
+            : "search-filter-container sort"
+        }
+        // className="search-filter-container sort expanded"
+      >
+        <li id="default-sort" onClick={clickDefaultFilterHandler}>
+          Ordenar Por
+        </li>
+        <li
+          id="first_name"
+          onClick={clickSortHandler}
+          className={sort === "first_name" ? "selected" : ""}
         >
-          <option value="default">Ordenar Por</option>
-          <option value="first_name">Primer Nombre</option>
-          <option value="second_name">Segundo Nombre</option>
-          <option value="surname">Primer Apellido</option>
-          <option value="second_surname">Segundo Apellido</option>
-        </select>
-      </div>
+          Primer Nombre
+        </li>
+
+        <li
+          id="second_name"
+          onClick={clickSortHandler}
+          className={sort === "second_name" ? "selected" : ""}
+        >
+          Segundo Nombre
+        </li>
+        <li
+          id="surname"
+          onClick={clickSortHandler}
+          className={sort === "surname" ? "selected" : ""}
+        >
+          Primer Apellido
+        </li>
+        <li
+          id="second_surname"
+          onClick={clickSortHandler}
+          className={sort === "second_surname" ? "selected" : ""}
+        >
+          Segundo Apellido
+        </li>
+      </ul>
     </>
   );
 };
