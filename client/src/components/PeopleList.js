@@ -37,7 +37,7 @@ const PeopleList = () => {
   // });
 
   return (
-    <div className="list-group">
+    <div className="table-container">
       {isSearchSuccessful ? <PeopleTable /> : "No Matches"}
     </div>
   );

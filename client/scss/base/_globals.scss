@@ -35,7 +35,12 @@ button {
 
 .main-layout {
   display: grid;
+  height: 100vh;
   grid-template-columns: minmax(min-content, max-content) 1fr;
+}
+
+.main-content {
+  overflow-y: scroll;
 }
 
 h1,

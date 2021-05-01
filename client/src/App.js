@@ -14,18 +14,20 @@ function App() {
   return (
     <div className="main-layout">
       <Sidebar />
-      <PeopleContextProvider>
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Home
-                isInitialSearch={isInitialSearch}
-                setIsInitialSearch={setIsInitialSearch}
-              />
-            </Route>
-          </Switch>
-        </Router>
-      </PeopleContextProvider>
+      <div className="main-content">
+        <PeopleContextProvider>
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Home
+                  isInitialSearch={isInitialSearch}
+                  setIsInitialSearch={setIsInitialSearch}
+                />
+              </Route>
+            </Switch>
+          </Router>
+        </PeopleContextProvider>
+      </div>
     </div>
   );
 }

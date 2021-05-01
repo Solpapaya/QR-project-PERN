@@ -58,9 +58,9 @@ const PeopleFilter = () => {
           Activos
         </li>
         <li
-          id="inactive"
+          id="disabled"
           onClick={clickFilterHandler}
-          className={filter === "inactive" ? "selected" : ""}
+          className={filter === "disabled" ? "selected" : ""}
         >
           Inactivos
         </li>

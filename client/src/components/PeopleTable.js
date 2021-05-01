@@ -3,6 +3,8 @@ import { PeopleContext } from "../context/PeopleContext";
 import { useHistory } from "react-router-dom";
 import { fetchData } from "../functions/fetchData";
 import { compareValues } from "../functions/compareValues";
+import { ReactComponent as Pencil } from "../icons/pencil.svg";
+import { ReactComponent as Switch } from "../icons/switch.svg";
 
 const PeopleTable = () => {
   const { people, setPeople, filteredPeople } = useContext(PeopleContext);
@@ -66,27 +68,39 @@ const PeopleTable = () => {
   };
 
   return (
-    <table className="table table-hover table-dark">
+    <table className="table">
       <thead>
         <tr className="bg-primary">
-          <th onClick={sort} scope="col">
-            Primer Nombre
+          <th onClick={sort}>
+            <div className="column-title-container">
+              <span>Primer </span> <span>Nombre</span>
+            </div>
           </th>
-          <th onClick={sort} scope="col">
-            Segundo Nombre
+          <th onClick={sort}>
+            <div className="column-title-container">
+              <span>Segundo </span> <span>Nombre</span>
+            </div>
           </th>
-          <th onClick={sort} scope="col">
-            Primer Apellido
+          <th onClick={sort}>
+            <div className="column-title-container">
+              <span>Primer </span> <span>Apellido</span>
+            </div>
           </th>
-          <th onClick={sort} scope="col">
-            Segundo Apellido
+          <th onClick={sort}>
+            <div className="column-title-container">
+              <span>Segundo </span> <span>Apellido</span>
+            </div>
           </th>
-          <th onClick={sort} scope="col">
+          <th className="center-column" onClick={sort}>
             RFC
           </th>
-          <th scope="col">Activo</th>
-          <th scope="col">Editar</th>
-          <th scope="col">Habilitar / Deshabilitar</th>
+          <th>Estado</th>
+          <th className="center-column">Editar</th>
+          <th className="center-column">
+            <div className="column-title-container">
+              <span>Activar </span> <span>Desactivar</span>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -106,23 +120,39 @@ const PeopleTable = () => {
               <td>{second_name}</td>
               <td>{surname}</td>
               <td>{second_surname}</td>
-              <td>{rfc}</td>
-              <td>{active ? "1" : "0"}</td>
-              <td>
-                <button
-                  onClick={(e) => updateHandler(e, rfc)}
-                  className="btn btn-warning"
-                >
-                  Editar
-                </button>
+              <td className="center-column">{rfc}</td>
+              <td className="person-status">
+                {active ? (
+                  <>
+                    <span className="icon active"></span>
+                    <span className="status-text">Activo</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="icon disabled"></span>
+                    <span className="status-text">Inactivo</span>
+                  </>
+                )}
               </td>
               <td>
-                <button
-                  onClick={(e) => disableHandler(e, { ...person })}
-                  className="btn btn-danger"
-                >
-                  {active ? "Deshabilitar" : "Habilitar"}
-                </button>
+                <div className="center-container">
+                  <button
+                    className="table-btn edit-btn"
+                    onClick={(e) => updateHandler(e, rfc)}
+                  >
+                    <Pencil />
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div className="center-container">
+                  <button
+                    onClick={(e) => disableHandler(e, { ...person })}
+                    className="table-btn switch-btn"
+                  >
+                    <Switch />
+                  </button>
+                </div>
               </td>
             </tr>
           );
