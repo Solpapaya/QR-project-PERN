@@ -6,6 +6,10 @@
   border-collapse: collapse;
   width: 100%;
 
+  .person-row {
+    cursor: pointer;
+  }
+
   .center-column {
     text-align: center;
   }
@@ -21,6 +25,12 @@
     align-items: center;
     justify-content: center;
     padding: $baseUnit/2 $baseUnit;
+    cursor: pointer;
+    transition: filter 500ms;
+
+    &:hover {
+      filter: brightness(1.2);
+    }
 
     &.edit-btn {
       background-color: #1f69fc;
@@ -38,25 +48,20 @@
   }
 
   .person-status {
-    position: relative;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .status-text {
-      margin-left: 0.4rem;
+      margin-left: 1rem;
     }
 
     .icon {
       content: "";
-      //   position: absolute;
       height: 0.7rem;
       width: 0.7rem;
       border-radius: 50%;
       display: inline-block;
-      //   top: calc(1.75rem - 0.65rem);
-      margin: auto;
-      top: 0;
-      bottom: 0;
-      left: 0;
 
       &.active {
         background-color: #00ca80;
@@ -66,10 +71,6 @@
         background-color: $red;
       }
     }
-  }
-
-  .rfc-column {
-    text-align: center;
   }
 
   .column-title-container {

@@ -15,7 +15,7 @@ const PeopleList = () => {
       case "active":
         newPeople = people.filter((person) => person.active === true);
         break;
-      case "inactive":
+      case "disabled":
         newPeople = people.filter((person) => person.active === false);
         break;
       default:

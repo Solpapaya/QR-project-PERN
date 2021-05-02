@@ -1,14 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { PeopleContext } from "../context/PeopleContext";
 import { useHistory } from "react-router-dom";
 import { fetchData } from "../functions/fetchData";
 import { compareValues } from "../functions/compareValues";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Switch } from "../icons/switch.svg";
+import { SearchContext } from "../context/SearchContext";
 
 const PeopleTable = () => {
   const { people, setPeople, filteredPeople } = useContext(PeopleContext);
-  const [lastSort, setLastSort] = useState("Primer Apellido");
+  const { sort, setSort } = useContext(SearchContext);
 
   let history = useHistory();
 
@@ -41,60 +42,42 @@ const PeopleTable = () => {
     history.push(`/people/${rfc}`);
   };
 
-  const sort = (e) => {
-    const sortBy = e.target.textContent;
-    if (sortBy !== lastSort) {
-      let sortedPeople = [];
-      switch (sortBy) {
-        case "Primer Nombre":
-          sortedPeople = [...people].sort(compareValues("first_name"));
-          break;
-        case "Segundo Nombre":
-          sortedPeople = [...people].sort(compareValues("second_name"));
-          break;
-        case "Primer Apellido":
-          sortedPeople = [...people].sort(compareValues("surname"));
-          break;
-        case "Segundo Apellido":
-          sortedPeople = [...people].sort(compareValues("second_surname"));
-          break;
-        case "RFC":
-          sortedPeople = [...people].sort(compareValues("rfc"));
-          break;
-      }
-      setLastSort(sortBy);
-      setPeople(sortedPeople);
-    }
+  const sortPeople = () => {
+    let sortedPeople = [];
+    sortedPeople = [...people].sort(compareValues(sort));
+    setPeople(sortedPeople);
   };
+
+  useEffect(() => {
+    sortPeople();
+  }, [sort]);
 
   return (
     <table className="table">
       <thead>
         <tr className="bg-primary">
-          <th onClick={sort}>
+          <th>
             <div className="column-title-container">
               <span>Primer </span> <span>Nombre</span>
             </div>
           </th>
-          <th onClick={sort}>
+          <th>
             <div className="column-title-container">
               <span>Segundo </span> <span>Nombre</span>
             </div>
           </th>
-          <th onClick={sort}>
+          <th>
             <div className="column-title-container">
               <span>Primer </span> <span>Apellido</span>
             </div>
           </th>
-          <th onClick={sort}>
+          <th>
             <div className="column-title-container">
               <span>Segundo </span> <span>Apellido</span>
             </div>
           </th>
-          <th className="center-column" onClick={sort}>
-            RFC
-          </th>
-          <th>Estado</th>
+          <th className="center-column">RFC</th>
+          <th className="center-column">Estado</th>
           <th className="center-column">Editar</th>
           <th className="center-column">
             <div className="column-title-container">
@@ -115,24 +98,30 @@ const PeopleTable = () => {
             active,
           } = person;
           return (
-            <tr onClick={() => personSelectHandler(rfc)} key={id}>
+            <tr
+              className="person-row"
+              onClick={() => personSelectHandler(rfc)}
+              key={id}
+            >
               <td>{first_name}</td>
               <td>{second_name}</td>
               <td>{surname}</td>
               <td>{second_surname}</td>
               <td className="center-column">{rfc}</td>
-              <td className="person-status">
-                {active ? (
-                  <>
-                    <span className="icon active"></span>
-                    <span className="status-text">Activo</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="icon disabled"></span>
-                    <span className="status-text">Inactivo</span>
-                  </>
-                )}
+              <td>
+                <div className="person-status">
+                  {active ? (
+                    <>
+                      <span className="icon active"></span>
+                      <span className="status-text">Activo</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="icon disabled"></span>
+                      <span className="status-text">Inactivo</span>
+                    </>
+                  )}
+                </div>
               </td>
               <td>
                 <div className="center-container">

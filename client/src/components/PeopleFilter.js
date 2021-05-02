@@ -33,80 +33,91 @@ const PeopleFilter = () => {
 
   return (
     <>
-      <ul
-        className={
-          isFilterExpanded
-            ? "search-filter-container filter expanded"
-            : "search-filter-container filter"
-        }
-      >
-        <li id="default-filter" onClick={clickDefaultFilterHandler}>
-          Filtrar Por
-        </li>
-        <li
-          id="all"
-          onClick={clickFilterHandler}
-          className={filter === "all" ? "selected" : ""}
+      <div className="filter-relative-container">
+        <ul
+          className={
+            isFilterExpanded
+              ? "search-filter-container filter expanded"
+              : "search-filter-container filter"
+          }
         >
-          Todos
-        </li>
-        <li
-          id="active"
-          onClick={clickFilterHandler}
-          className={filter === "active" ? "selected" : ""}
-        >
-          Activos
-        </li>
-        <li
-          id="disabled"
-          onClick={clickFilterHandler}
-          className={filter === "disabled" ? "selected" : ""}
-        >
-          Inactivos
-        </li>
-      </ul>
+          <li id="default-filter" onClick={clickDefaultFilterHandler}>
+            Filtrar Por
+          </li>
+          <li
+            id="all"
+            onClick={clickFilterHandler}
+            className={filter === "all" ? "selected" : ""}
+          >
+            Todos
+          </li>
+          <li
+            id="active"
+            onClick={clickFilterHandler}
+            className={filter === "active" ? "selected" : ""}
+          >
+            Activos
+          </li>
+          <li
+            id="disabled"
+            onClick={clickFilterHandler}
+            className={filter === "disabled" ? "selected" : ""}
+          >
+            Inactivos
+          </li>
+        </ul>
+      </div>
 
-      <ul
-        className={
-          isSortExpanded
-            ? "search-filter-container sort expanded"
-            : "search-filter-container sort"
-        }
-        // className="search-filter-container sort expanded"
-      >
-        <li id="default-sort" onClick={clickDefaultFilterHandler}>
-          Ordenar Por
-        </li>
-        <li
-          id="first_name"
-          onClick={clickSortHandler}
-          className={sort === "first_name" ? "selected" : ""}
+      <div className="sort-relative-container">
+        <ul
+          className={
+            isSortExpanded
+              ? "search-filter-container sort expanded"
+              : "search-filter-container sort"
+          }
+          // className="search-filter-container sort expanded"
         >
-          Primer Nombre
-        </li>
+          <li id="default-sort" onClick={clickDefaultFilterHandler}>
+            Ordenar Por
+          </li>
+          <li
+            id="first_name"
+            onClick={clickSortHandler}
+            className={sort === "first_name" ? "selected" : ""}
+          >
+            Primer Nombre
+          </li>
 
-        <li
-          id="second_name"
-          onClick={clickSortHandler}
-          className={sort === "second_name" ? "selected" : ""}
-        >
-          Segundo Nombre
-        </li>
-        <li
-          id="surname"
-          onClick={clickSortHandler}
-          className={sort === "surname" ? "selected" : ""}
-        >
-          Primer Apellido
-        </li>
-        <li
-          id="second_surname"
-          onClick={clickSortHandler}
-          className={sort === "second_surname" ? "selected" : ""}
-        >
-          Segundo Apellido
-        </li>
-      </ul>
+          <li
+            id="second_name"
+            onClick={clickSortHandler}
+            className={sort === "second_name" ? "selected" : ""}
+          >
+            Segundo Nombre
+          </li>
+          <li
+            id="surname"
+            onClick={clickSortHandler}
+            className={sort === "surname" ? "selected" : ""}
+          >
+            Primer Apellido
+          </li>
+          <li
+            id="second_surname"
+            onClick={clickSortHandler}
+            className={sort === "second_surname" ? "selected" : ""}
+          >
+            Segundo Apellido
+          </li>
+          <li
+            id="rfc"
+            onClick={clickSortHandler}
+            className={sort === "rfc" ? "selected" : ""}
+          >
+            RFC
+          </li>
+        </ul>
+      </div>
     </>
   );
 };
