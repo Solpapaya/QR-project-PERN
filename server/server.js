@@ -90,9 +90,9 @@ app.post("/people", async (req, res) => {
   try {
     const { first_name, second_name, surname, second_surname, rfc } = req.body;
     const results = await db.query(
-      `INSERT INTO person (first_name, second_name, surname, second_surname, rfc) VALUES
-    ($1, $2, $3, $4, $5) RETURNING *`,
-      [first_name, second_name, surname, second_surname, rfc]
+      `INSERT INTO person (first_name, second_name, surname, second_surname, rfc, active) VALUES
+    ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [first_name, second_name, surname, second_surname, rfc, 1]
     );
     res.status(200).json({
       success: true,

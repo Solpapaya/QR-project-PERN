@@ -22,7 +22,7 @@ const Home = ({ isInitialSearch, setIsInitialSearch }) => {
     getAllPeople();
   }, []);
   return (
-    <div className="search-container">
+    <>
       <div className="search-header">
         <h2>Lista de Personas</h2>
         <button className="add-btn">Agregar Nueva Persona</button>
@@ -31,7 +31,7 @@ const Home = ({ isInitialSearch, setIsInitialSearch }) => {
         <SearchForm />
         {isInitialSearch && <PeopleList />}
       </SearchContextProvider>
-    </div>
+    </>
   );
 };
 

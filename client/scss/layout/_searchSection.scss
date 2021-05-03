@@ -1,28 +1,21 @@
-.search-container {
+.search-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: $baseUnit * 2;
+}
+
+.add-btn {
   border-radius: $boder-radius;
-  background-color: $white;
-  padding: $baseUnit * 2;
-  margin: $baseUnit * 2 $baseUnit * 2 $baseUnit * 2 20px;
+  background-color: $green;
+  font-size: 1.2rem;
+  padding: $baseUnit/1.5 $baseUnit * 1.5;
+  color: white;
+  cursor: pointer;
+  transition: filter 500ms;
 
-  .search-header {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: $baseUnit * 2;
-  }
-
-  .add-btn {
-    border-radius: $boder-radius;
-    background-color: $green;
-    font-size: 1.2rem;
-    padding: $baseUnit/1.5 $baseUnit * 1.5;
-    color: white;
-    cursor: pointer;
-    transition: filter 500ms;
-
-    &:hover {
-      filter: brightness(1.2);
-    }
+  &:hover {
+    filter: brightness(1.2);
   }
 }
 
@@ -33,7 +26,7 @@
 }
 
 .search-input-container {
-  background-color: #f7f8fc;
+  background-color: $backgroundInput;
   padding: $baseUnit/2 $baseUnit/1.5;
   border-radius: $boder-radius;
   min-height: 3.5rem;
@@ -77,7 +70,7 @@
   max-height: 3.5rem;
   border-radius: $boder-radius;
   position: absolute;
-  background-color: #f7f8fc;
+  background-color: $backgroundInput;
   overflow: hidden;
   transition: 0.3s all ease-in-out;
 

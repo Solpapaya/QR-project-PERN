@@ -12,23 +12,28 @@ import UpdatePage from "./routes/UpdatePage";
 function App() {
   const [isInitialSearch, setIsInitialSearch] = useState(false);
   return (
-    <div className="main-layout">
-      <Sidebar />
-      <div className="main-content">
-        <PeopleContextProvider>
-          <Router>
-            <Switch>
-              <Route exact path="/">
-                <Home
-                  isInitialSearch={isInitialSearch}
-                  setIsInitialSearch={setIsInitialSearch}
-                />
-              </Route>
-            </Switch>
-          </Router>
-        </PeopleContextProvider>
+    <Router>
+      <div className="main-layout">
+        <Sidebar />
+        <div className="main-content">
+          <PeopleContextProvider>
+            <div className="main-content-container">
+              <Switch>
+                <Route exact path="/">
+                  <Home
+                    isInitialSearch={isInitialSearch}
+                    setIsInitialSearch={setIsInitialSearch}
+                  />
+                </Route>
+                <Route exact path="/create/people">
+                  <AddPerson />
+                </Route>
+              </Switch>
+            </div>
+          </PeopleContextProvider>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

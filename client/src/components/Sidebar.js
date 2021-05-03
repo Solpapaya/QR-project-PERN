@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
+import { useHistory } from "react-router-dom";
+import { CurrentSectionContext } from "../context/CurrentSectionContext";
 
 const Sidebar = () => {
-  const [currentSection, setCurrentSection] = useState(1);
+  const { currentSection, setCurrentSection } = useContext(
+    CurrentSectionContext
+  );
+  let history = useHistory();
 
   const clickHandler = (e) => {
     const newSection = parseInt(e.currentTarget.dataset.section);
     if (newSection !== currentSection) {
       setCurrentSection(newSection);
+      switch (newSection) {
+        case 1:
+          history.push("/");
+          break;
+        case 2:
+          break;
+        case 3:
+          history.push("/create/people");
+          break;
+      }
     }
   };
 

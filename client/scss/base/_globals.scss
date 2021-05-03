@@ -43,6 +43,13 @@ button {
   overflow-y: scroll;
 }
 
+.main-content-container {
+  border-radius: $boder-radius;
+  background-color: $white;
+  padding: $baseUnit * 2;
+  margin: $baseUnit * 2 $baseUnit * 2 $baseUnit * 2 20px;
+}
+
 h1,
 h2,
 h3,
@@ -55,6 +62,7 @@ h5 {
 input {
   border: none;
   outline: none;
+  caret-color: #1f69fc;
 }
 
 li {
