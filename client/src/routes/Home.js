@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import PeopleList from "../components/PeopleList";
 import { SearchContextProvider } from "../context/SearchContext";
 import { PeopleContext } from "../context/PeopleContext";
+import { MonthsContextProvider } from "../context/MonthsContext";
 import SearchForm from "../components/SearchForm";
 import { fetchData } from "../functions/fetchData";
 
@@ -25,11 +26,13 @@ const Home = ({ isInitialSearch, setIsInitialSearch }) => {
     <>
       <div className="search-header">
         <h2>Lista de Personas</h2>
-        <button className="add-btn">Agregar Nueva Persona</button>
+        <button className="add-btn">Generar archivo</button>
       </div>
       <SearchContextProvider>
-        <SearchForm />
-        {isInitialSearch && <PeopleList />}
+        <MonthsContextProvider>
+          <SearchForm />
+          {isInitialSearch && <PeopleList />}
+        </MonthsContextProvider>
       </SearchContextProvider>
     </>
   );

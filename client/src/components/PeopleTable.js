@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PeopleContext } from "../context/PeopleContext";
 import { useHistory } from "react-router-dom";
 import { fetchData } from "../functions/fetchData";
@@ -6,11 +6,12 @@ import { compareValues } from "../functions/compareValues";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Switch } from "../icons/switch.svg";
 import { SearchContext } from "../context/SearchContext";
+import { MonthsContext } from "../context/MonthsContext";
 
 const PeopleTable = () => {
   const { people, setPeople, filteredPeople } = useContext(PeopleContext);
   const { sort, setSort } = useContext(SearchContext);
-
+  const { months } = useContext(MonthsContext);
   let history = useHistory();
 
   const disableHandler = async (e, person) => {
@@ -57,30 +58,36 @@ const PeopleTable = () => {
       <thead>
         <tr className="bg-primary">
           <th>
-            <div className="column-title-container">
+            <div className="flex-column">
               <span>Primer </span> <span>Nombre</span>
             </div>
           </th>
           <th>
-            <div className="column-title-container">
+            <div className="flex-column">
               <span>Segundo </span> <span>Nombre</span>
             </div>
           </th>
           <th>
-            <div className="column-title-container">
+            <div className="flex-column">
               <span>Primer </span> <span>Apellido</span>
             </div>
           </th>
           <th>
-            <div className="column-title-container">
+            <div className="flex-column">
               <span>Segundo </span> <span>Apellido</span>
             </div>
           </th>
           <th className="center-column">RFC</th>
+          <th className="center-column">Area</th>
+          <th className="center-column">
+            <div className="flex-column">
+              <span>Fecha</span> <span>de Alta</span>
+            </div>
+          </th>
           <th className="center-column">Estado</th>
           <th className="center-column">Editar</th>
           <th className="center-column">
-            <div className="column-title-container">
+            <div className="flex-column">
               <span>Activar </span> <span>Desactivar</span>
             </div>
           </th>
@@ -96,18 +103,32 @@ const PeopleTable = () => {
             second_surname,
             rfc,
             active,
+            department_name,
+            creation_date,
           } = person;
+          const splittedDate = creation_date.split("/");
+          const formattedDate = `${months[parseInt(splittedDate[1]) - 1]} ${
+            splittedDate[0]
+          }, ${splittedDate[2]}`;
           return (
             <tr
+              key={id}
               className="person-row"
               onClick={() => personSelectHandler(rfc)}
-              key={id}
             >
               <td>{first_name}</td>
               <td>{second_name}</td>
               <td>{surname}</td>
               <td>{second_surname}</td>
               <td className="center-column">{rfc}</td>
+              <td className="center-column">
+                <div className="flex-column">
+                  {department_name.split(" ").map((name, index) => (
+                    <span key={index}>{name}</span>
+                  ))}
+                </div>
+              </td>
+              <td className="center-column">{formattedDate}</td>
               <td>
                 <div className="person-status">
                   {active ? (

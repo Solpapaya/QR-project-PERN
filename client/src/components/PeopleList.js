@@ -4,14 +4,17 @@ import { SearchContext } from "../context/SearchContext";
 import PeopleTable from "./PeopleTable";
 
 const PeopleList = () => {
-  const { isSearchSuccessful, filter, setIsSearchSuccessful } = useContext(
-    SearchContext
-  );
+  const {
+    isSearchSuccessful,
+    statusFilter,
+    departmentFilter,
+    setIsSearchSuccessful,
+  } = useContext(SearchContext);
   const { people, setFilteredPeople } = useContext(PeopleContext);
 
   const filterPeople = () => {
     let newPeople;
-    switch (filter) {
+    switch (statusFilter) {
       case "active":
         newPeople = people.filter((person) => person.active === true);
         break;
@@ -22,6 +25,13 @@ const PeopleList = () => {
         newPeople = [...people];
         break;
     }
+    if (departmentFilter === "all_areas") {
+      newPeople = [...newPeople];
+    } else {
+      newPeople = newPeople.filter(
+        (person) => person.department_name === departmentFilter
+      );
+    }
     if (newPeople.length === 0) setIsSearchSuccessful(false);
     else setIsSearchSuccessful(true);
 
@@ -30,7 +40,7 @@ const PeopleList = () => {
 
   useEffect(() => {
     filterPeople();
-  }, [people, filter]);
+  }, [people, statusFilter, departmentFilter]);
 
   // useEffect(() => {
   //   console.count("PeopleList rendered");

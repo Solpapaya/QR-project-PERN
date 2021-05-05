@@ -4,14 +4,31 @@ export function compareValues(key, order = "asc") {
       // property doesn't exist on either object
       return 0;
     }
+    let varA;
+    let varB;
 
-    let varA = typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
-    let varB = typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
-    if (varA === null) {
-      varA = "ZZZ";
-    }
-    if (varB === null) {
-      varB = "ZZZ";
+    if (key === "creation_date") {
+      const splittedDateA = a[key].split("/");
+      const splittedDateB = b[key].split("/");
+      varA = new Date(
+        splittedDateA[2],
+        parseInt(splittedDateA[1]) - 1,
+        splittedDateA[0]
+      );
+      varB = new Date(
+        splittedDateB[2],
+        parseInt(splittedDateB[1]) - 1,
+        splittedDateB[0]
+      );
+    } else {
+      varA = typeof a[key] === "string" ? a[key].toUpperCase() : a[key];
+      varB = typeof b[key] === "string" ? b[key].toUpperCase() : b[key];
+      if (varA === null || varA === "") {
+        varA = "ZZZ";
+      }
+      if (varB === null || varB === "") {
+        varB = "ZZZ";
+      }
     }
     let comparison = 0;
     if (varA > varB) {

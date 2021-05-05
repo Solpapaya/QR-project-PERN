@@ -4,7 +4,8 @@ export const SearchContext = createContext();
 
 export const SearchContextProvider = (props) => {
   const [isSearchSuccessful, setIsSearchSuccessful] = useState(true);
-  const [filter, setFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [departmentFilter, setDepartmentFilter] = useState("all_areas");
   const [sort, setSort] = useState("surname");
 
   return (
@@ -12,8 +13,10 @@ export const SearchContextProvider = (props) => {
       value={{
         isSearchSuccessful,
         setIsSearchSuccessful,
-        filter,
-        setFilter,
+        statusFilter,
+        setStatusFilter,
+        departmentFilter,
+        setDepartmentFilter,
         sort,
         setSort,
       }}

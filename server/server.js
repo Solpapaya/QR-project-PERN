@@ -148,7 +148,12 @@ app.get("/people", async (req, res) => {
       // If the search only contains one word
       if (search.split(" ").length === 1) {
         const results = await db.query(
-          `SELECT * FROM person
+          `SELECT person.first_name, person.second_name, person.surname,
+                person.second_surname, person.rfc, person.active, 
+                TO_CHAR(person.creation_date, 'dd/mm/yyyy') as creation_date,
+                department.department_name
+                FROM person INNER JOIN department
+                ON person.department_id = department.id
                  WHERE first_name ILIKE $1
                  OR second_name ILIKE $1
                  OR surname ILIKE $1
@@ -186,7 +191,12 @@ app.get("/people", async (req, res) => {
         }
 
         let indexes = [];
-        let initialQuery = "SELECT * FROM person WHERE ";
+        let initialQuery = `SELECT person.first_name, person.second_name, person.surname,
+            person.second_surname, person.rfc, person.active,
+            TO_CHAR(person.creation_date, 'dd/mm/yyyy') as creation_date,
+            department.department_name
+            FROM person INNER JOIN department
+            ON person.department_id = department.id WHERE `;
         let firstPermutation = true;
         const arr = ["first_name", "second_name", "surname", "second_surname"];
 
@@ -226,7 +236,14 @@ app.get("/people", async (req, res) => {
     }
     // If there is no specific search, it returns all workers on the database
     else {
-      const results = await db.query("SELECT * FROM person ORDER BY surname");
+      const results = await db.query(`SELECT person.first_name, 
+      person.second_name, person.surname, person.second_surname, person.rfc, 
+      person.active, 
+      TO_CHAR(person.creation_date, 'dd/mm/yyyy') as creation_date,
+      department.department_name
+      FROM person INNER JOIN department
+      ON person.department_id = department.id
+      ORDER BY surname`);
       res.status(200).json({
         success: true,
         results: results.rows.length,
@@ -256,6 +273,20 @@ app.get("/people/:rfc", async (req, res) => {
       success: true,
       data: {
         person: results.rows[0],
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Person" });
+  }
+});
+
+app.get("/departments", async (req, res) => {
+  try {
+    const results = await db.query(`SELECT * FROM department`, []);
+    res.status(200).json({
+      success: true,
+      data: {
+        departments: results.rows,
       },
     });
   } catch (err) {

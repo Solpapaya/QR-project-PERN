@@ -57,7 +57,7 @@
 
 .filter-relative-container {
   position: relative;
-  width: 17rem;
+  width: 15rem;
 }
 
 .sort-relative-container {
@@ -75,13 +75,18 @@
   transition: 0.3s all ease-in-out;
 
   &.filter {
-    max-width: 17rem;
-    min-width: 17rem;
+    max-width: 14rem;
+    min-width: 14rem;
   }
 
   &.sort {
     max-width: 22rem;
     min-width: 22rem;
+  }
+
+  &.department {
+    max-width: 14rem;
+    min-width: 14rem;
   }
 
   &::after {
@@ -119,8 +124,13 @@
   }
 
   &.sort {
-    min-height: 21rem;
-    max-height: 21rem;
+    min-height: 24.5rem;
+    max-height: 24.5rem;
+  }
+
+  &.department {
+    min-height: 17.5rem;
+    max-height: 17.5rem;
   }
 
   li {

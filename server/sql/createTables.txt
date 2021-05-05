@@ -25,7 +25,12 @@ CREATE TABLE person (
  surname VARCHAR(50) NOT NULL,
  second_surname VARCHAR(50) NOT NULL,
  rfc VARCHAR(13) NOT NULL PRIMARY KEY,
- active BOOLEAN NOT NULL 
+ department_id BIGINT NOT NULL,
+ active BOOLEAN NOT NULL,
+ creation_date DATE NOT NULL,
+ CONSTRAINT fk_department
+        FOREIGN KEY(department_id)
+            REFERENCES department(id)
 );
 
 CREATE TABLE tax_receipt (
@@ -36,3 +41,24 @@ CREATE TABLE tax_receipt (
         FOREIGN KEY(rfc_emitter)
             REFERENCES person(rfc)
 );
+
+CREATE TABLE department (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    department_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE status_logs (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    person_rfc VARCHAR(13) NOT NULL,
+    log_date DATE NOT NULL,
+    new_status BOOLEAN NOT NULL,
+    CONSTRAINT fk_person
+        FOREIGN KEY(person_rfc)
+            REFERENCES person(rfc)
+);
+
+ALTER TABLE person
+ADD COLUMN department_id BIGINT NOT NULL;
+
+ALTER TABLE person
+ADD CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department (id);
