@@ -6,6 +6,29 @@ WHERE rfc_emisor = 'SUCC961125A15'
 AND EXTRACT(MONTH FROM fecha_emision) = 1 
 AND EXTRACT(YEAR FROM fecha_emision) = 2019;
 
+SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt;
+
+SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt where rfc_emitter = 'SOPD970125HDF';
+
+SELECT DISTINCT EXTRACT(YEAR FROM log_date) as years FROM status_logs where person_rfc = 'SOPD970125HDF' ORDER BY EXTRACT(YEAR FROM log_date) DESC ;
+
+SELECT id, TO_CHAR(log_date, 'dd/mm/yyyy') as log_date, new_status
+FROM status_logs 
+WHERE person_rfc = 'SOPD970125HDF'
+ORDER BY log_date DESC;
+
+SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+EXTRACT(MONTH FROM tax_receipt.date) as month,
+person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+|| person.surname || ' ' || person.second_surname as full_name, person.rfc
+FROM person INNER JOIN tax_receipt
+ON person.rfc = tax_receipt.rfc_emitter
+ORDER BY tax_receipt.date DESC;
+
+SELECT *
+FROM person INNER JOIN tax_receipt
+ON person.rfc = tax_receipt.rfc_emitter;
+
 SELECT *
 FROM persona INNER JOIN comprobante_fiscal
 ON persona.rfc = comprobante_fiscal.rfc_emisor

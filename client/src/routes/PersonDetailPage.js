@@ -1,11 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router";
-import TaxReceiptsTable from "../components/TaxReceiptsTable";
+import PersonTaxReceiptFilter from "../components/PersonTaxReceiptFilter";
+import PersonSubsections from "../components/PersonSubsections";
+import PersonTaxReceiptsContainer from "../components/PersonTaxReceiptsContainer";
+import { PersonDetailFilterContextProvider } from "../context/PersonDetailFilterContext";
+import { PersonTaxReceiptsContext } from "../context/PersonTaxReceiptsContext";
+import { PersonSubsectionContext } from "../context/PersonSubsectionContext";
+import { PersonStatusLogsContext } from "../context/PersonStatusLogsContext";
 import { fetchData } from "../functions/fetchData";
+import PersonStatusLogFilter from "../components/PersonStatusLogFilter";
+import PersonStatusLogsContainer from "../components/PersonStatusLogsContainer";
+import { CurrentSectionContext } from "../context/CurrentSectionContext";
 
 const PersonDetailPage = () => {
-  const [taxReceipts, setTaxReceipts] = useState([]);
-  const [gotTaxes, setGotTaxes] = useState(false);
+  const { setCurrentSection } = useContext(CurrentSectionContext);
+
+  const {
+    setTaxReceipts,
+    taxInitialSearch,
+    setTaxInitialSearch,
+    setGotTaxes,
+  } = useContext(PersonTaxReceiptsContext);
+
+  const {
+    setStatusLogs,
+    logInitialSearch,
+    setLogInitialSearch,
+    setGotLogs,
+  } = useContext(PersonStatusLogsContext);
+
+  const { personSection } = useContext(PersonSubsectionContext);
 
   const [person, setPerson] = useState({
     first_name: "",
@@ -23,34 +47,56 @@ const PersonDetailPage = () => {
     else setPerson({ ...foundPerson, second_name: "" });
   };
 
-  const getTaxReceipts = async () => {
+  const getAllTaxReceipts = async () => {
     try {
       const response = await fetchData("get", `/taxreceipts/${rfcParam}`);
-      // console.log(response);
       setTaxReceipts(response.data.tax_receipts);
       setGotTaxes(true);
+      setTaxInitialSearch(true);
     } catch (err) {
       // No tax receipts for that person
+      setGotTaxes(false);
+      setTaxInitialSearch(true);
+    }
+  };
+
+  const getAllStatusLogs = async () => {
+    try {
+      const response = await fetchData("get", `/statuslogs/${rfcParam}`);
+      setStatusLogs(response.data.tax_receipts);
+      setGotLogs(true);
+      setLogInitialSearch(true);
+    } catch (err) {
+      // No tax receipts for that person
+      setGotLogs(false);
+      setLogInitialSearch(true);
     }
   };
 
   useEffect(() => {
+    setCurrentSection(1);
     getPerson();
-    getTaxReceipts();
+    getAllTaxReceipts();
+    getAllStatusLogs();
   }, []);
   return (
     <div>
-      <h1>{`${person.first_name} ${person.second_name} ${person.surname} ${person.second_surname}`}</h1>
+      <h2>{`${person.first_name} ${person.second_name} ${person.surname} ${person.second_surname}`}</h2>
       <h4>{person.rfc}</h4>
-      {gotTaxes ? (
-        <TaxReceiptsTable
-          taxReceipts={taxReceipts}
-          setTaxReceipts={setTaxReceipts}
-          rfcParam={rfcParam}
-        />
-      ) : (
-        ""
-      )}
+      <PersonSubsections />
+      <PersonDetailFilterContextProvider>
+        {personSection === 1 ? (
+          <>
+            <PersonTaxReceiptFilter />
+            {taxInitialSearch && <PersonTaxReceiptsContainer />}
+          </>
+        ) : (
+          <>
+            <PersonStatusLogFilter />
+            {logInitialSearch && <PersonStatusLogsContainer />}
+          </>
+        )}
+      </PersonDetailFilterContextProvider>
     </div>
   );
 };

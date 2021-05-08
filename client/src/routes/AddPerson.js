@@ -102,6 +102,7 @@ const AddPerson = () => {
   };
 
   useEffect(() => {
+    setCurrentSection(3);
     firstNameRef.current.focus();
   }, []);
 

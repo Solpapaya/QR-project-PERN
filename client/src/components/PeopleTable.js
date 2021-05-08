@@ -17,9 +17,14 @@ const PeopleTable = () => {
   const disableHandler = async (e, person) => {
     e.stopPropagation();
     const { rfc } = person;
-    const newPerson = { ...person, active: !person.active };
+    // const newPerson = { ...person, active: !person.active };
+    const newActive = { active: !person.active };
     try {
-      const response = await fetchData("put", `/people/${rfc}`, newPerson);
+      const response = await fetchData(
+        "put",
+        `/people/${rfc}?field=active`,
+        newActive
+      );
       // console.log(response);
       const newPeople = people.map((person) => {
         if (person.rfc === rfc) {
@@ -56,7 +61,7 @@ const PeopleTable = () => {
   return (
     <table className="table">
       <thead>
-        <tr className="bg-primary">
+        <tr>
           <th>
             <div className="flex-column">
               <span>Primer </span> <span>Nombre</span>
@@ -167,32 +172,6 @@ const PeopleTable = () => {
             </tr>
           );
         })}
-        {/* <tr>
-            <td>Daniel</td>
-            <td>Rafael</td>
-            <td>Solorio</td>
-            <td>Paredes</td>
-            <td>SOPD970125HDF</td>
-            <td>
-              <button className="btn btn-warning">Update</button>
-            </td>
-            <td>
-              <button className="btn btn-danger">Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Daniel</td>
-            <td>Rafael</td>
-            <td>Solorio</td>
-            <td>Paredes</td>
-            <td>SOPD970125HDF</td>
-            <td>
-              <button className="btn btn-warning">Update</button>
-            </td>
-            <td>
-              <button className="btn btn-danger">Delete</button>
-            </td>
-          </tr> */}
       </tbody>
     </table>
   );

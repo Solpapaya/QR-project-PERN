@@ -100,6 +100,8 @@
     -webkit-transform: rotate(45deg);
     top: calc(1.75rem - 0.65rem);
     right: 2rem;
+    cursor: pointer;
+    z-index: 1;
   }
 
   li {
@@ -113,6 +115,7 @@
     color: #70789e;
     font-weight: $bold;
     font-size: 1.3rem;
+    z-index: 2;
   }
 }
 

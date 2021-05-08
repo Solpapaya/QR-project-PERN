@@ -16,6 +16,9 @@ INSERT INTO department (department_name) VALUES
 ('purchase');
 
 INSERT INTO tax_receipt (date, rfc_emitter) VALUES 
+('2020-11-12', 'SOPD970125HDF'),
+('2020-10-21', 'SOPD970125HDF'),
+('2020-03-10', 'SOPD970125HDF'),
 ('2020-10-12', 'MEFI851023M9A'),
 ('2019-01-04', 'SUCC961125A15'),
 ('2019-02-04', 'SUCC961125A15'),

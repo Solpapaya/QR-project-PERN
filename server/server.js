@@ -47,40 +47,76 @@ app.use(express.json());
 const { runPermutations } = require("./functions/permutations");
 
 app.put("/people/:rfc", async (req, res) => {
+  const { field } = req.query;
   try {
-    const {
-      first_name,
-      second_name,
-      surname,
-      second_surname,
-      rfc,
-      active,
-    } = req.body;
-    const results = await db.query(
-      `UPDATE person SET first_name = $1, second_name = $2,
-        surname = $3, second_surname = $4, rfc = $5, active = $6 
-        WHERE rfc = $7 RETURNING *`,
-      [
+    if (field === "active") {
+      const { active } = req.body;
+      let results = await db.query(
+        `UPDATE person SET active = $1
+          WHERE rfc = $2 RETURNING *`,
+        [active, req.params.rfc]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No person with RFC ${req.params.rfc}`,
+        });
+      }
+      const dateObj = new Date();
+      const month = dateObj.getUTCMonth() + 1; //months from 1-12
+      const day = dateObj.getUTCDate() - 1;
+      const year = dateObj.getUTCFullYear();
+
+      const newDate = year + "/" + month + "/" + day;
+      await db.query(
+        `INSERT INTO status_logs 
+        (person_rfc, log_date, new_status) 
+        VALUES
+        ($1, $2, $3)`,
+        [req.params.rfc, newDate, active]
+      );
+      res.status(200).json({
+        success: true,
+        data: {
+          person: results.rows[0],
+        },
+      });
+    } else {
+      const {
         first_name,
         second_name,
         surname,
         second_surname,
         rfc,
         active,
-        req.params.rfc,
-      ]
-    );
-    if (results.rowCount === 0) {
-      return res
-        .status(404)
-        .json({ success: false, msg: `No person with RFC ${req.params.rfc}` });
+      } = req.body;
+      const results = await db.query(
+        `UPDATE person SET first_name = $1, second_name = $2,
+          surname = $3, second_surname = $4, rfc = $5, active = $6 
+          WHERE rfc = $7 RETURNING *`,
+        [
+          first_name,
+          second_name,
+          surname,
+          second_surname,
+          rfc,
+          active,
+          req.params.rfc,
+        ]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No person with RFC ${req.params.rfc}`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data: {
+          person: results.rows[0],
+        },
+      });
     }
-    res.status(200).json({
-      success: true,
-      data: {
-        person: results.rows[0],
-      },
-    });
   } catch (err) {
     res.status(500).json({ success: false, msg: "Error Updating Person" });
   }
@@ -294,26 +330,150 @@ app.get("/departments", async (req, res) => {
   }
 });
 
-app.get("/taxreceipts/:rfc", async (req, res) => {
+app.get("/statuslogs/:rfc", async (req, res) => {
   const { rfc } = req.params;
+  const { get } = req.query;
   try {
-    const results = await db.query(
-      `SELECT id, extract(month from date) AS month, extract(year from date) AS year FROM tax_receipt WHERE rfc_emitter = $1 ORDER BY extract(year from date) DESC`,
-      [rfc]
-    );
-    if (results.rowCount === 0) {
-      return res.status(404).json({
-        success: false,
-        msg: `No tax receipts for person with RFC ${rfc}`,
+    if (get && get === "years") {
+      const results = await db.query(
+        `SELECT DISTINCT EXTRACT(YEAR FROM log_date) as years
+         FROM status_logs
+         WHERE person_rfc = $1 
+         ORDER BY EXTRACT(YEAR FROM log_date) DESC `,
+        [rfc]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No status logs for person with RFC ${rfc}`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          status_logs_years: results.rows,
+        },
+      });
+    } else {
+      const results = await db.query(
+        `SELECT id, TO_CHAR(log_date, 'dd/mm/yyyy') as log_date, new_status
+          FROM status_logs 
+          WHERE person_rfc = $1
+          ORDER BY log_date DESC`,
+        [rfc]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No tax receipts for person with RFC ${rfc}`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          tax_receipts: results.rows,
+        },
       });
     }
-    res.status(200).json({
-      success: true,
-      length: results.rows.length,
-      data: {
-        tax_receipts: results.rows,
-      },
-    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Person" });
+  }
+});
+
+app.get("/taxreceipts", async (req, res) => {
+  const { get } = req.query;
+  try {
+    if (get === "years") {
+      const results = await db.query(
+        `SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt ORDER BY EXTRACT(YEAR FROM date) DESC `,
+        []
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No tax receipts`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          tax_receipts_years: results.rows,
+        },
+      });
+    } else {
+      const results = await db.query(
+        `SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+          EXTRACT(MONTH FROM tax_receipt.date) as month,
+          person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+          || person.surname || ' ' || person.second_surname as full_name, person.rfc
+          FROM person INNER JOIN tax_receipt
+          ON person.rfc = tax_receipt.rfc_emitter
+          ORDER BY tax_receipt.date DESC`,
+        []
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No tax receipts`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          tax_receipts: results.rows,
+        },
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Tax Receipts" });
+  }
+});
+
+app.get("/taxreceipts/:rfc", async (req, res) => {
+  const { rfc } = req.params;
+  const { get } = req.query;
+  try {
+    if (get === "years") {
+      const results = await db.query(
+        `SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt where rfc_emitter = $1 ORDER BY EXTRACT(YEAR FROM date) DESC `,
+        [rfc]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No tax receipts for person with RFC ${rfc}`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          tax_receipts_years: results.rows,
+        },
+      });
+    } else {
+      const results = await db.query(
+        `SELECT id, extract(month from date) AS month, extract(year from date) AS year FROM tax_receipt WHERE rfc_emitter = $1 ORDER BY date DESC`,
+        [rfc]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No tax receipts for person with RFC ${rfc}`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          tax_receipts: results.rows,
+        },
+      });
+    }
   } catch (err) {
     res.status(500).json({ success: false, msg: "Error Getting Person" });
   }

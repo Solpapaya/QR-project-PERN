@@ -10,18 +10,17 @@ const Sidebar = () => {
 
   const clickHandler = (e) => {
     const newSection = parseInt(e.currentTarget.dataset.section);
-    if (newSection !== currentSection) {
-      setCurrentSection(newSection);
-      switch (newSection) {
-        case 1:
-          history.push("/");
-          break;
-        case 2:
-          break;
-        case 3:
-          history.push("/create/people");
-          break;
-      }
+
+    setCurrentSection(newSection);
+    switch (newSection) {
+      case 1:
+        history.push("/");
+        break;
+      case 2:
+        break;
+      case 3:
+        history.push("/create/people");
+        break;
     }
   };
 
@@ -53,7 +52,7 @@ const Sidebar = () => {
           data-section="1"
         >
           <i className="fas fa-search sidebar-item-icon"></i>
-          <span className="btn-text">Buscar Personas</span>
+          <span className="btn-text">Buscar</span>
         </button>
       </div>
       <div
