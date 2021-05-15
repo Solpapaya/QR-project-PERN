@@ -82,14 +82,8 @@ app.put("/people/:rfc", async (req, res) => {
         },
       });
     } else {
-      const {
-        first_name,
-        second_name,
-        surname,
-        second_surname,
-        rfc,
-        active,
-      } = req.body;
+      const { first_name, second_name, surname, second_surname, rfc, active } =
+        req.body;
       const results = await db.query(
         `UPDATE person SET first_name = $1, second_name = $2,
           surname = $3, second_surname = $4, rfc = $5, active = $6 
@@ -297,9 +291,15 @@ app.get("/people", async (req, res) => {
 app.get("/people/:rfc", async (req, res) => {
   const { rfc } = req.params;
   try {
-    const results = await db.query(`SELECT * FROM person WHERE rfc = $1`, [
-      rfc,
-    ]);
+    const results = await db.query(
+      `SELECT person.first_name, person.second_name, person.surname,
+                person.second_surname, person.rfc, 
+                department.department_name
+                FROM person INNER JOIN department
+                ON person.department_id = department.id
+                 WHERE rfc ILIKE $1`,
+      [rfc]
+    );
     if (results.rowCount === 0) {
       return res
         .status(404)
@@ -330,6 +330,64 @@ app.get("/departments", async (req, res) => {
   }
 });
 
+app.get("/statuslogs", async (req, res) => {
+  const { get } = req.query;
+  try {
+    if (get === "years") {
+      const results = await db.query(
+        `SELECT DISTINCT EXTRACT(YEAR FROM log_date) 
+        as years 
+        FROM status_logs 
+        ORDER BY EXTRACT(YEAR FROM log_date) DESC `,
+        []
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No status logs`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          status_logs_years: results.rows,
+        },
+      });
+    } else {
+      const results = await db.query(
+        `SELECT status_logs.id, 
+        TO_CHAR(status_logs.log_date, 'dd/mm/yyyy') as date, 
+        status_logs.new_status,
+        person.first_name || ' ' || 
+        COALESCE(person.second_name || ' ', '') 
+        || person.surname || ' ' || 
+        person.second_surname as full_name, 
+        person.rfc
+        FROM person INNER JOIN status_logs
+        ON person.rfc = status_logs.person_rfc
+        ORDER BY status_logs.log_date DESC;`,
+        []
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: `No status logs`,
+        });
+      }
+      res.status(200).json({
+        success: true,
+        length: results.rows.length,
+        data: {
+          status_logs: results.rows,
+        },
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Status Logs" });
+  }
+});
+
 app.get("/statuslogs/:rfc", async (req, res) => {
   const { rfc } = req.params;
   const { get } = req.query;
@@ -357,7 +415,7 @@ app.get("/statuslogs/:rfc", async (req, res) => {
       });
     } else {
       const results = await db.query(
-        `SELECT id, TO_CHAR(log_date, 'dd/mm/yyyy') as log_date, new_status
+        `SELECT id, TO_CHAR(log_date, 'dd/mm/yyyy') as date, new_status
           FROM status_logs 
           WHERE person_rfc = $1
           ORDER BY log_date DESC`,
@@ -366,7 +424,7 @@ app.get("/statuslogs/:rfc", async (req, res) => {
       if (results.rowCount === 0) {
         return res.status(404).json({
           success: false,
-          msg: `No tax receipts for person with RFC ${rfc}`,
+          msg: `No status logs for person with RFC ${rfc}`,
         });
       }
       res.status(200).json({
@@ -378,7 +436,10 @@ app.get("/statuslogs/:rfc", async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error Getting Person" });
+    res.status(500).json({
+      success: false,
+      msg: `Error Getting Status Logs for person with RFC ${rfc}`,
+    });
   }
 });
 

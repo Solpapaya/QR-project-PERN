@@ -1,5 +1,4 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { PeopleContext } from "../context/PeopleContext";
 import { SearchContext } from "../context/SearchContext";
 import { fetchData } from "../functions/fetchData";
 
@@ -8,8 +7,7 @@ const SearchPerson = () => {
   // State used for preventing making requests to the server after knowing that the
   // name typed by the user doesn't exist in the database
   const [noMatch, setNoMatch] = useState(null);
-  const { setIsSearchSuccessful } = useContext(SearchContext);
-  const { setPeople } = useContext(PeopleContext);
+  const { setIsSearchSuccessful, setPeople } = useContext(SearchContext);
   const searchRef = useRef(null);
 
   const onChangeHandler = async (e) => {
@@ -33,7 +31,6 @@ const SearchPerson = () => {
       search = search.trim();
       // Preventing search with more than 4 words
       if (search.split(" ").length < 5) {
-        // console.log("Searching person");
         const url = `/people?search=${search}`;
         try {
           const response = await fetchData("get", url);

@@ -1,37 +1,21 @@
 import React, { useEffect, useContext, useState } from "react";
-import PeopleList from "../components/PeopleList";
 import { SearchContextProvider } from "../context/SearchContext";
-import { PeopleContext } from "../context/PeopleContext";
-import SearchForm from "../components/SearchForm";
-import { fetchData } from "../functions/fetchData";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
 import SearchSubsections from "../components/SearchSubsections";
 import { SearchSubsectionContext } from "../context/SearchSubsectionContext";
 import { SearchTaxReceiptsContextProvider } from "../context/SearchTaxReceiptsContext";
 import TaxReceipts from "../components/TaxReceipts";
+import People from "../components/People";
+import StatusLogs from "../components/StatusLogs";
+import { SearchStatusLogsContextProvider } from "../context/SearchStatusLogsContext";
 
-const Home = ({ isInitialSearch, setIsInitialSearch }) => {
-  const { setPeople } = useContext(PeopleContext);
+const Home = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
-  const { searchSection, setSearchSection } = useContext(
-    SearchSubsectionContext
-  );
+  const { searchSection } = useContext(SearchSubsectionContext);
   const sections = ["Personas", "Comprobantes Fiscales", "Cambios de Estado"];
-
-  const getAllPeople = async () => {
-    // console.count("Fetching Data");
-    try {
-      const response = await fetchData("get", "/people");
-      setPeople(response.data.people);
-      setIsInitialSearch(true);
-    } catch (err) {
-      // No users in database alert
-    }
-  };
 
   useEffect(() => {
     setCurrentSection(1);
-    getAllPeople();
   }, []);
   return (
     <>
@@ -42,15 +26,16 @@ const Home = ({ isInitialSearch, setIsInitialSearch }) => {
       <SearchSubsections />
       {searchSection === 1 ? (
         <SearchContextProvider>
-          <SearchForm />
-          {isInitialSearch && <PeopleList />}
+          <People />
         </SearchContextProvider>
       ) : searchSection === 2 ? (
         <SearchTaxReceiptsContextProvider>
           <TaxReceipts />
         </SearchTaxReceiptsContextProvider>
       ) : (
-        "Status Logs"
+        <SearchStatusLogsContextProvider>
+          <StatusLogs />
+        </SearchStatusLogsContextProvider>
       )}
     </>
   );

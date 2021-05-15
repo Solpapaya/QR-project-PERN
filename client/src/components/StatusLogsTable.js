@@ -1,24 +1,26 @@
 import React, { useContext } from "react";
-import { PersonStatusLogsContext } from "../context/PersonStatusLogsContext";
+import { SearchStatusLogsContext } from "../context/SearchStatusLogsContext";
 import { MonthsContext } from "../context/MonthsContext";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 
-const PersonStatusLogsTable = () => {
-  const { filteredStatusLogs } = useContext(PersonStatusLogsContext);
+const StatusLogsTable = () => {
+  const { filteredStatusLogs } = useContext(SearchStatusLogsContext);
   const { months } = useContext(MonthsContext);
 
   return (
-    <table className="table logs">
+    <table className="table">
       <thead>
         <tr>
           <th>Fecha</th>
           <th className="center-column">Nuevo Estado</th>
+          <th>Nombre Completo</th>
+          <th>RFC</th>
         </tr>
       </thead>
       <tbody>
         {filteredStatusLogs.map((log) => {
-          const { id, date, new_status } = log;
+          const { id, date, new_status, full_name, rfc } = log;
           const splittedDate = date.split("/");
           const formattedDate = `${months[parseInt(splittedDate[1]) - 1]} ${
             splittedDate[0]
@@ -45,6 +47,8 @@ const PersonStatusLogsTable = () => {
                   )}
                 </div>
               </td>
+              <td>{full_name}</td>
+              <td>{rfc}</td>
             </tr>
           );
         })}
@@ -53,4 +57,4 @@ const PersonStatusLogsTable = () => {
   );
 };
 
-export default PersonStatusLogsTable;
+export default StatusLogsTable;

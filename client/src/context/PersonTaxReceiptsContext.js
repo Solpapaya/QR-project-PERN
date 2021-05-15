@@ -7,6 +7,8 @@ export const PersonTaxReceiptsContextProvider = (props) => {
   const [taxReceipts, setTaxReceipts] = useState([]);
   const [filteredTaxReceipts, setFilteredTaxReceipts] = useState([]);
   const [gotTaxes, setGotTaxes] = useState(false);
+  const [yearTaxReceiptFilter, setYearTaxReceiptFilter] = useState("all");
+  const [monthTaxReceiptFilter, setMonthTaxReceiptFilter] = useState("all");
 
   return (
     <PersonTaxReceiptsContext.Provider
@@ -19,6 +21,10 @@ export const PersonTaxReceiptsContextProvider = (props) => {
         setTaxInitialSearch,
         filteredTaxReceipts,
         setFilteredTaxReceipts,
+        yearTaxReceiptFilter,
+        setYearTaxReceiptFilter,
+        monthTaxReceiptFilter,
+        setMonthTaxReceiptFilter,
       }}
     >
       {props.children}

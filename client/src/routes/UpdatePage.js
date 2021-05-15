@@ -4,7 +4,7 @@ import UpdatePerson from "../components/UpdatePerson";
 const UpdatePage = () => {
   return (
     <>
-      <h1 className="text-center">Update Person</h1>
+      <h2>Update Person</h2>
       <UpdatePerson />
     </>
   );

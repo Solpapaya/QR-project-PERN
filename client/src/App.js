@@ -1,12 +1,10 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-import { PeopleContextProvider } from "./context/PeopleContext";
+// import { PeopleContextProvider } from "./context/PeopleContext";
 import AddPerson from "./routes/AddPerson";
 import { MonthsContextProvider } from "./context/MonthsContext";
-import { PersonTaxReceiptsContextProvider } from "./context/PersonTaxReceiptsContext";
 import { PersonSubsectionContextProvider } from "./context/PersonSubsectionContext";
-import { PersonStatusLogsContextProvider } from "./context/PersonStatusLogsContext";
 
 // pages
 import Home from "./routes/Home";
@@ -15,40 +13,35 @@ import UpdatePage from "./routes/UpdatePage";
 import { SearchSubsectionContextProvider } from "./context/SearchSubsectionContext";
 
 function App() {
-  const [isInitialSearch, setIsInitialSearch] = useState(false);
   return (
     <Router>
       <div className="main-layout">
         <Sidebar />
         <div className="main-content">
-          <PeopleContextProvider>
-            <MonthsContextProvider>
-              <div className="main-content-container">
-                <Switch>
-                  <Route exact path="/">
-                    <SearchSubsectionContextProvider>
-                      <Home
-                        isInitialSearch={isInitialSearch}
-                        setIsInitialSearch={setIsInitialSearch}
-                      />
-                    </SearchSubsectionContextProvider>
-                  </Route>
-                  <Route exact path="/people/:rfc">
-                    <PersonSubsectionContextProvider>
-                      <PersonTaxReceiptsContextProvider>
-                        <PersonStatusLogsContextProvider>
-                          <PersonDetailPage />
-                        </PersonStatusLogsContextProvider>
-                      </PersonTaxReceiptsContextProvider>
-                    </PersonSubsectionContextProvider>
-                  </Route>
-                  <Route exact path="/create/people">
-                    <AddPerson />
-                  </Route>
-                </Switch>
-              </div>
-            </MonthsContextProvider>
-          </PeopleContextProvider>
+          {/* <PeopleContextProvider> */}
+          <MonthsContextProvider>
+            <div className="main-content-container">
+              <Switch>
+                <Route exact path="/">
+                  <SearchSubsectionContextProvider>
+                    <Home />
+                  </SearchSubsectionContextProvider>
+                </Route>
+                <Route exact path="/people/:rfc">
+                  <PersonSubsectionContextProvider>
+                    <PersonDetailPage />
+                  </PersonSubsectionContextProvider>
+                </Route>
+                <Route exact path="/people/:rfc/update">
+                  <UpdatePage />
+                </Route>
+                <Route exact path="/create/people">
+                  <AddPerson />
+                </Route>
+              </Switch>
+            </div>
+          </MonthsContextProvider>
+          {/* </PeopleContextProvider> */}
         </div>
       </div>
     </Router>

@@ -95,9 +95,10 @@ const SearchTaxReceiptFilter = () => {
           >
             Todos
           </li>
-          {years.map((year) => {
+          {years.map((year, index) => {
             return (
               <li
+                key={index}
                 onClick={() => {
                   setYearFilter(year.years);
                   setIsYearFilterExpanded(!isYearFilterExpanded);

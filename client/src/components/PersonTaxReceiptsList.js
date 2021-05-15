@@ -1,21 +1,17 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import { PersonTaxReceiptsContext } from "../context/PersonTaxReceiptsContext";
-import { PersonDetailFilterContext } from "../context/PersonDetailFilterContext";
 import PersonTaxReceiptsTable from "./PersonTaxReceiptsTable";
 import { MonthsContext } from "../context/MonthsContext";
 
-const PersonTaxReceiptsContainer = () => {
+const PersonTaxReceiptsList = () => {
   const {
-    setTaxReceipts,
     taxReceipts,
     setGotTaxes,
     gotTaxes,
-    filteredTaxReceipts,
     setFilteredTaxReceipts,
+    yearTaxReceiptFilter,
+    monthTaxReceiptFilter,
   } = useContext(PersonTaxReceiptsContext);
-  const { yearTaxReceiptFilter, monthTaxReceiptFilter } = useContext(
-    PersonDetailFilterContext
-  );
   const { months } = useContext(MonthsContext);
 
   const filterTaxReceipts = () => {
@@ -33,12 +29,10 @@ const PersonTaxReceiptsContainer = () => {
         (tax) => tax.year === yearTaxReceiptFilter
       );
     }
-    if (newTaxReceipts.length === 0) {
-      setGotTaxes(false);
-    } else {
-      setFilteredTaxReceipts(newTaxReceipts);
-      setGotTaxes(true);
-    }
+
+    setFilteredTaxReceipts(newTaxReceipts);
+    if (newTaxReceipts.length === 0) setGotTaxes(false);
+    else setGotTaxes(true);
   };
 
   useEffect(() => {
@@ -56,4 +50,4 @@ const PersonTaxReceiptsContainer = () => {
   );
 };
 
-export default PersonTaxReceiptsContainer;
+export default PersonTaxReceiptsList;

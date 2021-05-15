@@ -8,13 +8,19 @@ const PersonSubsections = () => {
   return (
     <div className="subsection-container">
       <div
-        onClick={() => setPersonSection(1)}
+        onClick={() => {
+          localStorage.setItem("personSubsection", 1);
+          setPersonSection(1);
+        }}
         className={personSection === 1 ? "subsection selected" : "subsection"}
       >
         Comprobantes Fiscales
       </div>
       <div
-        onClick={() => setPersonSection(2)}
+        onClick={() => {
+          localStorage.setItem("personSubsection", 2);
+          setPersonSection(2);
+        }}
         className={personSection === 2 ? "subsection selected" : "subsection"}
       >
         Cambios de Estado

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { MonthsContext } from "../context/MonthsContext";
-import { PersonDetailFilterContext } from "../context/PersonDetailFilterContext";
+import { PersonTaxReceiptsContext } from "../context/PersonTaxReceiptsContext";
 import { useParams } from "react-router";
 import { fetchData } from "../functions/fetchData";
 
@@ -12,7 +12,7 @@ const PersonDetailFilter = () => {
     setYearTaxReceiptFilter,
     monthTaxReceiptFilter,
     setMonthTaxReceiptFilter,
-  } = useContext(PersonDetailFilterContext);
+  } = useContext(PersonTaxReceiptsContext);
   const [years, setYears] = useState([]);
   const { months } = useContext(MonthsContext);
 

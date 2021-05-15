@@ -14,7 +14,7 @@ const TaxReceipts = () => {
 
   const getAllTaxReceipts = async () => {
     try {
-      const response = await fetchData("get", "/taxreceiptdss");
+      const response = await fetchData("get", "/taxreceipts");
       setTaxReceipts(response.data.tax_receipts);
       setIsSearchSuccessful(true);
     } catch (err) {

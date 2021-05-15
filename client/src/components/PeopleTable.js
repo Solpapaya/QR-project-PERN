@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PeopleContext } from "../context/PeopleContext";
 import { useHistory } from "react-router-dom";
 import { fetchData } from "../functions/fetchData";
 import { compareValues } from "../functions/compareValues";
@@ -9,15 +8,13 @@ import { SearchContext } from "../context/SearchContext";
 import { MonthsContext } from "../context/MonthsContext";
 
 const PeopleTable = () => {
-  const { people, setPeople, filteredPeople } = useContext(PeopleContext);
-  const { sort, setSort } = useContext(SearchContext);
+  const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
   let history = useHistory();
 
   const disableHandler = async (e, person) => {
     e.stopPropagation();
     const { rfc } = person;
-    // const newPerson = { ...person, active: !person.active };
     const newActive = { active: !person.active };
     try {
       const response = await fetchData(

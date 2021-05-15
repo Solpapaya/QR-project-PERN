@@ -12,18 +12,35 @@ SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt where rfc_emit
 
 SELECT DISTINCT EXTRACT(YEAR FROM log_date) as years FROM status_logs where person_rfc = 'SOPD970125HDF' ORDER BY EXTRACT(YEAR FROM log_date) DESC ;
 
-SELECT id, TO_CHAR(log_date, 'dd/mm/yyyy') as log_date, new_status
+SELECT DISTINCT EXTRACT(YEAR FROM log_date) as years FROM status_logs ORDER BY EXTRACT(YEAR FROM log_date) DESC ;
+
+SELECT id, TO_CHAR(log_date, 'dd/mm/yyyy') as date, new_status
 FROM status_logs 
 WHERE person_rfc = 'SOPD970125HDF'
 ORDER BY log_date DESC;
 
-SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+SELECT tax_receipt.id, EXTRACT(YEAR FROM tax_receipt.date) as year, 
 EXTRACT(MONTH FROM tax_receipt.date) as month,
 person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
 || person.surname || ' ' || person.second_surname as full_name, person.rfc
 FROM person INNER JOIN tax_receipt
 ON person.rfc = tax_receipt.rfc_emitter
 ORDER BY tax_receipt.date DESC;
+
+SELECT person.first_name, person.second_name, person.surname,
+                person.second_surname, person.rfc, 
+                department.department_name
+                FROM person INNER JOIN department
+                ON person.department_id = department.id
+                 WHERE rfc ILIKE $1;
+
+SELECT status_logs.id, TO_CHAR(status_logs.log_date, 'dd/mm/yyyy') as date,
+status_logs.new_status, 
+person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+|| person.surname || ' ' || person.second_surname as full_name, person.rfc
+FROM person INNER JOIN status_logs
+ON person.rfc = status_logs.person_rfc
+ORDER BY status_logs.log_date DESC;
 
 SELECT *
 FROM person INNER JOIN tax_receipt

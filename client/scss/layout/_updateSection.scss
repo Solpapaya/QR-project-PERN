@@ -1,0 +1,168 @@
+.form.update {
+  margin-top: $baseUnit;
+  width: 100%;
+
+  @include mobile {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: $baseUnit * 2;
+  }
+
+  .add-input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 $baseUnit/1.5;
+    background-color: $backgroundInput;
+    margin: $baseUnit/2 0;
+    min-height: $baseUnit * 4;
+    max-height: $baseUnit * 4;
+    border-radius: $boder-radius;
+    border: 2px transparent solid;
+    transition: border 500ms;
+
+    &.selected {
+      border: 2px solid #1f69fc;
+      span {
+        color: #1f69fc;
+      }
+
+      &.empty {
+        border: 2px solid #ff5571;
+        span {
+          color: lighten($color: #70789e, $amount: 20%);
+
+          &::after {
+            content: "Por favor ingresa este campo";
+            position: absolute;
+            display: inline;
+            width: max-content;
+            font-size: 1rem;
+            top: -1.7rem;
+            left: 0;
+            color: #ff5571;
+          }
+        }
+      }
+    }
+  }
+
+  span {
+    font-size: 1rem;
+    color: lighten($color: #70789e, $amount: 20%);
+    font-weight: $bold;
+    opacity: 1;
+    transition: all 500ms;
+
+    &.hide {
+      position: absolute;
+      font-size: 1.3rem;
+      z-index: 1;
+    }
+  }
+
+  input {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    color: #000;
+    z-index: 2;
+  }
+
+  .add-input-container.department {
+    padding: 0;
+    border: 0;
+
+    &.expanded {
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border: 2px solid #1f69fc;
+        background-color: transparent;
+      }
+      span {
+        color: #1f69fc;
+      }
+      .department-ul-container {
+        &::after {
+          border: solid #1f69fc;
+          border-width: 0 3px 3px 0;
+        }
+      }
+    }
+
+    span {
+      padding: 0 $baseUnit/1.5;
+    }
+  }
+
+  .department-relative-container {
+    width: 100%;
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    position: relative;
+
+    .department-ul-container {
+      overflow: hidden;
+      min-height: 3.5rem;
+      max-height: 3.5rem;
+      background-color: $backgroundInput;
+      cursor: pointer;
+      border-bottom-left-radius: $boder-radius;
+      border-bottom-right-radius: $boder-radius;
+      transition: all 500ms;
+      z-index: 2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        border: solid #c0c4e0;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        top: calc(1.75rem - 0.65rem);
+        right: 2rem;
+        cursor: pointer;
+        z-index: 1;
+      }
+    }
+
+    li {
+      padding: 0 $baseUnit/1.5;
+      min-height: 3.5rem;
+      max-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      font-size: 1.3rem;
+
+      &.selected {
+        color: #000;
+        font-weight: $bold;
+
+        &:not(:first-of-type) {
+          position: absolute;
+          top: 0;
+        }
+
+        &::after {
+          content: none;
+        }
+      }
+
+      &:last-of-type {
+        border-bottom-left-radius: $boder-radius;
+        border-bottom-right-radius: $boder-radius;
+      }
+    }
+  }
+
+  .add-btn {
+    margin-top: $baseUnit;
+    grid-column: 1/3;
+  }
+}

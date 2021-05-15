@@ -9,8 +9,9 @@ const PeopleList = () => {
     statusFilter,
     departmentFilter,
     setIsSearchSuccessful,
+    people,
+    setFilteredPeople,
   } = useContext(SearchContext);
-  const { people, setFilteredPeople } = useContext(PeopleContext);
 
   const filterPeople = () => {
     let newPeople;
@@ -41,10 +42,6 @@ const PeopleList = () => {
   useEffect(() => {
     filterPeople();
   }, [people, statusFilter, departmentFilter]);
-
-  // useEffect(() => {
-  //   console.count("PeopleList rendered");
-  // });
 
   return (
     <div className="table-container">

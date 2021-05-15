@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useParams } from "react-router";
 import { MonthsContext } from "../context/MonthsContext";
-import { PersonStatusLogsContext } from "../context/PersonStatusLogsContext";
 import { fetchData } from "../functions/fetchData";
+import { SearchStatusLogsContext } from "../context/SearchStatusLogsContext";
 
-const PersonStatusLogFilter = () => {
+const SearchStatusLogFilter = () => {
   const [years, setYears] = useState([]);
   const [isMonthFilterExpanded, setIsMonthFilterExpanded] = useState(false);
   const [isYearFilterExpanded, setIsYearFilterExpanded] = useState(false);
@@ -12,21 +11,16 @@ const PersonStatusLogFilter = () => {
   const { months } = useContext(MonthsContext);
 
   const {
-    yearStatusLogFilter,
-    setYearStatusLogFilter,
-    monthStatusLogFilter,
-    setMonthStatusLogFilter,
+    yearFilter,
+    setYearFilter,
+    monthFilter,
+    setMonthFilter,
     statusFilter,
     setStatusFilter,
-  } = useContext(PersonStatusLogsContext);
-
-  const rfcParam = useParams().rfc;
+  } = useContext(SearchStatusLogsContext);
 
   const getYears = async () => {
-    const response = await fetchData(
-      "get",
-      `/statuslogs/${rfcParam}?get=years`
-    );
+    const response = await fetchData("get", `/statuslogs?get=years`);
     setYears(response.data.status_logs_years);
   };
 
@@ -54,10 +48,10 @@ const PersonStatusLogFilter = () => {
           <li
             id="first-month-option"
             onClick={() => {
-              setMonthStatusLogFilter("all");
+              setMonthFilter("all");
               setIsMonthFilterExpanded(!isMonthFilterExpanded);
             }}
-            className={monthStatusLogFilter === "all" ? "selected" : ""}
+            className={monthFilter === "all" ? "selected" : ""}
           >
             Todos
           </li>
@@ -65,12 +59,10 @@ const PersonStatusLogFilter = () => {
             {months.map((month) => (
               <div
                 onClick={() => {
-                  setMonthStatusLogFilter(month);
+                  setMonthFilter(month);
                   setIsMonthFilterExpanded(!isMonthFilterExpanded);
                 }}
-                className={
-                  monthStatusLogFilter === month ? "month selected" : "month"
-                }
+                className={monthFilter === month ? "month selected" : "month"}
               >
                 {month}
               </div>
@@ -100,10 +92,10 @@ const PersonStatusLogFilter = () => {
           </li>
           <li
             onClick={() => {
-              setYearStatusLogFilter("all");
+              setYearFilter("all");
               setIsYearFilterExpanded(!isYearFilterExpanded);
             }}
-            className={yearStatusLogFilter === "all" ? "selected" : ""}
+            className={yearFilter === "all" ? "selected" : ""}
           >
             Todos
           </li>
@@ -111,10 +103,10 @@ const PersonStatusLogFilter = () => {
             return (
               <li
                 onClick={() => {
-                  setYearStatusLogFilter(year.years);
+                  setYearFilter(year.years);
                   setIsYearFilterExpanded(!isYearFilterExpanded);
                 }}
-                className={yearStatusLogFilter === year.years ? "selected" : ""}
+                className={yearFilter === year.years ? "selected" : ""}
               >
                 {year.years}
               </li>
@@ -169,4 +161,4 @@ const PersonStatusLogFilter = () => {
   );
 };
 
-export default PersonStatusLogFilter;
+export default SearchStatusLogFilter;

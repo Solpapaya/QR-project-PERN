@@ -7,6 +7,9 @@ export const PersonStatusLogsContextProvider = (props) => {
   const [statusLogs, setStatusLogs] = useState([]);
   const [filteredStatusLogs, setFilteredStatusLogs] = useState([]);
   const [gotLogs, setGotLogs] = useState(false);
+  const [yearStatusLogFilter, setYearStatusLogFilter] = useState("all");
+  const [monthStatusLogFilter, setMonthStatusLogFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   return (
     <PersonStatusLogsContext.Provider
@@ -19,6 +22,12 @@ export const PersonStatusLogsContextProvider = (props) => {
         setLogInitialSearch,
         filteredStatusLogs,
         setFilteredStatusLogs,
+        yearStatusLogFilter,
+        setYearStatusLogFilter,
+        monthStatusLogFilter,
+        setMonthStatusLogFilter,
+        statusFilter,
+        setStatusFilter,
       }}
     >
       {props.children}
