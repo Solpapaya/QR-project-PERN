@@ -13,6 +13,12 @@ export const fetchData = (method, url, obj) => {
         }
         break;
       case "post":
+        try {
+          const response = await PeopleFinder.post(url, obj);
+          resolve(response.data);
+        } catch (err) {
+          reject(err.response);
+        }
         break;
       case "put":
         try {

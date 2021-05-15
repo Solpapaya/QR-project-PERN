@@ -34,6 +34,16 @@ const months = [
   "Diciembre",
 ];
 
+const getDate = () => {
+  const dateObj = new Date();
+  const month = dateObj.getUTCMonth() + 1; //months from 1-12
+  const day = dateObj.getUTCDate();
+  const year = dateObj.getUTCFullYear();
+
+  const newDate = year + "/" + month + "/" + day;
+  return newDate;
+};
+
 // Accept request from other domains
 app.use(cors());
 // Serve static resources like index.html, styles, JavaScript logic
@@ -62,18 +72,14 @@ app.put("/people/:rfc", async (req, res) => {
           msg: `No person with RFC ${req.params.rfc}`,
         });
       }
-      const dateObj = new Date();
-      const month = dateObj.getUTCMonth() + 1; //months from 1-12
-      const day = dateObj.getUTCDate() - 1;
-      const year = dateObj.getUTCFullYear();
 
-      const newDate = year + "/" + month + "/" + day;
+      const date = getDate();
       await db.query(
         `INSERT INTO status_logs 
         (person_rfc, log_date, new_status) 
         VALUES
         ($1, $2, $3)`,
-        [req.params.rfc, newDate, active]
+        [req.params.rfc, date, active]
       );
       res.status(200).json({
         success: true,
@@ -82,11 +88,27 @@ app.put("/people/:rfc", async (req, res) => {
         },
       });
     } else {
-      const { first_name, second_name, surname, second_surname, rfc, active } =
-        req.body;
-      const results = await db.query(
+      const {
+        first_name,
+        second_name,
+        surname,
+        second_surname,
+        rfc,
+        department_name,
+      } = req.body;
+
+      let results = await db.query(
+        `SELECT id
+      FROM department
+      WHERE department_name ILIKE $1`,
+        [department_name]
+      );
+
+      const department_id = results.rows[0].id;
+
+      results = await db.query(
         `UPDATE person SET first_name = $1, second_name = $2,
-          surname = $3, second_surname = $4, rfc = $5, active = $6 
+          surname = $3, second_surname = $4, rfc = $5, department_id = $6
           WHERE rfc = $7 RETURNING *`,
         [
           first_name,
@@ -94,7 +116,7 @@ app.put("/people/:rfc", async (req, res) => {
           surname,
           second_surname,
           rfc,
-          active,
+          department_id,
           req.params.rfc,
         ]
       );
@@ -118,15 +140,42 @@ app.put("/people/:rfc", async (req, res) => {
 
 app.post("/people", async (req, res) => {
   try {
-    const { first_name, second_name, surname, second_surname, rfc } = req.body;
-    const results = await db.query(
-      `INSERT INTO person (first_name, second_name, surname, second_surname, rfc, active) VALUES
-    ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [first_name, second_name, surname, second_surname, rfc, 1]
+    const {
+      first_name,
+      second_name,
+      surname,
+      second_surname,
+      rfc,
+      department_name,
+    } = req.body;
+    let results = await db.query(
+      `SELECT id
+      FROM department
+      WHERE department_name ILIKE $1`,
+      [department_name]
+    );
+
+    const department_id = results.rows[0].id;
+    const date = getDate();
+
+    results = await db.query(
+      `INSERT INTO person (first_name, second_name,
+        surname, second_surname, rfc, department_id,
+        active, creation_date) VALUES
+        ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [
+        first_name,
+        second_name,
+        surname,
+        second_surname,
+        rfc,
+        department_id,
+        1,
+        date,
+      ]
     );
     res.status(200).json({
       success: true,
-      length: results.rows.length,
       data: {
         person: results.rows[0],
       },

@@ -1,4 +1,4 @@
-.form.update {
+.form {
   margin-top: $baseUnit;
   width: 100%;
 
@@ -20,11 +20,31 @@
     border-radius: $boder-radius;
     border: 2px transparent solid;
     transition: border 500ms;
+    position: relative;
 
     &.selected {
       border: 2px solid #1f69fc;
       span {
         color: #1f69fc;
+      }
+
+      &.wrong-rfc {
+        border: 2px solid #ff5571;
+
+        span {
+          color: lighten($color: #70789e, $amount: 20%);
+
+          &::after {
+            content: "El RFC debe contener 12 o 13 caracteres";
+            position: absolute;
+            display: inline;
+            width: max-content;
+            font-size: 1rem;
+            top: -1.7rem;
+            left: 0;
+            color: #ff5571;
+          }
+        }
       }
 
       &.empty {
@@ -67,11 +87,37 @@
     margin: 0;
     color: #000;
     z-index: 2;
+
+    border-radius: 8px;
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    min-width: 32rem;
   }
 
   .add-input-container.department {
     padding: 0;
     border: 0;
+    transition: border 0s;
+
+    &.empty {
+      border: 2px solid #ff5571;
+      span {
+        color: lighten($color: #70789e, $amount: 20%);
+
+        &::after {
+          content: "Por favor ingresa este campo";
+          position: absolute;
+          display: inline;
+          width: max-content;
+          font-size: 1rem;
+          top: -1.7rem;
+          left: $baseUnit/1.5;
+          color: #ff5571;
+        }
+      }
+    }
 
     &.expanded {
       &::after {

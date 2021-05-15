@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import PeopleFinder from "../apis/PeopleFinder";
 import { fetchData } from "../functions/fetchData";
 
 const UpdatePerson = () => {
@@ -18,6 +17,8 @@ const UpdatePerson = () => {
     rfc: "",
     department_name: "",
   });
+
+  const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -68,9 +69,18 @@ const UpdatePerson = () => {
     let value = e.target.value;
     // Prevent inserting only blank spaces
     value = value.trimStart();
-    // Prevent inserting double blank spaces after any word
-    if (value[value.length - 1] === " " && value[value.length - 2] === " ") {
-      value = value.slice(0, -1);
+    if (attribute === "rfc") {
+      // No blank spaces allowed in RFC
+      if (value[value.length - 1] === " ") {
+        value = value.slice(0, -1);
+      }
+      // RFC must be in Uppercases
+      value = value.toUpperCase();
+    } else {
+      // Prevent inserting double blank spaces after any word
+      if (value[value.length - 1] === " " && value[value.length - 2] === " ") {
+        value = value.slice(0, -1);
+      }
     }
     // If the value is not Empty
     if (value) {
@@ -97,7 +107,9 @@ const UpdatePerson = () => {
     e.preventDefault();
     // If there is a field empty, the field gets focused and tells the user to fill the field
     for (const prop in person) {
+      person[prop] = person[prop].trim();
       if (!person[prop] && prop !== "second_name") {
+        if (prop === "rfc") setIsRfcLongEnough(true);
         setIsEmpty({
           ...isEmpty,
           [prop]: true,
@@ -108,18 +120,31 @@ const UpdatePerson = () => {
         return;
       }
     }
-    // try {
-    //   const response = await PeopleFinder.put(`/people/${rfcParam}`, person);
-    //   // Show message that informs the user the person has been updated successfully
-    // } catch (error) {
-    //   // Show alert the person couldn't have been updated
-    // }
-    // // history.push("/");
+    // Check if RFC has 12 or 13 characters
+    if (!(person.rfc.length <= 13 && person.rfc.length >= 12)) {
+      setIsRfcLongEnough(false);
+      setIsEmpty({
+        ...isEmpty,
+        rfc: true,
+      });
+      setTimeout(() => {
+        ref.rfc.current.focus();
+      }, 100);
+      return;
+    }
+    // Update Person
+    try {
+      const response = await fetchData("put", `/people/${rfcParam}`, person);
+      // Show message that informs the user the person has been updated successfully
+    } catch (error) {
+      // Show alert the person couldn't have been updated
+    }
+    history.push("/");
   };
 
   return (
     <div>
-      <form className="form update" onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <div
           className={
             focus.first_name
@@ -247,7 +272,9 @@ const UpdatePerson = () => {
           className={
             focus.rfc
               ? isEmpty.rfc
-                ? "add-input-container selected empty"
+                ? isRfcLongEnough
+                  ? "add-input-container selected empty"
+                  : "add-input-container selected wrong-rfc"
                 : "add-input-container selected"
               : "add-input-container"
           }

@@ -6,6 +6,10 @@ WHERE rfc_emisor = 'SUCC961125A15'
 AND EXTRACT(MONTH FROM fecha_emision) = 1 
 AND EXTRACT(YEAR FROM fecha_emision) = 2019;
 
+SELECT id
+FROM department
+WHERE department_name ILIKE 'Finanzas';
+
 SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt;
 
 SELECT DISTINCT EXTRACT(YEAR FROM date) as years FROM tax_receipt where rfc_emitter = 'SOPD970125HDF';
