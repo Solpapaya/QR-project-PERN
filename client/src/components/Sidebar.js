@@ -21,6 +21,7 @@ const Sidebar = () => {
         history.push("/");
         break;
       case 2:
+        history.push("/taxreceipt");
         break;
       case 3:
         history.push("/create/people");

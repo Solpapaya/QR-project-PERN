@@ -1,0 +1,59 @@
+.upload-tax {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: $baseUnit * 2;
+  border-radius: $boder-radius;
+  border: 2px solid transparent;
+  transition: border 500ms;
+
+  &.highlight {
+    border: 2px solid #1f69fc;
+
+    svg {
+      fill: #1f69fc;
+    }
+
+    h3,
+    p,
+    span {
+      color: #1f69fc;
+    }
+  }
+
+  svg {
+    width: 25rem;
+    height: 25rem;
+    fill: #a7b5c4;
+    transition: all 500ms;
+    // fill: #c0c4e0;
+  }
+
+  h3 {
+    margin-top: $baseUnit * 2;
+    // color: #70789e;
+    // color: #c0c4e0;
+    color: #a7b5c4;
+    text-align: center;
+    transition: all 500ms;
+  }
+
+  p,
+  span {
+    color: #c0c4e0;
+    font-size: 1.3rem;
+    // color: #a7b5c4;
+    transition: all 500ms;
+  }
+
+  .select-file-container {
+    margin-top: $baseUnit;
+  }
+
+  span {
+    margin-right: $baseUnit;
+  }
+}

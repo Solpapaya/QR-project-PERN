@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 // import { PeopleContextProvider } from "./context/PeopleContext";
@@ -7,6 +7,7 @@ import { MonthsContextProvider } from "./context/MonthsContext";
 import { PersonSubsectionContextProvider } from "./context/PersonSubsectionContext";
 import { SearchSubsectionContextProvider } from "./context/SearchSubsectionContext";
 import { DepartmentSubsectionContextProvider } from "./context/DepartmentSubsectionContext";
+import { CurrentSectionContext } from "./context/CurrentSectionContext";
 
 // pages
 import Home from "./routes/Home";
@@ -14,8 +15,10 @@ import PersonDetailPage from "./routes/PersonDetailPage";
 import UpdatePage from "./routes/UpdatePage";
 import Departments from "./routes/Departments";
 import DepartmentUpdate from "./routes/DepartmentUpdate";
+import UploadTaxReceipt from "./routes/UploadTaxReceipt";
 
 function App() {
+  const { currentSection } = useContext(CurrentSectionContext);
   return (
     <Router>
       <div className="main-layout">
@@ -23,12 +26,18 @@ function App() {
         <div className="main-content">
           {/* <PeopleContextProvider> */}
           <MonthsContextProvider>
-            <div className="main-content-container">
+            <div
+              className="main-content-container"
+              style={currentSection === 2 ? { padding: 0 } : {}}
+            >
               <Switch>
                 <Route exact path="/">
                   <SearchSubsectionContextProvider>
                     <Home />
                   </SearchSubsectionContextProvider>
+                </Route>
+                <Route exact path="/taxreceipt">
+                  <UploadTaxReceipt />
                 </Route>
                 <Route exact path="/people/:rfc">
                   <PersonSubsectionContextProvider>
