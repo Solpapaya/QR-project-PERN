@@ -7,9 +7,8 @@ const PeopleFilter = () => {
   const { departmentFilter, setDepartmentFilter } = useContext(SearchContext);
   const { sort, setSort } = useContext(SearchContext);
   const [isFilterStatusExpanded, setIsFilterStatusExpanded] = useState(false);
-  const [isFilterDepartmentExpanded, setIsFilterDepartmentExpanded] = useState(
-    false
-  );
+  const [isFilterDepartmentExpanded, setIsFilterDepartmentExpanded] =
+    useState(false);
   const [isSortExpanded, setIsSortExpanded] = useState(false);
   const [departments, setDepartments] = useState([]);
 
@@ -103,6 +102,13 @@ const PeopleFilter = () => {
             isFilterDepartmentExpanded
               ? "search-filter-container department expanded"
               : "search-filter-container department"
+          }
+          style={
+            isFilterDepartmentExpanded
+              ? {
+                  minHeight: `${(departments.length + 2) * 3.5}rem`,
+                }
+              : {}
           }
         >
           <li

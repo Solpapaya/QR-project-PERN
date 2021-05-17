@@ -367,7 +367,10 @@ app.get("/people/:rfc", async (req, res) => {
 
 app.get("/departments", async (req, res) => {
   try {
-    const results = await db.query(`SELECT * FROM department`, []);
+    const results = await db.query(
+      `SELECT * FROM department ORDER BY department_name`,
+      []
+    );
     res.status(200).json({
       success: true,
       data: {
@@ -376,6 +379,75 @@ app.get("/departments", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, msg: "Error Getting Person" });
+  }
+});
+
+app.get("/departments/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const results = await db.query(
+      `SELECT department_name FROM department WHERE id = $1`,
+      [id]
+    );
+    if (results.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, msg: `No department with ID ${id}` });
+    }
+    res.status(200).json({
+      success: true,
+      data: results.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Department" });
+  }
+});
+
+app.put("/departments/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { department_name } = req.body;
+
+    let results = await db.query(
+      `UPDATE department
+          SET department_name = $1
+          WHERE id = $2 RETURNING *`,
+      [department_name, id]
+    );
+
+    if (results.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        msg: `No department with ID ${id}`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: {
+        department: results.rows[0],
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Updating Department" });
+  }
+});
+
+app.post("/departments", async (req, res) => {
+  try {
+    const { department_name } = req.body;
+    const results = await db.query(
+      `INSERT INTO department (department_name) VALUES
+        ($1) RETURNING *`,
+      [department_name]
+    );
+    res.status(200).json({
+      success: true,
+      data: {
+        department: results.rows[0],
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Adding Department" });
   }
 });
 

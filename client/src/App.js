@@ -5,12 +5,15 @@ import Sidebar from "./components/Sidebar";
 import AddPerson from "./routes/AddPerson";
 import { MonthsContextProvider } from "./context/MonthsContext";
 import { PersonSubsectionContextProvider } from "./context/PersonSubsectionContext";
+import { SearchSubsectionContextProvider } from "./context/SearchSubsectionContext";
+import { DepartmentSubsectionContextProvider } from "./context/DepartmentSubsectionContext";
 
 // pages
 import Home from "./routes/Home";
 import PersonDetailPage from "./routes/PersonDetailPage";
 import UpdatePage from "./routes/UpdatePage";
-import { SearchSubsectionContextProvider } from "./context/SearchSubsectionContext";
+import Departments from "./routes/Departments";
+import DepartmentUpdate from "./routes/DepartmentUpdate";
 
 function App() {
   return (
@@ -37,6 +40,14 @@ function App() {
                 </Route>
                 <Route exact path="/create/people">
                   <AddPerson />
+                </Route>
+                <Route exact path="/departments">
+                  <DepartmentSubsectionContextProvider>
+                    <Departments />
+                  </DepartmentSubsectionContextProvider>
+                </Route>
+                <Route exact path="/departments/:id/update">
+                  <DepartmentUpdate />
                 </Route>
               </Switch>
             </div>

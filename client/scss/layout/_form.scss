@@ -186,6 +186,14 @@
       align-items: center;
       font-size: 1.3rem;
 
+      &:not(:first-of-type) {
+        &:hover {
+          background-color: #1f69fc;
+          // color: lighten($color: #70789e, $amount: 20%);
+          color: $white;
+        }
+      }
+
       &.selected {
         color: #000;
         font-weight: $bold;
