@@ -1,11 +1,52 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
+import { fetchData } from "../functions/fetchData";
 import { ReactComponent as Upload } from "../icons/uploadTax.svg";
 
 const UploadTaxReceipt = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
   const [isOver, setIsOver] = useState(false);
   const [highlight, setHighlight] = useState(false);
+
+  function validateFile(files) {
+    if (files.length > 1)
+      return { boolean: false, errorInfo: "Subir 1 archivo a la vez" };
+    if (files[0].type === "application/pdf") {
+      return { boolean: true };
+    } else {
+      return { boolean: false, errorInfo: "El formato debe ser PDF" };
+    }
+  }
+
+  const uploadTax = async (e) => {
+    let files;
+    // If the tax was uploaded with the input of type 'file'
+    if (e.target.files) {
+      files = e.target.files;
+      if (files.length < 1) return;
+    } else {
+      // Takes the files that have been dropped
+      const dt = e.dataTransfer;
+      files = dt.files;
+    }
+    const { boolean, errorInfo } = validateFile(files);
+
+    if (boolean) {
+      // Decode the QR code and retrieve the Date from the PDF Tax Receipt
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      try {
+        const response = await fetchData("post", "/taxreceipt", formData, true);
+        console.log({ response });
+      } catch (err) {
+        console.log(err.data.msg);
+      }
+    } else {
+      // Alert the user the file is not in PDF format
+      console.log({ errorInfo });
+      // showErrorAlert(errorInfo);
+    }
+  };
 
   const dragOverHandler = (e) => {
     // Stopping default prevents opening a new browser tab for showing the
@@ -43,7 +84,7 @@ const UploadTaxReceipt = () => {
         Both are necessary, for 'drop' and 'dragover' events */
     e.preventDefault();
     setHighlight(false);
-    //   handleDrop(e);
+    uploadTax(e);
   };
 
   useEffect(() => {
@@ -58,7 +99,6 @@ const UploadTaxReceipt = () => {
 
   return (
     <div
-      //   className="upload-tax"
       className={highlight ? "upload-tax highlight" : "upload-tax"}
       onDragOver={dragOverHandler}
       onDragLeave={dragLeaveHandler}
@@ -69,7 +109,16 @@ const UploadTaxReceipt = () => {
       <p>El archivo debe ser en formato PDF</p>
       <div className="select-file-container">
         <span>o</span>
-        <button className="add-btn">Selecciona Archivo</button>
+        <label className="add-btn" for="myfile">
+          Selecciona Archivo
+        </label>
+        <input
+          type="file"
+          id="myfile"
+          name="myfile"
+          accept="application/pdf"
+          onChange={uploadTax}
+        ></input>
       </div>
     </div>
   );

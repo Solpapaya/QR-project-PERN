@@ -51,9 +51,17 @@
 
   .select-file-container {
     margin-top: $baseUnit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   span {
     margin-right: $baseUnit;
+  }
+
+  input[type="file"] {
+    // width: 0;
+    display: none;
   }
 }

@@ -695,10 +695,10 @@ app.post("/taxreceipt", async (req, res) => {
     const data = formatData(decodedData);
 
     // Create new Tax Receipt register in the Database
-    await createTaxReceipt(data);
+    const newTaxReceipt = await createTaxReceipt(data);
 
-    // Insertion was successful
-    res.status(200).json({ success: true, data: [data] });
+    // // Insertion was successful
+    res.status(200).json({ success: true, data: newTaxReceipt });
   } catch (err) {
     return res.status(500).json({ success: false, msg: err });
   }
@@ -706,46 +706,54 @@ app.post("/taxreceipt", async (req, res) => {
 
 const createTaxReceipt = (data) => {
   return new Promise(async (resolve, reject) => {
-    console.log(data);
     const { rfc, date } = data;
     const year = date.split("-")[0];
     const month = date.split("-")[1];
-    const result = await pool.query(
-      `SELECT * FROM comprobante_fiscal
-            WHERE rfc_emisor = 'SUCC961125A15' 
-            AND EXTRACT(MONTH FROM fecha_emision) = $1
-            AND EXTRACT(YEAR FROM fecha_emision) = $2`,
-      [month, year]
+    const result = await db.query(
+      `SELECT * FROM tax_receipt
+            WHERE rfc_emitter = $1 
+            AND EXTRACT(MONTH FROM date) = $2
+            AND EXTRACT(YEAR FROM date) = $3`,
+      [rfc, month, year]
     );
 
     // If the Tax Receipt that has been uploaded already exists sends an error
     // message indicating the full name of the tax receipt owner and tax receipt month
     if (result.rowCount !== 0) {
-      const person = await pool.query(
+      const person = await db.query(
         `SELECT first_name || ' ' || COALESCE(second_name || ' ', '') 
-                || surname || ' ' || second_surname AS nombre_completo
+                || surname || ' ' || second_surname AS full_name
                 FROM person 
                 WHERE rfc = $1`,
         [rfc]
       );
-      const fullName = person.rows[0]["nombre_completo"];
-      reject(
-        `The Tax Receipt of ${fullName} for Month ${
-          months[Number(month) - 1]
-        } Already Exists`
-      );
-    }
-
-    // If Tax Receipt doesn't exist, create a new register in the Tax Receipt table
-    try {
-      newTaxReceipt = await pool.query(
-        `INSERT INTO comprobante_fiscal (fecha_emision, rfc_emisor) VALUES 
-                ($1, $2)`,
-        [date, rfc]
-      );
-      resolve();
-    } catch (err) {
-      reject("Error Inserting into Database");
+      const fullName = person.rows[0]["full_name"];
+      reject({ fullName, year, month });
+    } else {
+      // If Tax Receipt doesn't exist, create a new register in the Tax Receipt table
+      try {
+        newTaxReceipt = await db.query(
+          `WITH inserted AS (
+            INSERT INTO tax_receipt 
+            (date, rfc_emitter) VALUES 
+            ($1, $2) 
+            RETURNING *
+          )
+          SELECT EXTRACT(YEAR FROM inserted.date) as year, 
+          EXTRACT(MONTH FROM inserted.date) as month,
+          person.first_name || ' ' || 
+          COALESCE(person.second_name || ' ', '') || 
+          person.surname || ' ' || 
+          person.second_surname as full_name, person.rfc
+          FROM inserted
+          INNER JOIN person 
+          ON inserted.rfc_emitter = person.rfc`,
+          [date, rfc]
+        );
+        resolve(newTaxReceipt.rows[0]);
+      } catch (err) {
+        reject("Error Inserting into Database");
+      }
     }
   });
 };
@@ -765,7 +773,7 @@ const decodePDFTaxReceipt = (req) => {
     });
     // When all the file has been uploaded
     busboy.on("finish", () => {
-      console.log("Done parsing form!, Calling Python Script...");
+      // console.log("Done parsing form!, Calling Python Script...");
       // Calls python script for decoding the QR Code that is inside the
       // PDF Tax Receipt recently uploaded
       const process = spawn("py", [

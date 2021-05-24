@@ -1,6 +1,6 @@
 import PeopleFinder from "../apis/PeopleFinder";
 
-export const fetchData = (method, url, obj) => {
+export const fetchData = (method, url, obj, uploadFile = false) => {
   return new Promise(async (resolve, reject) => {
     switch (method) {
       case "get":
@@ -14,7 +14,14 @@ export const fetchData = (method, url, obj) => {
         break;
       case "post":
         try {
-          const response = await PeopleFinder.post(url, obj);
+          let response;
+          if (uploadFile) {
+            response = await PeopleFinder.post(url, obj, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+          } else {
+            response = await PeopleFinder.post(url, obj);
+          }
           resolve(response.data);
         } catch (err) {
           reject(err.response);

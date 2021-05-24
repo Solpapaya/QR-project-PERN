@@ -31,6 +31,23 @@ INSERT INTO tax_receipt (date, rfc_emitter) VALUES
 ('2019-09-04', 'SUCC961125A15'),
 ('2019-10-04', 'SUCC961125A15');
 
+WITH inserted AS (
+    INSERT INTO tax_receipt 
+    (date, rfc_emitter) VALUES 
+    ('2018-01-23', 'GRPA920113WSD') 
+    RETURNING *
+)
+SELECT EXTRACT(YEAR FROM inserted.date) as year, 
+EXTRACT(MONTH FROM inserted.date) as month,
+person.first_name || ' ' || 
+COALESCE(person.second_name || ' ', '') || 
+person.surname || ' ' || 
+person.second_surname as full_name, person.rfc
+FROM inserted
+INNER JOIN person 
+ON inserted.rfc_emitter = person.rfc;
+
+
 INSERT INTO comprobante_fiscal (fecha_emision, rfc_emisor) VALUES
 ('2019-01-04', 'SUCC961125A15');
 
