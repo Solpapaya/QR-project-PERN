@@ -14,10 +14,9 @@ INSERT INTO status_logs (person_rfc, log_date, new_status) VALUES
 ('SOPD970125HDF', '2021-04-20', '1');
 
 INSERT INTO department (department_name) VALUES
-('sales'), 
-('finance'),
-('human resource'),
-('purchase');
+('Ventas'), 
+('Finanzas'),
+('Recursos Humanos');
 
 INSERT INTO tax_receipt (date, rfc_emitter) VALUES 
 ('2020-11-12', 'SOPD970125HDF'),

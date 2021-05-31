@@ -18,6 +18,10 @@ const db = require("./db/index");
 
 // Path for saving submitted file
 const tmpDirectory = path.resolve(__dirname, "tmp");
+// Creates new directory for storing temporary files if it doesn't already exist
+if (!fs.existsSync(tmpDirectory)){
+  fs.mkdirSync(tmpDirectory);
+}
 // Month Array for convertion
 const months = [
   "Enero",
@@ -773,10 +777,19 @@ const decodePDFTaxReceipt = (req) => {
     });
     // When all the file has been uploaded
     busboy.on("finish", () => {
-      // console.log("Done parsing form!, Calling Python Script...");
+      console.log("Done parsing form!, Calling Python Script...");
       // Calls python script for decoding the QR Code that is inside the
       // PDF Tax Receipt recently uploaded
-      const process = spawn("py", [
+
+      // Command for Windows
+      // const process = spawn("py", [
+      //   path.resolve(__dirname, "py", "readQR.py"),
+      //   // path.resolve(__dirname, "python3", "readQR.py"),
+      //   busboy.tmpPath,
+      // ]);
+      
+      // Command for Mac
+      const process = spawn("python3", [
         path.resolve(__dirname, "py", "readQR.py"),
         busboy.tmpPath,
       ]);

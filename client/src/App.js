@@ -23,13 +23,14 @@ function App() {
     <Router>
       <div className="main-layout">
         <Sidebar />
-        <div className="main-content">
+        <div
+          className={
+            currentSection === 2 ? "main-content upload-tax" : "main-content"
+          }
+        >
           {/* <PeopleContextProvider> */}
           <MonthsContextProvider>
-            <div
-              className="main-content-container"
-              style={currentSection === 2 ? { padding: 0 } : {}}
-            >
+            <div className="main-content-container">
               <Switch>
                 <Route exact path="/">
                   <SearchSubsectionContextProvider>

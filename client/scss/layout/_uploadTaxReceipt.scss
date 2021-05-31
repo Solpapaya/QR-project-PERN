@@ -39,14 +39,27 @@
     color: #a7b5c4;
     text-align: center;
     transition: all 500ms;
+    font-size: 1.6rem;
+
+    @include mobile-height {
+      font-size: 1.17em;
+    }
+  }
+
+  p {
+    text-align: center;
   }
 
   p,
   span {
+    font-size: 1rem;
     color: #c0c4e0;
-    font-size: 1.3rem;
     // color: #a7b5c4;
     transition: all 500ms;
+
+    @include mobile-height {
+      font-size: 1.3rem;
+    }
   }
 
   .select-file-container {

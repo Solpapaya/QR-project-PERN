@@ -1,16 +1,19 @@
 import cgi, os
-import cv2
+# import cv2
 import os
 import sys
 import cgitb; cgitb.enable()
 import re
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 # from pdf2image import convert_from_bytes, convert_from_path
 from pdf2image import convert_from_path
 from pathlib import Path
 from pyzbar import pyzbar
 from PIL import Image
+
+# Consider adding this directory to PATH 
+# /Library/Frameworks/Python.framework/Versions/3.9/bin
 
 def read_barcodes(img):
    barcodes = pyzbar.decode(img)
@@ -41,15 +44,22 @@ def read_date(img):
 def delete_file(file):
    os.remove(file)
 
-# Path to poppler
-popplerPath = Path("C:/Users/Solpapaya/Desktop/Escom/ServicioSocial/Project/QR-project-PERN/server/py/poppler-21.02.0/Library/bin/")
-# pdfPath = Path("C:/xampp/htdocs/SocialService/QR-project/" + sys.argv[1])
+# Path to temporary PDF
 pdfPath = Path(sys.argv[1])
 
+# Windows Path for poppler
+# popplerPath = Path("C:/Users/Solpapaya/Desktop/Escom/ServicioSocial/Project/QR-project-PERN/server/py/poppler-21.02.0/Library/bin/")
+# pdfPath = Path("C:/xampp/htdocs/SocialService/QR-project/" + sys.argv[1])
 
-# Store Pdf with convert_from_path function
+
+# Store PDF with convert_from_path function
 try:
-   images = convert_from_path(pdf_path = pdfPath, poppler_path = popplerPath)
+   # Windows need Poppler Path
+   # images = convert_from_path(pdf_path = pdfPath, poppler_path = popplerPath)
+
+   # Mac doesn't need Popple Path
+   images = convert_from_path(pdf_path = pdfPath)
+   print(images)
    read_barcodes(images[0])
    read_date(images[0])
    delete_file(pdfPath)
