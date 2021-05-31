@@ -16,6 +16,7 @@ import UpdatePage from "./routes/UpdatePage";
 import Departments from "./routes/Departments";
 import DepartmentUpdate from "./routes/DepartmentUpdate";
 import UploadTaxReceipt from "./routes/UploadTaxReceipt";
+import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
 
 function App() {
   const { currentSection } = useContext(CurrentSectionContext);
@@ -39,6 +40,9 @@ function App() {
                 </Route>
                 <Route exact path="/taxreceipt">
                   <UploadTaxReceipt />
+                </Route>
+                <Route exact path="/taxreceipt/:id/update">
+                  <UpdateTaxReceipt />
                 </Route>
                 <Route exact path="/people/:rfc">
                   <PersonSubsectionContextProvider>

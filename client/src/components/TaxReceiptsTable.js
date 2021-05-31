@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { SearchTaxReceiptsContext } from "../context/SearchTaxReceiptsContext";
 import { MonthsContext } from "../context/MonthsContext";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
@@ -10,6 +11,8 @@ const TaxReceiptsTable = () => {
   );
   // Month Array for convertion
   const { months } = useContext(MonthsContext);
+
+  let history = useHistory();
 
   // const months = [
   //   "Enero",
@@ -67,7 +70,7 @@ const TaxReceiptsTable = () => {
                 <div className="center-container">
                   <button
                     className="table-btn edit-btn"
-                    // onClick={(e) => updateHandler(e, rfc)}
+                    onClick={() => history.push(`/taxreceipt/${id}/update`)}
                   >
                     <Pencil />
                   </button>
