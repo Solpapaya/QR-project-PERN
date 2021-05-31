@@ -47,10 +47,12 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden;
+    overflow-y: hidden;
 
     .main-content-container {
-      width: 100%;
-      height: 100%;
+      width: 95%;
+      height: 95%;
       padding: 0;
     }
   }

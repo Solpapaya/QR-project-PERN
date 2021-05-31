@@ -619,6 +619,34 @@ app.get("/taxreceipts", async (req, res) => {
   }
 });
 
+app.get("/taxreceipts/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const results = await db.query(
+      `SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+        EXTRACT(MONTH FROM tax_receipt.date) as month,
+        person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+        || person.surname || ' ' || person.second_surname as full_name, person.rfc
+        FROM person INNER JOIN tax_receipt
+        ON person.rfc = tax_receipt.rfc_emitter
+        WHERE tax_receipt.id = $1`,
+      [id]
+    );
+    if (results.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        msg: `No tax receipt with ID ${id}`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      tax_receipt: results.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Getting Person" });
+  }
+});
+
 app.get("/taxreceipts/:rfc", async (req, res) => {
   const { rfc } = req.params;
   const { get } = req.query;

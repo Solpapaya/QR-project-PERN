@@ -31,6 +31,14 @@ FROM person INNER JOIN tax_receipt
 ON person.rfc = tax_receipt.rfc_emitter
 ORDER BY tax_receipt.date DESC;
 
+SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+EXTRACT(MONTH FROM tax_receipt.date) as month,
+person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+|| person.surname || ' ' || person.second_surname as full_name, person.rfc
+FROM person INNER JOIN tax_receipt
+ON person.rfc = tax_receipt.rfc_emitter
+WHERE tax_receipt.id = 1;
+
 SELECT person.first_name, person.second_name, person.surname,
                 person.second_surname, person.rfc, 
                 department.department_name

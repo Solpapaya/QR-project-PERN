@@ -4,8 +4,20 @@
   }
 }
 
+@mixin tablet {
+  @media (min-width: 820px) {
+    @content;
+  }
+}
+
 @mixin mobile-height {
-  @media (min-height: 380px) {
+  @media (min-height: 500px) {
+    @content;
+  }
+}
+
+@mixin upload-icon-height {
+  @media (min-height: 450px) {
     @content;
   }
 }

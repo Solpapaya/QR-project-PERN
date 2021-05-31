@@ -33,7 +33,7 @@
   }
 
   h3 {
-    margin-top: $baseUnit * 2;
+    margin-top: $baseUnit;
     // color: #70789e;
     // color: #c0c4e0;
     color: #a7b5c4;
@@ -43,6 +43,7 @@
 
     @include mobile-height {
       font-size: 1.17em;
+      margin-top: $baseUnit * 2;
     }
   }
 
