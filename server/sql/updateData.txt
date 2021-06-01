@@ -2,6 +2,11 @@ UPDATE persona SET primer_nombre = 'Juan', segundo_nombre = 'Guillermo',
 primer_apellido = 'Cuadrado', segundo_apellido = 'Hernandez', rfc = 'CUHJ900322KAR', activo = 'f' 
 WHERE rfc = 'GRPA920113WSD';
 
+UPDATE tax_receipt 
+SET date = '2020-04-12'
+WHERE id = 17;
+
+
 UPDATE department
 SET department_name = 'Ventas'
 WHERE id = 1;

@@ -693,6 +693,100 @@ app.get("/taxreceipts/:rfc", async (req, res) => {
   }
 });
 
+app.put("/taxreceipts/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Get the RFC and Date of the tax receipt that wants to be updated
+    const currentData = await getDataFromCurrentTax(id);
+    if (!currentData)
+      return res.status(404).json({
+        success: false,
+        msg: `Tax Receipt with ID ${id} doesn't exist`,
+      });
+
+    const { month, year, rfc } = currentData;
+
+    // Decode QR code & get date from the new PDF Tax Receipt
+    const decodedData = await decodePDFTaxReceipt(req);
+
+    // Get the RFC and Date from the python script response
+    const newData = formatData(decodedData);
+
+    if (newData.rfc !== rfc)
+      return res.status(400).json({
+        success: false,
+        msg: `The tax receipt you want to upload is not from the same person you want to modify it from`,
+      });
+
+    const splittedDate = splitDate(newData.date);
+    if (splittedDate.year === year && splittedDate.month === month) {
+      return res.status(403).json({
+        success: false,
+        msg: `the tax receipt you want to update with is the same as the current one`,
+      });
+    }
+
+    const results = await updateTaxReceipt(
+      `${splittedDate.year}-${splittedDate.month}-01`,
+      id
+    );
+
+    res.send({ results });
+    // if (!success) {
+    //   return res
+    //     .status(500)
+    //     .json({ success: false, msg: "Error Updating Tax Receipt" });
+    // }
+
+    // res.status(200).json({
+    //   success: true,
+    //   tax_receipt: results.rows[0],
+    // });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Updating Tax Receipt" });
+  }
+});
+
+const updateTaxReceipt = async (date, id) => {
+  try {
+    let results = await db.query(
+      `UPDATE tax_receipt 
+      SET date = $1
+      WHERE id = $2 RETURNING *`,
+      [date, id]
+    );
+
+    return results.rows[0];
+    // if (results.rowCount === 0) return false;
+    // else return true;
+  } catch (err) {}
+};
+
+const splitDate = (date) => {
+  const year = parseInt(date.split("-")[0]);
+  const month = parseInt(date.split("-")[1]);
+  return { year, month };
+};
+
+const getDataFromCurrentTax = async (id) => {
+  try {
+    const results = await db.query(
+      `SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+        EXTRACT(MONTH FROM tax_receipt.date) as month,
+        person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+        || person.surname || ' ' || person.second_surname as full_name, person.rfc
+        FROM person INNER JOIN tax_receipt
+        ON person.rfc = tax_receipt.rfc_emitter
+        WHERE tax_receipt.id = $1`,
+      [id]
+    );
+    if (results.rowCount === 0) return false;
+    else return results.rows[0];
+  } catch (err) {
+    return err;
+  }
+};
+
 app.delete("/taxreceipts", async (req, res) => {
   try {
     const { rfc, id } = req.query;
