@@ -13,7 +13,10 @@ const PersonTaxReceipt = () => {
 
   const getAllTaxReceipts = async () => {
     try {
-      const response = await fetchData("get", `/taxreceipts/${rfcParam}`);
+      const response = await fetchData(
+        "get",
+        `/person/taxreceipts/${rfcParam}`
+      );
       setTaxReceipts(response.data.tax_receipts);
       setGotTaxes(true);
     } catch (err) {

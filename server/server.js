@@ -647,7 +647,7 @@ app.get("/taxreceipts/:id", async (req, res) => {
   }
 });
 
-app.get("/taxreceipts/:rfc", async (req, res) => {
+app.get("/person/taxreceipts/:rfc", async (req, res) => {
   const { rfc } = req.params;
   const { get } = req.query;
   try {
@@ -698,11 +698,11 @@ app.put("/taxreceipts/:id", async (req, res) => {
   try {
     // Get the RFC and Date of the tax receipt that wants to be updated
     const currentData = await getDataFromCurrentTax(id);
-    if (!currentData)
-      return res.status(404).json({
-        success: false,
-        msg: `Tax Receipt with ID ${id} doesn't exist`,
-      });
+    // if (!currentData)
+    //   return res.status(404).json({
+    //     success: false,
+    //     msg: `Tax Receipt with ID ${id} doesn't exist`,
+    //   });
 
     const { month, year, rfc } = currentData;
 
@@ -769,22 +769,25 @@ const splitDate = (date) => {
 };
 
 const getDataFromCurrentTax = async (id) => {
-  try {
-    const results = await db.query(
-      `SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
-        EXTRACT(MONTH FROM tax_receipt.date) as month,
-        person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
-        || person.surname || ' ' || person.second_surname as full_name, person.rfc
-        FROM person INNER JOIN tax_receipt
-        ON person.rfc = tax_receipt.rfc_emitter
-        WHERE tax_receipt.id = $1`,
-      [id]
-    );
-    if (results.rowCount === 0) return false;
-    else return results.rows[0];
-  } catch (err) {
-    return err;
-  }
+  return new Promise((resolve, reject) => {
+    try {
+      const results = await db.query(
+        `SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
+          EXTRACT(MONTH FROM tax_receipt.date) as month,
+          person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+          || person.surname || ' ' || person.second_surname as full_name, person.rfc
+          FROM person INNER JOIN tax_receipt
+          ON person.rfc = tax_receipt.rfc_emitter
+          WHERE tax_receipt.id = $1`,
+        [id]
+      );
+      if (results.rowCount === 0)
+        reject({ status: 404, msg: `Tax Receipt with ID ${id} doesn't exist` });
+      else resolve(results.rows[0]);
+    } catch (err) {
+      return err;
+    }
+  });
 };
 
 app.delete("/taxreceipts", async (req, res) => {
