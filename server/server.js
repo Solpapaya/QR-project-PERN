@@ -59,6 +59,7 @@ app.use(express.json());
 
 // Function used for searching people if the search string has more than 1 word
 const { runPermutations } = require("./functions/permutations");
+const { resolve } = require("path");
 
 app.put("/people/:rfc", async (req, res) => {
   const { field } = req.query;
@@ -698,11 +699,6 @@ app.put("/taxreceipts/:id", async (req, res) => {
   try {
     // Get the RFC and Date of the tax receipt that wants to be updated
     const currentData = await getDataFromCurrentTax(id);
-    // if (!currentData)
-    //   return res.status(404).json({
-    //     success: false,
-    //     msg: `Tax Receipt with ID ${id} doesn't exist`,
-    //   });
 
     const { month, year, rfc } = currentData;
 
@@ -722,44 +718,76 @@ app.put("/taxreceipts/:id", async (req, res) => {
     if (splittedDate.year === year && splittedDate.month === month) {
       return res.status(403).json({
         success: false,
-        msg: `the tax receipt you want to update with is the same as the current one`,
+        msg: `The tax receipt you want to update with is the same as the current one`,
       });
     }
 
+    // Check if the new tax receipt already exists in the database
+    await checkTaxAlreadyExists(
+      splittedDate.year,
+      splittedDate.month,
+      newData.rfc
+    );
+
+    // Updates the tax receipt
     const results = await updateTaxReceipt(
       `${splittedDate.year}-${splittedDate.month}-01`,
       id
     );
 
-    res.send({ results });
-    // if (!success) {
-    //   return res
-    //     .status(500)
-    //     .json({ success: false, msg: "Error Updating Tax Receipt" });
-    // }
-
-    // res.status(200).json({
-    //   success: true,
-    //   tax_receipt: results.rows[0],
-    // });
+    res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error Updating Tax Receipt" });
+    if (err.status) {
+      res.status(err.status).json({ success: false, msg: err.msg });
+    } else {
+      res
+        .status(500)
+        .json({ success: false, msg: "Error Updating Tax Receipt" });
+    }
   }
 });
 
-const updateTaxReceipt = async (date, id) => {
-  try {
-    let results = await db.query(
-      `UPDATE tax_receipt 
-      SET date = $1
-      WHERE id = $2 RETURNING *`,
-      [date, id]
-    );
+const checkTaxAlreadyExists = (year, month, rfc) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await db.query(
+        `SELECT * FROM tax_receipt
+              WHERE rfc_emitter = $1 
+              AND EXTRACT(MONTH FROM date) = $2
+              AND EXTRACT(YEAR FROM date) = $3`,
+        [rfc, month, year]
+      );
+      if (result.rows.length > 0) {
+        reject({
+          status: 409,
+          msg: `Error, There is already a Tax Receipt with the Month: ${
+            months[month - 1]
+          } and Year: ${year}`,
+        });
+      } else {
+        resolve();
+      }
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 
-    return results.rows[0];
-    // if (results.rowCount === 0) return false;
-    // else return true;
-  } catch (err) {}
+const updateTaxReceipt = (date, id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let results = await db.query(
+        `UPDATE tax_receipt 
+        SET date = $1
+        WHERE id = $2 RETURNING *`,
+        [date, id]
+      );
+
+      resolve(results.rows[0]);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 const splitDate = (date) => {
@@ -768,8 +796,8 @@ const splitDate = (date) => {
   return { year, month };
 };
 
-const getDataFromCurrentTax = async (id) => {
-  return new Promise((resolve, reject) => {
+const getDataFromCurrentTax = (id) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const results = await db.query(
         `SELECT EXTRACT(YEAR FROM tax_receipt.date) as year, 
@@ -785,7 +813,7 @@ const getDataFromCurrentTax = async (id) => {
         reject({ status: 404, msg: `Tax Receipt with ID ${id} doesn't exist` });
       else resolve(results.rows[0]);
     } catch (err) {
-      return err;
+      reject(err);
     }
   });
 };

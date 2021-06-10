@@ -6,6 +6,10 @@ UPDATE tax_receipt
 SET date = '2020-04-12'
 WHERE id = 17;
 
+UPDATE tax_receipt 
+SET date = '2020-10-25'
+WHERE id = 1;
+
 
 UPDATE department
 SET department_name = 'Ventas'
