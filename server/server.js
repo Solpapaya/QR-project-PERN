@@ -318,14 +318,14 @@ app.get("/people", async (req, res) => {
         });
       }
     }
-    // If there is no specific search, it returns all workers on the database
+    // If there is no specific search, it returns all people on the database
     else {
       const results = await db.query(`SELECT person.first_name, 
       person.second_name, person.surname, person.second_surname, person.rfc, 
       person.active, 
       TO_CHAR(person.creation_date, 'dd/mm/yyyy') as creation_date,
       department.department_name
-      FROM person INNER JOIN department
+      FROM person LEFT JOIN department
       ON person.department_id = department.id
       ORDER BY surname`);
       res.status(200).json({
@@ -349,7 +349,7 @@ app.get("/people/:rfc", async (req, res) => {
       `SELECT person.first_name, person.second_name, person.surname,
                 person.second_surname, person.rfc, 
                 department.department_name
-                FROM person INNER JOIN department
+                FROM person LEFT JOIN department
                 ON person.department_id = department.id
                  WHERE rfc ILIKE $1`,
       [rfc]
@@ -453,6 +453,30 @@ app.post("/departments", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, msg: "Error Adding Department" });
+  }
+});
+
+app.delete("/departments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const results = await db.query(
+      `DELETE FROM department
+      WHERE id = $1`,
+      [id]
+    );
+    // If there was no tax_receipt with the ID
+    if (results.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, msg: `No Department with the ID: ${id}` });
+    }
+    // If there was a tax receipt with the specified ID, informs the user that the delete
+    // operation was successful and returns the Date and RFC of the deleted tax receipt
+    res.status(200).json({
+      success: true,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: "Error Deleting Department" });
   }
 });
 

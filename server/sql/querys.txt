@@ -6,6 +6,25 @@ WHERE rfc_emisor = 'SUCC961125A15'
 AND EXTRACT(MONTH FROM fecha_emision) = 1 
 AND EXTRACT(YEAR FROM fecha_emision) = 2019;
 
+SELECT person.first_name, 
+person.second_name, 
+person.surname, 
+person.second_surname, 
+person.rfc, 
+person.active, 
+TO_CHAR(person.creation_date, 'dd/mm/yyyy') as creation_date,
+department.department_name
+FROM person LEFT JOIN department
+ON person.department_id = department.id
+ORDER BY surname;
+
+SELECT person.first_name, person.second_name, person.surname,
+person.second_surname, person.rfc, 
+department.department_name
+FROM person LEFT JOIN department
+ON person.department_id = department.id
+WHERE rfc ILIKE 'CAPC760418AZU';
+
 SELECT id
 FROM department
 WHERE department_name ILIKE 'Finanzas';

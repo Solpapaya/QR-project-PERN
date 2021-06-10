@@ -125,9 +125,16 @@ const PeopleTable = () => {
               <td className="center-column">{rfc}</td>
               <td className="center-column">
                 <div className="flex-column">
-                  {department_name.split(" ").map((name, index) => (
-                    <span key={index}>{name}</span>
-                  ))}
+                  {department_name ? (
+                    department_name
+                      .split(" ")
+                      .map((name, index) => <span key={index}>{name}</span>)
+                  ) : (
+                    <>
+                      <span>Sin</span>
+                      <span>Asignar</span>
+                    </>
+                  )}
                 </div>
               </td>
               <td className="center-column">{formattedDate}</td>

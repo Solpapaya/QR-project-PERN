@@ -18,6 +18,20 @@ const EditDepartmentsTable = () => {
     history.push(`/departments/${id}/update`);
   };
 
+  const deleteHandler = async (id) => {
+    try {
+      await fetchData("delete", `/departments/${id}`);
+      const newDepartments = departments.filter((tax) => {
+        return tax.id !== id;
+      });
+      setDepartments(newDepartments);
+
+      // Tell user that the receipt was successfully deleted
+    } catch (err) {
+      // Alert that tells the user that the tax receipt could not be deleted
+    }
+  };
+
   useEffect(() => {
     getDepartments();
   }, []);
@@ -54,7 +68,7 @@ const EditDepartmentsTable = () => {
                 <div className="center-container">
                   <button
                     className="table-btn delete-btn"
-                    // onClick={(e) => updateHandler(e, rfc)}
+                    onClick={() => deleteHandler(id)}
                   >
                     <Trash />
                   </button>
