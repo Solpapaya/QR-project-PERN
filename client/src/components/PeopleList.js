@@ -28,6 +28,8 @@ const PeopleList = () => {
     }
     if (departmentFilter === "all_areas") {
       newPeople = [...newPeople];
+    } else if (departmentFilter === "null") {
+      newPeople = newPeople.filter((person) => person.department_name === null);
     } else {
       newPeople = newPeople.filter(
         (person) => person.department_name === departmentFilter

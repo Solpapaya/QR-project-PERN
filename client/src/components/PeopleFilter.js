@@ -139,6 +139,13 @@ const PeopleFilter = () => {
               </li>
             );
           })}
+          <li
+            id="null"
+            onClick={clickDepartmentFilterHandler}
+            className={departmentFilter === "null" ? "selected" : ""}
+          >
+            Sin Asignar
+          </li>
         </ul>
       </div>
 
