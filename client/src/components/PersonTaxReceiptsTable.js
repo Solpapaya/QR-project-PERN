@@ -1,12 +1,30 @@
 import React, { useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { PersonTaxReceiptsContext } from "../context/PersonTaxReceiptsContext";
 import { MonthsContext } from "../context/MonthsContext";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Trash } from "../icons/trash.svg";
+import { fetchData } from "../functions/fetchData";
 
 const PersonTaxReceiptsTable = () => {
-  const { filteredTaxReceipts } = useContext(PersonTaxReceiptsContext);
+  const { filteredTaxReceipts, setFilteredTaxReceipts } = useContext(
+    PersonTaxReceiptsContext
+  );
   const { months } = useContext(MonthsContext);
+
+  let history = useHistory();
+
+  const deleteHandler = async (id) => {
+    try {
+      await fetchData("delete", `/taxreceipts/${id}`);
+      const newTaxReceipts = filteredTaxReceipts.filter((tax) => tax.id !== id);
+      setFilteredTaxReceipts(newTaxReceipts);
+
+      // Tell user that the receipt was successfully deleted
+    } catch (err) {
+      // Alert that tells the user that the tax receipt could not be deleted
+    }
+  };
 
   return (
     <table className="table taxes">
@@ -33,7 +51,7 @@ const PersonTaxReceiptsTable = () => {
                 <div className="center-container">
                   <button
                     className="table-btn edit-btn"
-                    // onClick={(e) => updateHandler(e, rfc)}
+                    onClick={() => history.push(`/taxreceipt/${id}/update`)}
                   >
                     <Pencil />
                   </button>
@@ -43,7 +61,7 @@ const PersonTaxReceiptsTable = () => {
                 <div className="center-container">
                   <button
                     className="table-btn delete-btn"
-                    // onClick={(e) => updateHandler(e, rfc)}
+                    onClick={() => deleteHandler(id)}
                   >
                     <Trash />
                   </button>

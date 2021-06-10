@@ -21,7 +21,7 @@ const PersonDetailFilter = () => {
   const getYears = async () => {
     const response = await fetchData(
       "get",
-      `/taxreceipts/${rfcParam}?get=years`
+      `/person/taxreceipts/${rfcParam}?get=years`
     );
     setYears(response.data.tax_receipts_years);
   };
