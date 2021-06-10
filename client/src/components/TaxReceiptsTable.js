@@ -4,11 +4,11 @@ import { SearchTaxReceiptsContext } from "../context/SearchTaxReceiptsContext";
 import { MonthsContext } from "../context/MonthsContext";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Trash } from "../icons/trash.svg";
+import { fetchData } from "../functions/fetchData";
 
 const TaxReceiptsTable = () => {
-  const { filteredTaxReceipts, isSearchSuccessful } = useContext(
-    SearchTaxReceiptsContext
-  );
+  const { filteredTaxReceipts, setFilteredTaxReceipts, isSearchSuccessful } =
+    useContext(SearchTaxReceiptsContext);
   // Month Array for convertion
   const { months } = useContext(MonthsContext);
 
@@ -29,21 +29,19 @@ const TaxReceiptsTable = () => {
   //   "Diciembre",
   // ];
 
-  // const deleteHandler = async (e, id) => {
-  //   e.stopPropagation();
-  //   try {
-  //     const response = await fetchData(
-  //       "delete",
-  //       `/taxreceipts?rfc=${rfcParam}&id=${id}`
-  //     );
-  //     const newTaxReceipts = taxReceipts.filter((tax) => {
-  //       return tax.id !== id;
-  //     });
-  //     setTaxReceipts(newTaxReceipts);
-  //   } catch (err) {
-  //     // Alert that tells the user that the tax receipt could not be deleted
-  //   }
-  // };
+  const deleteHandler = async (id) => {
+    try {
+      await fetchData("delete", `/taxreceipts/${id}`);
+      const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
+        return tax.id !== id;
+      });
+      setFilteredTaxReceipts(newTaxReceipts);
+
+      // Tell user that the receipt was successfully deleted
+    } catch (err) {
+      // Alert that tells the user that the tax receipt could not be deleted
+    }
+  };
 
   return (
     <table className="table">
@@ -79,7 +77,7 @@ const TaxReceiptsTable = () => {
               <td>
                 <div className="center-container">
                   <button
-                    // onClick={(e) => disableHandler(e, { ...person })}
+                    onClick={() => deleteHandler(id)}
                     className="table-btn delete-btn"
                   >
                     <Trash />

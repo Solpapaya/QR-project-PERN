@@ -818,24 +818,28 @@ const getDataFromCurrentTax = (id) => {
   });
 };
 
-app.delete("/taxreceipts", async (req, res) => {
+app.delete("/taxreceipts/:id", async (req, res) => {
   try {
-    const { rfc, id } = req.query;
+    const { id } = req.params;
     const results = await db.query(
-      `DELETE FROM tax_receipt WHERE rfc_emitter = $1 AND id = $2 RETURNING *`,
-      [rfc, id]
+      `DELETE FROM tax_receipt WHERE id = $1 
+      RETURNING 
+      EXTRACT(MONTH FROM tax_receipt.date) as month,
+      EXTRACT(YEAR FROM tax_receipt.date) as year,
+      rfc_emitter`,
+      [id]
     );
-    // If there was no tax_receipt with the specified RFC and ID
+    // If there was no tax_receipt with the ID
     if (results.rowCount === 0) {
-      return res.status(404).json({ success: false, msg: `No Tax Receipt` });
+      return res
+        .status(404)
+        .json({ success: false, msg: `No Tax Receipt with the ID: ${id}` });
     }
-    // If there was a worker with the specified RFC, informs the user that the delete
-    // operation was successful and returns the name and RFC of the deleted worker
+    // If there was a tax receipt with the specified ID, informs the user that the delete
+    // operation was successful and returns the Date and RFC of the deleted tax receipt
     res.status(200).json({
       success: true,
-      data: {
-        person: results.rows[0],
-      },
+      tax: results.rows[0],
     });
   } catch (err) {
     res.status(500).json({ success: false, msg: "Error Deleting Tax Receipt" });

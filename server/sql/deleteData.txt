@@ -1,5 +1,11 @@
-DELETE FROM comprobante_fiscal 
-WHERE rfc_emisor = 'SUCC961125A15';
+DELETE FROM tax_receipt WHERE id = 6
+      RETURNING 
+      EXTRACT(MONTH FROM tax_receipt.date) as month,
+      EXTRACT(YEAR FROM tax_receipt.date) as year,
+      rfc_emitter;
+
+DELETE FROM tax_receipt 
+WHERE id = 10;
 
 DELETE FROM persona
 WHERE rfc = 'GRPA920113WSD';
