@@ -40,9 +40,13 @@ const UpdateTaxReceipt = () => {
       const formData = new FormData();
       formData.append("file", files[0]);
       try {
-        // const response = await fetchData("post", "/taxreceipt", formData, true);
-        // console.log({ response });
-        console.log("Yeeees");
+        const response = await fetchData(
+          "put",
+          `/taxreceipts/${idParam}`,
+          formData,
+          true
+        );
+        console.log({ response });
       } catch (err) {
         console.log(err.data.msg);
       }

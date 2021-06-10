@@ -29,7 +29,14 @@ export const fetchData = (method, url, obj, uploadFile = false) => {
         break;
       case "put":
         try {
-          const response = await PeopleFinder.put(url, obj);
+          let response;
+          if (uploadFile) {
+            response = await PeopleFinder.put(url, obj, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+          } else {
+            response = await PeopleFinder.put(url, obj);
+          }
           resolve(response.data);
         } catch (err) {
           reject(err.response);
