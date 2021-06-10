@@ -300,9 +300,12 @@ const UpdatePerson = () => {
             }
           />
         </div>
+
         <div
           className={
-            isFilterDepartmentExpanded
+            isEmpty.department_name
+              ? "add-input-container department empty"
+              : isFilterDepartmentExpanded
               ? "add-input-container department expanded"
               : "add-input-container department"
           }
@@ -313,9 +316,13 @@ const UpdatePerson = () => {
               className="department-ul-container"
               style={
                 isFilterDepartmentExpanded
-                  ? {
-                      minHeight: `${departments.length * 3.5}rem`,
-                    }
+                  ? person.department_name
+                    ? {
+                        minHeight: `${departments.length * 3.5}rem`,
+                      }
+                    : {
+                        minHeight: `${(departments.length + 1) * 3.5}rem`,
+                      }
                   : {}
               }
               onClick={() => {
@@ -324,12 +331,14 @@ const UpdatePerson = () => {
             >
               <li
                 className="selected"
+                id="department_name"
                 onClick={(e) => {
                   setIsFilterDepartmentExpanded(!isFilterDepartmentExpanded);
                   setPerson({
                     ...person,
                     department_name: person.department_name,
                   });
+                  setIsEmpty({ ...isEmpty, department_name: false });
                 }}
               >
                 {person.department_name}
@@ -340,6 +349,7 @@ const UpdatePerson = () => {
                   return (
                     <li
                       key={id}
+                      id="department_name"
                       className={
                         person.department_name === department_name
                           ? "selected"
@@ -353,6 +363,7 @@ const UpdatePerson = () => {
                           ...person,
                           department_name: department_name,
                         });
+                        setIsEmpty({ ...isEmpty, department_name: false });
                       }}
                     >
                       {department_name}
