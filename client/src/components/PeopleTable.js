@@ -29,22 +29,26 @@ const PeopleTable = () => {
     let people;
     let status;
     let department;
-
     // For getting the latest value of the States
     setFilteredPeople((prevPeople) => {
       people = prevPeople;
       return prevPeople;
     });
-    setStatusFilter((prevStatus) => {
-      status = prevStatus;
-      return prevStatus;
-    });
-    setDepartmentFilter((prevDepartment) => {
-      department = prevDepartment;
-      return prevDepartment;
-    });
 
-    exportData(people, status, department);
+    if (people.length > 0) {
+      setStatusFilter((prevStatus) => {
+        status = prevStatus;
+        return prevStatus;
+      });
+      setDepartmentFilter((prevDepartment) => {
+        department = prevDepartment;
+        return prevDepartment;
+      });
+      exportData(people, status, department);
+    } else {
+      // Alert user the table is empty and can not an empty table
+      console.log("Table is empty");
+    }
   };
 
   const exportData = (people, status, department) => {
@@ -76,7 +80,6 @@ const PeopleTable = () => {
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, fileName + fileExtension);
-    console.count("Saved");
   };
 
   const setExportFileName = (status, department) => {
@@ -157,7 +160,11 @@ const PeopleTable = () => {
   }, [sort]);
 
   useEffect(() => {
-    exportBtn.current.addEventListener("click", exportToCSV);
+    // Code for resetting click events listeners in Export Button
+    const new_element = exportBtn.current.cloneNode(true);
+    exportBtn.current.parentNode.replaceChild(new_element, exportBtn.current);
+    new_element.addEventListener("click", exportToCSV);
+    exportBtn.current = new_element;
   }, []);
 
   return (

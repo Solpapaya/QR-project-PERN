@@ -25,7 +25,7 @@ const Home = () => {
       <div className="search-header">
         <h2>{`Lista de ${sections[searchSection - 1]}`}</h2>
         <button className="add-btn" ref={exportBtn}>
-          Generar archivo
+          Exportar Tabla
         </button>
       </div>
       <SearchSubsections />
