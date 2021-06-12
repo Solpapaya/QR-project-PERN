@@ -6,11 +6,112 @@ import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Switch } from "../icons/switch.svg";
 import { SearchContext } from "../context/SearchContext";
 import { MonthsContext } from "../context/MonthsContext";
+import { ExportBtnContext } from "../context/ExportBtnContext";
+
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const PeopleTable = () => {
-  const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
+  const {
+    sort,
+    people,
+    setPeople,
+    filteredPeople,
+    setFilteredPeople,
+    setStatusFilter,
+    setDepartmentFilter,
+  } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
+  const { exportBtn } = useContext(ExportBtnContext);
   let history = useHistory();
+
+  const exportToCSV = () => {
+    let people;
+    let status;
+    let department;
+
+    // For getting the latest value of the States
+    setFilteredPeople((prevPeople) => {
+      people = prevPeople;
+      return prevPeople;
+    });
+    setStatusFilter((prevStatus) => {
+      status = prevStatus;
+      return prevStatus;
+    });
+    setDepartmentFilter((prevDepartment) => {
+      department = prevDepartment;
+      return prevDepartment;
+    });
+
+    exportData(people, status, department);
+  };
+
+  const exportData = (people, status, department) => {
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    // Adds the titles of each column like 'First Name' or 'RFC' , etc
+    const exportTable = addHeaderToTable(people);
+    const ws = XLSX.utils.json_to_sheet(exportTable, {
+      skipHeader: true,
+    });
+    // Defines the width of each column
+    ws["!cols"] = [
+      { width: 15 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 15 },
+    ];
+    // Sets the file name depending on the filters applied to the Data
+    // If the table only shows active people, the file name should be
+    // 'Person_Table_Active' or if the people shown in the browser are
+    // people inactive from the Finance department, the name should be
+    // 'Person_Table_Disabled_Finance'
+    const fileName = setExportFileName(status, department);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+    console.count("Saved");
+  };
+
+  const setExportFileName = (status, department) => {
+    let fileName = "Tabla_Personas";
+
+    if (status === "active") fileName += "_Activas";
+    else if (status === "disabled") fileName += "_Inactivas";
+
+    if (department === "null") fileName += "_SinAsignar";
+    else if (department !== "all_areas")
+      fileName += `_${department.replace(" ", "")}`;
+    return fileName;
+  };
+
+  const addHeaderToTable = (obj) => {
+    const header = {
+      first_name: "Primer Nombre",
+      second_name: "Segundo Nombre",
+      surname: "Primer Apellido",
+      second_surname: "Segundo Apellido",
+      rfc: "RFC",
+      department_name: "Área",
+      creation_date: "Fecha de Alta",
+      active: "Estado",
+    };
+    // Changes values true and false for 'Active' or 'Disabled'
+    const newObj = obj.map((person) => {
+      const newRow = { ...person };
+      if (newRow.active) newRow.active = "Activo";
+      else newRow.active = "Inactivo";
+      return { ...newRow };
+    });
+    const exportTable = [header, ...newObj];
+    return exportTable;
+  };
 
   const disableHandler = async (e, person) => {
     e.stopPropagation();
@@ -54,6 +155,10 @@ const PeopleTable = () => {
   useEffect(() => {
     sortPeople();
   }, [sort]);
+
+  useEffect(() => {
+    exportBtn.current.addEventListener("click", exportToCSV);
+  }, []);
 
   return (
     <table className="table">

@@ -124,7 +124,7 @@ const Sidebar = () => {
           className="sidebar-item"
           data-section="4"
         >
-          <i class="fas fa-building sidebar-item-icon"></i>
+          <i className="fas fa-building sidebar-item-icon"></i>
           {/* <i className="sidebar-item-icon">
             <Department />
           </i> */}
