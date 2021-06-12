@@ -8,7 +8,6 @@ import TaxReceipts from "../components/TaxReceipts";
 import People from "../components/People";
 import StatusLogs from "../components/StatusLogs";
 import { SearchStatusLogsContextProvider } from "../context/SearchStatusLogsContext";
-import ExportCSV from "../components/ExportCSV";
 import { ExportBtnContext } from "../context/ExportBtnContext";
 
 const Home = () => {
