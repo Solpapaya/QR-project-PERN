@@ -8,18 +8,15 @@ import PersonTaxReceipt from "../components/PersonTaxReceipt";
 import { PersonTaxReceiptsContextProvider } from "../context/PersonTaxReceiptsContext";
 import { PersonStatusLogsContextProvider } from "../context/PersonStatusLogsContext";
 import PersonStatusLog from "../components/PersonStatusLog";
+import { ExportBtnContext } from "../context/ExportBtnContext";
+import { PersonDetailContext } from "../context/PersonDetailsContext";
 
 const PersonDetailPage = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
   const { personSection } = useContext(PersonSubsectionContext);
+  const { exportBtn } = useContext(ExportBtnContext);
+  const { person, setPerson } = useContext(PersonDetailContext);
 
-  const [person, setPerson] = useState({
-    first_name: "",
-    second_name: "",
-    surname: "",
-    second_surname: "",
-    rfc: "",
-  });
   const rfcParam = useParams().rfc;
 
   const getPerson = async () => {
@@ -35,8 +32,15 @@ const PersonDetailPage = () => {
   }, []);
   return (
     <div>
-      <h2>{`${person.first_name} ${person.second_name} ${person.surname} ${person.second_surname}`}</h2>
-      <h4>{person.rfc}</h4>
+      <div className="search-header">
+        <div>
+          <h2>{`${person.first_name} ${person.second_name} ${person.surname} ${person.second_surname}`}</h2>
+          <h4>{person.rfc}</h4>
+        </div>
+        <button className="add-btn" ref={exportBtn}>
+          Exportar Tabla
+        </button>
+      </div>
       <PersonSubsections />
       {personSection === 1 ? (
         <PersonTaxReceiptsContextProvider>

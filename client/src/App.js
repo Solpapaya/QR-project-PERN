@@ -18,6 +18,7 @@ import DepartmentUpdate from "./routes/DepartmentUpdate";
 import UploadTaxReceipt from "./routes/UploadTaxReceipt";
 import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
 import { ExportBtnContextProvider } from "./context/ExportBtnContext";
+import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
 
 function App() {
   const { currentSection } = useContext(CurrentSectionContext);
@@ -49,7 +50,11 @@ function App() {
                 </Route>
                 <Route exact path="/people/:rfc">
                   <PersonSubsectionContextProvider>
-                    <PersonDetailPage />
+                    <ExportBtnContextProvider>
+                      <PersonDetailContextProvider>
+                        <PersonDetailPage />
+                      </PersonDetailContextProvider>
+                    </ExportBtnContextProvider>
                   </PersonSubsectionContextProvider>
                 </Route>
                 <Route exact path="/people/:rfc/update">
