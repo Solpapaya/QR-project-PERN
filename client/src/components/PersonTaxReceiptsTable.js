@@ -74,7 +74,7 @@ const PersonTaxReceiptsTable = () => {
       skipHeader: true,
     });
     // Defines the width of each column
-    ws["!cols"] = [{ width: 15 }, { width: 20 }, { width: 40 }, { width: 20 }];
+    ws["!cols"] = [{ width: 15 }, { width: 20 }];
     // Sets the file name depending on the filters applied to the Data
     // If the table only shows active people, the file name should be
     // 'Person_Table_Active' or if the people shown in the browser are
