@@ -36,11 +36,20 @@ button {
 .main-layout {
   display: grid;
   height: 100vh;
-  grid-template-columns: minmax(min-content, max-content) 1fr;
+  grid-template-columns: 6.2rem 1fr;
+
+  @include onethousand {
+    grid-template-columns: minmax(min-content, max-content) 1fr;
+  }
 }
 
 .main-content {
   overflow-y: scroll;
+  grid-column: 2/3;
+
+  &.search {
+    min-width: 946px;
+  }
 
   &.upload-tax {
     height: 100%;

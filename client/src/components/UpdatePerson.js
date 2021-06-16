@@ -375,7 +375,7 @@ const UpdatePerson = () => {
           </div>
         </div>
 
-        <button type="submit" className="add-btn">
+        <button type="submit" className="add-btn update">
           Actualizar
         </button>
       </form>

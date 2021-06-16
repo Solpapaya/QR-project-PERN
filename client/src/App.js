@@ -21,14 +21,20 @@ import { ExportBtnContextProvider } from "./context/ExportBtnContext";
 import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
 
 function App() {
-  const { currentSection } = useContext(CurrentSectionContext);
+  const { currentSection, isEditPersonSection } = useContext(
+    CurrentSectionContext
+  );
   return (
     <Router>
       <div className="main-layout">
         <Sidebar />
         <div
           className={
-            currentSection === 2 ? "main-content upload-tax" : "main-content"
+            currentSection === 1 && !isEditPersonSection
+              ? "main-content search"
+              : currentSection === 2
+              ? "main-content upload-tax"
+              : "main-content"
           }
         >
           {/* <PeopleContextProvider> */}

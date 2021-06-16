@@ -11,13 +11,17 @@ import { SearchStatusLogsContextProvider } from "../context/SearchStatusLogsCont
 import { ExportBtnContext } from "../context/ExportBtnContext";
 
 const Home = () => {
-  const { setCurrentSection } = useContext(CurrentSectionContext);
+  const { setCurrentSection, setIsEditPersonSection } = useContext(
+    CurrentSectionContext
+  );
+
   const { searchSection } = useContext(SearchSubsectionContext);
   const sections = ["Personas", "Comprobantes Fiscales", "Cambios de Estado"];
   const { exportBtn } = useContext(ExportBtnContext);
 
   useEffect(() => {
     setCurrentSection(1);
+    setIsEditPersonSection(false);
   }, []);
   return (
     <>

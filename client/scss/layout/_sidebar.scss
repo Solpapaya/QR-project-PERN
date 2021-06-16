@@ -1,5 +1,7 @@
 .sidebar {
   display: grid;
+  position: fixed;
+  z-index: 3;
   background: $blueBackground;
   width: $baseUnit * 4;
   height: 100vh;
@@ -7,6 +9,7 @@
 
   @include onethousand {
     width: 20rem;
+    position: static;
   }
 
   .logo-container {

@@ -364,7 +364,7 @@ const AddPerson = () => {
           </div>
         </div>
 
-        <button type="submit" className="add-btn">
+        <button type="submit" className="add-btn update">
           Agregar
         </button>
       </form>

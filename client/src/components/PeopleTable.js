@@ -6,10 +6,12 @@ import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Switch } from "../icons/switch.svg";
 import { SearchContext } from "../context/SearchContext";
 import { MonthsContext } from "../context/MonthsContext";
+import { CurrentSectionContext } from "../context/CurrentSectionContext";
 
 const PeopleTable = () => {
   const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
+  const { setIsEditPersonSection } = useContext(CurrentSectionContext);
   let history = useHistory();
 
   const disableHandler = async (e, person) => {
@@ -38,6 +40,7 @@ const PeopleTable = () => {
 
   const updateHandler = (e, rfc) => {
     e.stopPropagation();
+    setIsEditPersonSection(true);
     history.push(`/people/${rfc}/update`);
   };
 
