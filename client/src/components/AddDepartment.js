@@ -55,7 +55,10 @@ const AddDepartment = () => {
         department_name: trimDepartment,
       });
       // Show message that informs the department has been added successfully
-      setResponse({ success: true });
+      setResponse({
+        success: true,
+        msg: "Se ha agregado correctamente la nueva área",
+      });
       setDepartment("");
     } catch (err) {
       // Show alert the person couldn't have been updated
@@ -112,7 +115,7 @@ const AddDepartment = () => {
         {response.success ? (
           <Notification
             header="Operación Exitosa"
-            msg="Se ha agregado correctamente la nueva área"
+            msg={response.msg}
             success={true}
             setShowAlert={setShowAlert}
           />
