@@ -440,6 +440,7 @@ app.put("/departments/:id", async (req, res) => {
 app.post("/departments", async (req, res) => {
   try {
     const { department_name } = req.body;
+    await checkIfDepartmentAlreadyExists(department_name);
     const results = await db.query(
       `INSERT INTO department (department_name) VALUES
         ($1) RETURNING *`,
@@ -452,9 +453,32 @@ app.post("/departments", async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error Adding Department" });
+    if (err.status) {
+      res.status(err.status).json({ success: false, msg: err.msg });
+    } else {
+      res.status(500);
+      res.status(500).json({ success: false, msg: "Error Adding Department" });
+    }
   }
 });
+
+const checkIfDepartmentAlreadyExists = async (department_name) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const results = await db.query(
+        `SELECT * FROM department 
+        WHERE department_name ILIKE $1`,
+        [department_name]
+      );
+      if (results.rowCount > 0) {
+        reject({ status: 409, msg: `El área "${department_name}" ya existe` });
+      }
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 
 app.delete("/departments/:id", async (req, res) => {
   try {

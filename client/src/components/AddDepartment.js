@@ -1,8 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import { fetchData } from "../functions/fetchData";
+import Notification from "./Notification";
+import { CSSTransition } from "react-transition-group";
 
 const AddDepartment = () => {
   const [focus, setFocus] = useState(false);
+  const [response, setResponse] = useState({ success: false, msg: "" });
+  const [showAlert, setShowAlert] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const ref = useRef(null);
 
@@ -50,16 +54,29 @@ const AddDepartment = () => {
       const response = await fetchData("post", "/departments", {
         department_name: trimDepartment,
       });
-      // Show message that informs the user the person has been updated successfully
-    } catch (error) {
+      // Show message that informs the department has been added successfully
+      setResponse({ success: true });
+      setDepartment("");
+    } catch (err) {
       // Show alert the person couldn't have been updated
+      setResponse({ success: false, msg: err.data.msg });
     }
+    setShowAlert(true);
+    setFocus(true);
+    ref.current.focus();
     // history.push("/");
   };
 
   useEffect(() => {
     ref.current.focus();
   }, []);
+
+  const removeNotification = () => {
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  };
+
   return (
     <form className="form" onSubmit={handleSubmit}>
       <div
@@ -84,6 +101,30 @@ const AddDepartment = () => {
       <button type="submit" className="add-btn update">
         Agregar
       </button>
+
+      <CSSTransition
+        in={showAlert}
+        timeout={300}
+        classNames="alert"
+        unmountOnExit
+        onEnter={() => removeNotification()}
+      >
+        {response.success ? (
+          <Notification
+            header="Operación Exitosa"
+            msg="Se ha agregado correctamente la nueva área"
+            success={true}
+            setShowAlert={setShowAlert}
+          />
+        ) : (
+          <Notification
+            header="Error"
+            msg={response.msg}
+            success={false}
+            setShowAlert={setShowAlert}
+          />
+        )}
+      </CSSTransition>
     </form>
   );
 };
