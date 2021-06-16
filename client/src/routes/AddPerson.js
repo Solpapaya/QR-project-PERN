@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { fetchData } from "../functions/fetchData";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
+import { CSSTransition } from "react-transition-group";
+import Notification from "../components/Notification";
 
 const AddPerson = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
@@ -17,6 +19,8 @@ const AddPerson = () => {
   });
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
+  const [response, setResponse] = useState({ success: false, msg: "" });
+  const [showAlert, setShowAlert] = useState(false);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -92,8 +96,15 @@ const AddPerson = () => {
     setPerson({ ...person, [attribute]: value });
   };
 
+  const cleanInputs = () => {
+    for (let key in person) {
+      person[key] = "";
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     // If there is a field empty, the field gets focused and tells the user to fill the field
     for (const prop in person) {
       person[prop] = person[prop].trim();
@@ -126,10 +137,27 @@ const AddPerson = () => {
     try {
       const response = await fetchData("post", "/people", person);
       // Show message that informs the user the person has been updated successfully
-    } catch (error) {
+      setResponse({
+        success: true,
+        msg: "Se ha agregado correctamente la nueva persona",
+      });
+      setShowAlert(true);
+      cleanInputs();
+      ref.first_name.current.focus();
+    } catch (err) {
       // Show alert the person couldn't have been updated
+      setResponse({ success: false, msg: err.data.msg });
+      setShowAlert(true);
+      ref.rfc.current.focus();
     }
+
     // history.push("/");
+  };
+
+  const removeNotification = () => {
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
   };
   return (
     <div>
@@ -368,6 +396,29 @@ const AddPerson = () => {
           Agregar
         </button>
       </form>
+      <CSSTransition
+        in={showAlert}
+        timeout={300}
+        classNames="alert"
+        unmountOnExit
+        onEnter={() => removeNotification()}
+      >
+        {response.success ? (
+          <Notification
+            header="Operación Exitosa"
+            msg={response.msg}
+            success={true}
+            setShowAlert={setShowAlert}
+          />
+        ) : (
+          <Notification
+            header="Error"
+            msg={response.msg}
+            success={false}
+            setShowAlert={setShowAlert}
+          />
+        )}
+      </CSSTransition>
     </div>
   );
 };

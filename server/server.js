@@ -186,12 +186,14 @@ app.post("/people", async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
     if (err.code == 23505) {
       const { rfc } = req.body;
-      return res
-        .status(404)
-        .json({ success: false, msg: `Person with RFC ${rfc} already exists` });
+      return res.status(404).json({
+        success: false,
+        msg: `Ya existe una persona con el RFC: "${rfc}"`,
+      });
+
+      // .json({ success: false, msg: `Person with RFC ${rfc} already exists` });
     }
     res.status(500).json({ success: false, msg: "Error Creating Person" });
   }
