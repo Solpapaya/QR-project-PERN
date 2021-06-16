@@ -61,7 +61,7 @@ const PeopleFilter = () => {
 
   return (
     <>
-      <div className="filter-relative-container">
+      <div className="filter-relative-container status">
         <ul
           className={
             isFilterStatusExpanded
@@ -96,7 +96,7 @@ const PeopleFilter = () => {
         </ul>
       </div>
 
-      <div className="filter-relative-container">
+      <div className="filter-relative-container department">
         <ul
           className={
             isFilterDepartmentExpanded
