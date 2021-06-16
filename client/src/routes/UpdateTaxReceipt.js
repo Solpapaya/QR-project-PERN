@@ -147,7 +147,7 @@ const UpdateTaxReceipt = () => {
         </div>
       </div>
 
-      <div className="upload-tax update">
+      <div className="upload-tax-area update">
         <Upload />
         <h3>Arrastra aqui el Comprobante Fiscal</h3>
         <p>El archivo debe ser en formato PDF</p>

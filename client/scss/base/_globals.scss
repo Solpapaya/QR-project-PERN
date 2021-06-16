@@ -58,6 +58,9 @@ button {
     align-items: center;
     overflow-x: hidden;
     overflow-y: hidden;
+    flex-direction: column;
+    width: 100%;
+    padding: 3.2rem;
 
     .main-content-container {
       width: 95%;

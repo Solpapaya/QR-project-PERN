@@ -99,7 +99,7 @@ const UploadTaxReceipt = () => {
 
   return (
     <div
-      className={highlight ? "upload-tax highlight" : "upload-tax"}
+      className={highlight ? "upload-tax-area highlight" : "upload-tax-area"}
       onDragOver={dragOverHandler}
       onDragLeave={dragLeaveHandler}
       onDrop={dropHandler}
