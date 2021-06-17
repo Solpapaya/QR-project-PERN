@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { fetchData } from "../functions/fetchData";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
-import { CSSTransition } from "react-transition-group";
-import Notification from "../components/Notification";
+import { AlertContext } from "../context/AlertContext";
 
 const AddPerson = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
@@ -19,8 +18,7 @@ const AddPerson = () => {
   });
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
-  const [response, setResponse] = useState({ success: false, msg: "" });
-  const [showAlert, setShowAlert] = useState(false);
+  const { response, setResponse, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -147,6 +145,7 @@ const AddPerson = () => {
       ref.first_name.current.focus();
     } catch (err) {
       // Show alert the person couldn't have been uploaded
+      setIsEmpty({ ...isEmpty, rfc: true });
       setResponse({ success: false, msg: err.data.msg });
       setShowAlert(true);
       ref.rfc.current.focus();
@@ -155,11 +154,6 @@ const AddPerson = () => {
     // history.push("/");
   };
 
-  const removeNotification = () => {
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
-  };
   return (
     <div>
       <h2>Agregar Persona</h2>
@@ -292,7 +286,9 @@ const AddPerson = () => {
             focus.rfc
               ? isEmpty.rfc
                 ? isRfcLongEnough
-                  ? "add-input-container selected empty"
+                  ? !response.success
+                    ? "add-input-container selected duplicated-rfc"
+                    : "add-input-container selected empty"
                   : "add-input-container selected wrong-rfc"
                 : "add-input-container selected"
               : "add-input-container"
@@ -397,29 +393,6 @@ const AddPerson = () => {
           Agregar
         </button>
       </form>
-      <CSSTransition
-        in={showAlert}
-        timeout={300}
-        classNames="alert"
-        unmountOnExit
-        onEnter={() => removeNotification()}
-      >
-        {response.success ? (
-          <Notification
-            header="Operación Exitosa"
-            msg={response.msg}
-            success={true}
-            setShowAlert={setShowAlert}
-          />
-        ) : (
-          <Notification
-            header="Error"
-            msg={response.msg}
-            success={false}
-            setShowAlert={setShowAlert}
-          />
-        )}
-      </CSSTransition>
     </div>
   );
 };
