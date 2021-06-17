@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import { AlertContext } from "../context/AlertContext";
 
 const Warning = (props) => {
-  const { setWarningOk, setShowWarning, warning } = useContext(AlertContext);
+  const { setWarningOk, setShowWarning, warning, classApplied } =
+    useContext(AlertContext);
 
   return (
     <div className="warning-container">
       <div className="warning__background"></div>
-      <div className="warning">
+      <div className={`warning ${classApplied}`}>
         <div className="warning__icon">
           <svg
             version="1.1"
@@ -28,12 +29,8 @@ const Warning = (props) => {
           </svg>
         </div>
         <div className="warning__content">
-          <p className="warning__type">{warning}</p>
-          {/* <p className="warning__type">
-          ¿Estás seguro que deseas desactivar a esta persona?
-        </p> */}
-          <p className="warning__message">Esto hará cambiar su estado</p>
-          {/* <p className="toast__message">{props.msg}</p> */}
+          <p className="warning__type">{warning.msg}</p>
+          <p className="warning__message">{warning.secondaryMsg}</p>
         </div>
         <div className="warning__buttons">
           <button

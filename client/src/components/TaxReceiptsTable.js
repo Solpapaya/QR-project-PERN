@@ -5,28 +5,45 @@ import { MonthsContext } from "../context/MonthsContext";
 import { ReactComponent as Pencil } from "../icons/pencil.svg";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { fetchData } from "../functions/fetchData";
+import { AlertContext } from "../context/AlertContext";
 
 const TaxReceiptsTable = () => {
   const { filteredTaxReceipts, setFilteredTaxReceipts } = useContext(
     SearchTaxReceiptsContext
   );
+  const {
+    setShowWarning,
+    setWarning,
+    warningOk,
+    setWarningOk,
+    setAlert,
+    setShowAlert,
+    setClassApplied,
+  } = useContext(AlertContext);
   // Month Array for convertion
   const { months } = useContext(MonthsContext);
 
   let history = useHistory();
 
-  const deleteHandler = async (id) => {
-    try {
-      await fetchData("delete", `/taxreceipts/${id}`);
-      const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
-        return tax.id !== id;
-      });
-      setFilteredTaxReceipts(newTaxReceipts);
+  const deleteHandler = async (tax) => {
+    const { full_name, month, year } = tax;
+    const msg = `¿Estás seguro de que quieres eliminar el comprobante de '${full_name}'
+    correspondiente al Mes: '${months[month - 1]}' y Año: '${year}'?`;
+    const secondaryMsg = "El comprobante ya no se podrá recuperar";
+    setWarning({ msg, secondaryMsg });
+    setClassApplied("warning--delete");
+    setShowWarning(true);
+    // try {
+    //   await fetchData("delete", `/taxreceipts/${id}`);
+    //   const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
+    //     return tax.id !== id;
+    //   });
+    //   setFilteredTaxReceipts(newTaxReceipts);
 
-      // Tell user that the receipt was successfully deleted
-    } catch (err) {
-      // Alert that tells the user that the tax receipt could not be deleted
-    }
+    //   // Tell user that the receipt was successfully deleted
+    // } catch (err) {
+    //   // Alert that tells the user that the tax receipt could not be deleted
+    // }
   };
 
   return (
@@ -63,7 +80,7 @@ const TaxReceiptsTable = () => {
               <td>
                 <div className="center-container">
                   <button
-                    onClick={() => deleteHandler(id)}
+                    onClick={() => deleteHandler(tax)}
                     className="table-btn delete-btn"
                   >
                     <Trash />

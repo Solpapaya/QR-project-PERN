@@ -14,15 +14,14 @@ const PeopleTable = () => {
   const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
   const { setIsEditPersonSection } = useContext(CurrentSectionContext);
-  const { setAlert, setShowAlert } = useContext(AlertContext);
   const {
-    showWarning,
     setShowWarning,
-    warning,
     setWarning,
-    // setWarningFunction,
     warningOk,
     setWarningOk,
+    setAlert,
+    setShowAlert,
+    setClassApplied,
   } = useContext(AlertContext);
 
   let history = useHistory();
@@ -65,9 +64,10 @@ const PeopleTable = () => {
     let personName = `${person.first_name}`;
     if (person.second_name) personName += ` ${person.second_name}`;
     personName += ` ${person.surname} ${person.second_surname}`;
-    const msg = `¿Estás seguro de que quieres ${personNextStatus} a ${personName}`;
-    // setWarningFunction({ fun: changePersonStatus, params: person });
-    setWarning(msg);
+    const msg = `¿Estás seguro de que quieres ${personNextStatus} a ${personName}?`;
+    const secondaryMsg = "Esto hará cambiar su estado";
+    setWarning({ msg, secondaryMsg });
+    setClassApplied("");
     setShowWarning(true);
   };
 

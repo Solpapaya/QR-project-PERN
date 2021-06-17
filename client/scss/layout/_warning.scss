@@ -31,6 +31,14 @@
     border-top-right-radius: 4px;
   }
 
+  &.warning--delete {
+    height: 30rem;
+
+    .warning__icon {
+      transform: translateY(-50%);
+    }
+  }
+
   .warning__svg {
     fill: #fff;
     width: 2.5rem;

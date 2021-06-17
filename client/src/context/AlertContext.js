@@ -7,8 +7,8 @@ export const AlertContextProvider = (props) => {
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [warning, setWarning] = useState("");
-  //   const [warningFunction, setWarningFunction] = useState("");
   const [warningOk, setWarningOk] = useState(false);
+  const [classApplied, setClassApplied] = useState("");
   return (
     <AlertContext.Provider
       value={{
@@ -22,6 +22,8 @@ export const AlertContextProvider = (props) => {
         setWarning,
         warningOk,
         setWarningOk,
+        classApplied,
+        setClassApplied,
       }}
     >
       {props.children}
