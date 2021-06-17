@@ -10,7 +10,7 @@ const AddDepartment = () => {
   const [department, setDepartment] = useState("");
 
   const [departmentAlreadyExists, setDepartmentAlreadyExists] = useState(false);
-  const { setResponse, setShowAlert } = useContext(AlertContext);
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
   const changeDepartment = (e) => {
     let value = e.target.value;
@@ -57,7 +57,7 @@ const AddDepartment = () => {
       });
       // Show message that informs the department has been added successfully
       setDepartmentAlreadyExists(false);
-      setResponse({
+      setAlert({
         success: true,
         msg: "Se ha agregado correctamente la nueva área",
       });
@@ -66,7 +66,7 @@ const AddDepartment = () => {
       // Show alert the person couldn't have been updated
       setIsEmpty(true);
       setDepartmentAlreadyExists(true);
-      setResponse({ success: false, msg: err.data.msg });
+      setAlert({ success: false, msg: err.data.msg });
     }
     setShowAlert(true);
     setFocus(true);

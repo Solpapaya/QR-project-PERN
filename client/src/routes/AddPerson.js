@@ -19,7 +19,7 @@ const AddPerson = () => {
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
   const [rfcAlreadyExists, setRfcAlreadyExists] = useState(false);
-  const { setResponse, setShowAlert } = useContext(AlertContext);
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -141,7 +141,7 @@ const AddPerson = () => {
       const response = await fetchData("post", "/people", person);
       // Show message that informs the user the person has been updated successfully
       setRfcAlreadyExists(false);
-      setResponse({
+      setAlert({
         success: true,
         msg: "Se ha agregado correctamente la nueva persona",
       });
@@ -152,7 +152,7 @@ const AddPerson = () => {
       // Show alert the person couldn't have been uploaded
       setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
-      setResponse({ success: false, msg: err.data.msg });
+      setAlert({ success: false, msg: err.data.msg });
       setShowAlert(true);
       ref.rfc.current.focus();
     }

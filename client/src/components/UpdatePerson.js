@@ -21,7 +21,7 @@ const UpdatePerson = () => {
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
   const [rfcAlreadyExists, setRfcAlreadyExists] = useState(false);
-  const { setResponse, setShowAlert } = useContext(AlertContext);
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -147,7 +147,7 @@ const UpdatePerson = () => {
       const response = await fetchData("put", `/people/${rfcParam}`, person);
       // Show message that informs the user the person has been updated successfully
       setRfcAlreadyExists(false);
-      setResponse({
+      setAlert({
         success: true,
         msg: "Se ha modificado correctamente la persona",
       });
@@ -157,7 +157,7 @@ const UpdatePerson = () => {
       // Show alert the person couldn't have been updated
       setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
-      setResponse({ success: false, msg: err.data.msg });
+      setAlert({ success: false, msg: err.data.msg });
       setShowAlert(true);
       ref.rfc.current.focus();
     }

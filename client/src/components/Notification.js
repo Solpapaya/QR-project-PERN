@@ -1,15 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
+import { AlertContext } from "../context/AlertContext";
 
 const Notification = (props) => {
-  //   const removeNotification = () => {
-  //     setTimeout(() => {
-  //       props.setShowAlert(false);
-  //     }, 6000);
-  //   };
+  const { alert, setShowAlert } = useContext(AlertContext);
 
-  //   useEffect(() => {
-  //     removeNotification();
-  //   });
   return (
     <div className={props.success ? "toast toast--green" : "toast toast--red"}>
       <div className="toast__icon">
@@ -43,9 +37,9 @@ const Notification = (props) => {
       </div>
       <div className="toast__content">
         <p className="toast__type">{props.header}</p>
-        <p className="toast__message">{props.msg}</p>
+        <p className="toast__message">{alert.msg}</p>
       </div>
-      <div className="toast__close" onClick={() => props.setShowAlert(false)}>
+      <div className="toast__close" onClick={() => setShowAlert(false)}>
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"

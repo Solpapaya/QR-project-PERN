@@ -7,15 +7,27 @@ import { ReactComponent as Switch } from "../icons/switch.svg";
 import { SearchContext } from "../context/SearchContext";
 import { MonthsContext } from "../context/MonthsContext";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
+import { AlertContext } from "../context/AlertContext";
 
 const PeopleTable = () => {
+  const [person, setPerson] = useState({});
   const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
   const { setIsEditPersonSection } = useContext(CurrentSectionContext);
+  const { setAlert, setShowAlert } = useContext(AlertContext);
+  const {
+    showWarning,
+    setShowWarning,
+    warning,
+    setWarning,
+    // setWarningFunction,
+    warningOk,
+    setWarningOk,
+  } = useContext(AlertContext);
+
   let history = useHistory();
 
-  const disableHandler = async (e, person) => {
-    e.stopPropagation();
+  const changePersonStatus = async () => {
     const { rfc } = person;
     const newActive = { active: !person.active };
     try {
@@ -24,7 +36,11 @@ const PeopleTable = () => {
         `/people/${rfc}?field=active`,
         newActive
       );
-      // console.log(response);
+      setAlert({
+        success: true,
+        msg: "Se ha cambiado correctamente el estado de la persona",
+      });
+      setShowAlert(true);
       const newPeople = people.map((person) => {
         if (person.rfc === rfc) {
           return { ...person, active: !person.active };
@@ -34,8 +50,25 @@ const PeopleTable = () => {
       setPeople(newPeople);
     } catch (err) {
       // Create Alert
-      // console.log(err);
+      setAlert({ success: false, msg: err.data.msg });
+      setShowAlert(true);
     }
+    setWarningOk(false);
+  };
+
+  const changeStatusHandler = async (e, person) => {
+    e.stopPropagation();
+    setPerson(person);
+    let personNextStatus;
+    if (person.active) personNextStatus = "Desactivar";
+    else personNextStatus = "Activar";
+    let personName = `${person.first_name}`;
+    if (person.second_name) personName += ` ${person.second_name}`;
+    personName += ` ${person.surname} ${person.second_surname}`;
+    const msg = `¿Estás seguro de que quieres ${personNextStatus} a ${personName}`;
+    // setWarningFunction({ fun: changePersonStatus, params: person });
+    setWarning(msg);
+    setShowWarning(true);
   };
 
   const updateHandler = (e, rfc) => {
@@ -57,6 +90,10 @@ const PeopleTable = () => {
   useEffect(() => {
     sortPeople();
   }, [sort]);
+
+  useEffect(() => {
+    warningOk && changePersonStatus();
+  }, [warningOk]);
 
   return (
     <table className="table">
@@ -169,7 +206,7 @@ const PeopleTable = () => {
               <td>
                 <div className="center-container">
                   <button
-                    onClick={(e) => disableHandler(e, { ...person })}
+                    onClick={(e) => changeStatusHandler(e, { ...person })}
                     className="table-btn switch-btn"
                   >
                     <Switch />

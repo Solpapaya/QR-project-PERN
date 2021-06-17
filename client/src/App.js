@@ -22,12 +22,20 @@ import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
 import { ExportBtnContextProvider } from "./context/ExportBtnContext";
 import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
 import { AlertContext } from "./context/AlertContext";
+import Warning from "./components/Warning";
 
 function App() {
   const { currentSection, isEditPersonSection } = useContext(
     CurrentSectionContext
   );
-  const { response, showAlert, setShowAlert } = useContext(AlertContext);
+  const {
+    alert,
+    showAlert,
+    setShowAlert,
+    warning,
+    showWarning,
+    setShowWarning,
+  } = useContext(AlertContext);
 
   const removeNotification = () => {
     setTimeout(() => {
@@ -98,23 +106,15 @@ function App() {
             unmountOnExit
             onEnter={() => removeNotification()}
           >
-            {response.success ? (
-              <Notification
-                header="Operación Exitosa"
-                msg={response.msg}
-                success={true}
-                setShowAlert={setShowAlert}
-              />
+            {alert.success ? (
+              <Notification header="Operación Exitosa" success={true} />
             ) : (
-              <Notification
-                header="Error"
-                msg={response.msg}
-                success={false}
-                setShowAlert={setShowAlert}
-              />
+              <Notification header="Error" success={false} />
             )}
           </CSSTransition>
         </div>
+
+        {showWarning && <Warning />}
       </div>
     </Router>
   );

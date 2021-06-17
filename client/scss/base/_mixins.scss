@@ -4,6 +4,12 @@
   }
 }
 
+@mixin fivehundred {
+  @media (min-width: 500px) {
+    @content;
+  }
+}
+
 @mixin tablet {
   @media (min-width: 820px) {
     @content;
