@@ -18,7 +18,8 @@ const AddPerson = () => {
   });
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
-  const { response, setResponse, setShowAlert } = useContext(AlertContext);
+  const [rfcAlreadyExists, setRfcAlreadyExists] = useState(false);
+  const { setResponse, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -107,7 +108,10 @@ const AddPerson = () => {
     for (const prop in person) {
       person[prop] = person[prop].trim();
       if (!person[prop] && prop !== "second_name") {
-        if (prop === "rfc") setIsRfcLongEnough(true);
+        if (prop === "rfc") {
+          setIsRfcLongEnough(true);
+          setRfcAlreadyExists(false);
+        }
         setIsEmpty({
           ...isEmpty,
           [prop]: true,
@@ -136,6 +140,7 @@ const AddPerson = () => {
     try {
       const response = await fetchData("post", "/people", person);
       // Show message that informs the user the person has been updated successfully
+      setRfcAlreadyExists(false);
       setResponse({
         success: true,
         msg: "Se ha agregado correctamente la nueva persona",
@@ -145,13 +150,12 @@ const AddPerson = () => {
       ref.first_name.current.focus();
     } catch (err) {
       // Show alert the person couldn't have been uploaded
+      setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
       setResponse({ success: false, msg: err.data.msg });
       setShowAlert(true);
       ref.rfc.current.focus();
     }
-
-    // history.push("/");
   };
 
   return (
@@ -286,7 +290,7 @@ const AddPerson = () => {
             focus.rfc
               ? isEmpty.rfc
                 ? isRfcLongEnough
-                  ? !response.success
+                  ? rfcAlreadyExists
                     ? "add-input-container selected duplicated-rfc"
                     : "add-input-container selected empty"
                   : "add-input-container selected wrong-rfc"

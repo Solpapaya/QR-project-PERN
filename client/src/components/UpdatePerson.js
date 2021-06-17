@@ -20,7 +20,8 @@ const UpdatePerson = () => {
   });
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
-  const { response, setResponse, setShowAlert } = useContext(AlertContext);
+  const [rfcAlreadyExists, setRfcAlreadyExists] = useState(false);
+  const { setResponse, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -115,7 +116,10 @@ const UpdatePerson = () => {
     for (const prop in person) {
       person[prop] = person[prop].trim();
       if (!person[prop] && prop !== "second_name") {
-        if (prop === "rfc") setIsRfcLongEnough(true);
+        if (prop === "rfc") {
+          setIsRfcLongEnough(true);
+          setRfcAlreadyExists(false);
+        }
         setIsEmpty({
           ...isEmpty,
           [prop]: true,
@@ -142,6 +146,7 @@ const UpdatePerson = () => {
     try {
       const response = await fetchData("put", `/people/${rfcParam}`, person);
       // Show message that informs the user the person has been updated successfully
+      setRfcAlreadyExists(false);
       setResponse({
         success: true,
         msg: "Se ha modificado correctamente la persona",
@@ -150,6 +155,7 @@ const UpdatePerson = () => {
       history.push("/");
     } catch (err) {
       // Show alert the person couldn't have been updated
+      setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
       setResponse({ success: false, msg: err.data.msg });
       setShowAlert(true);
@@ -288,7 +294,7 @@ const UpdatePerson = () => {
             focus.rfc
               ? isEmpty.rfc
                 ? isRfcLongEnough
-                  ? !response.success
+                  ? rfcAlreadyExists
                     ? "add-input-container selected duplicated-rfc"
                     : "add-input-container selected empty"
                   : "add-input-container selected wrong-rfc"

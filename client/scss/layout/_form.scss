@@ -66,6 +66,25 @@
         }
       }
 
+      &.duplicated-department {
+        border: 2px solid #ff5571;
+
+        span {
+          color: lighten($color: #70789e, $amount: 20%);
+
+          &::after {
+            content: "Ya existe esta área";
+            position: absolute;
+            display: inline;
+            width: max-content;
+            font-size: 1rem;
+            top: -1.7rem;
+            left: 0;
+            color: #ff5571;
+          }
+        }
+      }
+
       &.empty {
         border: 2px solid #ff5571;
         span {

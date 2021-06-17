@@ -1,16 +1,16 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { fetchData } from "../functions/fetchData";
-import Notification from "./Notification";
-import { CSSTransition } from "react-transition-group";
+import { AlertContext } from "../context/AlertContext";
 
 const AddDepartment = () => {
   const [focus, setFocus] = useState(false);
-  const [response, setResponse] = useState({ success: false, msg: "" });
-  const [showAlert, setShowAlert] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const ref = useRef(null);
 
   const [department, setDepartment] = useState("");
+
+  const [departmentAlreadyExists, setDepartmentAlreadyExists] = useState(false);
+  const { setResponse, setShowAlert } = useContext(AlertContext);
 
   const changeDepartment = (e) => {
     let value = e.target.value;
@@ -43,6 +43,7 @@ const AddDepartment = () => {
     let trimDepartment = department.trim();
     // If there is a field empty, the field gets focused and tells the user to fill the field
     if (!trimDepartment) {
+      setDepartmentAlreadyExists(false);
       setIsEmpty(true);
       setTimeout(() => {
         ref.current.focus();
@@ -55,6 +56,7 @@ const AddDepartment = () => {
         department_name: trimDepartment,
       });
       // Show message that informs the department has been added successfully
+      setDepartmentAlreadyExists(false);
       setResponse({
         success: true,
         msg: "Se ha agregado correctamente la nueva área",
@@ -62,23 +64,18 @@ const AddDepartment = () => {
       setDepartment("");
     } catch (err) {
       // Show alert the person couldn't have been updated
+      setIsEmpty(true);
+      setDepartmentAlreadyExists(true);
       setResponse({ success: false, msg: err.data.msg });
     }
     setShowAlert(true);
     setFocus(true);
     ref.current.focus();
-    // history.push("/");
   };
 
   useEffect(() => {
     ref.current.focus();
   }, []);
-
-  const removeNotification = () => {
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
-  };
 
   return (
     <form className="form" onSubmit={handleSubmit}>
@@ -86,7 +83,9 @@ const AddDepartment = () => {
         className={
           focus
             ? isEmpty
-              ? "add-input-container selected empty"
+              ? departmentAlreadyExists
+                ? "add-input-container selected duplicated-department"
+                : "add-input-container selected empty"
               : "add-input-container selected"
             : "add-input-container"
         }
@@ -104,30 +103,6 @@ const AddDepartment = () => {
       <button type="submit" className="add-btn update">
         Agregar
       </button>
-
-      <CSSTransition
-        in={showAlert}
-        timeout={300}
-        classNames="alert"
-        unmountOnExit
-        onEnter={() => removeNotification()}
-      >
-        {response.success ? (
-          <Notification
-            header="Operación Exitosa"
-            msg={response.msg}
-            success={true}
-            setShowAlert={setShowAlert}
-          />
-        ) : (
-          <Notification
-            header="Error"
-            msg={response.msg}
-            success={false}
-            setShowAlert={setShowAlert}
-          />
-        )}
-      </CSSTransition>
     </form>
   );
 };
