@@ -8,6 +8,8 @@ import { PersonSubsectionContextProvider } from "./context/PersonSubsectionConte
 import { SearchSubsectionContextProvider } from "./context/SearchSubsectionContext";
 import { DepartmentSubsectionContextProvider } from "./context/DepartmentSubsectionContext";
 import { CurrentSectionContext } from "./context/CurrentSectionContext";
+import { CSSTransition } from "react-transition-group";
+import Notification from "./components/Notification";
 
 // pages
 import Home from "./routes/Home";
@@ -19,11 +21,19 @@ import UploadTaxReceipt from "./routes/UploadTaxReceipt";
 import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
 import { ExportBtnContextProvider } from "./context/ExportBtnContext";
 import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
+import { AlertContext } from "./context/AlertContext";
 
 function App() {
   const { currentSection, isEditPersonSection } = useContext(
     CurrentSectionContext
   );
+  const { response, showAlert, setShowAlert } = useContext(AlertContext);
+
+  const removeNotification = () => {
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  };
   return (
     <Router>
       <div className="main-layout">
@@ -81,6 +91,29 @@ function App() {
             </div>
           </MonthsContextProvider>
           {/* </PeopleContextProvider> */}
+          <CSSTransition
+            in={showAlert}
+            timeout={300}
+            classNames="alert"
+            unmountOnExit
+            onEnter={() => removeNotification()}
+          >
+            {response.success ? (
+              <Notification
+                header="Operación Exitosa"
+                msg={response.msg}
+                success={true}
+                setShowAlert={setShowAlert}
+              />
+            ) : (
+              <Notification
+                header="Error"
+                msg={response.msg}
+                success={false}
+                setShowAlert={setShowAlert}
+              />
+            )}
+          </CSSTransition>
         </div>
       </div>
     </Router>
@@ -88,27 +121,3 @@ function App() {
 }
 
 export default App;
-
-{
-  /* <div className="container">
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Home
-                isInitialSearch={isInitialSearch}
-                setIsInitialSearch={setIsInitialSearch}
-              />
-            </Route>
-            <Route exact path="/people/:rfc/update">
-              <UpdatePage />
-            </Route>
-            <Route exact path="/create/people">
-              <AddPerson />
-            </Route>
-            <Route exact path="/people/:rfc">
-              <PersonDetailPage />
-            </Route>
-          </Switch>
-        </Router>
-      </div> */
-}

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { AlertContext } from "../context/AlertContext";
 import { fetchData } from "../functions/fetchData";
 
 const UpdatePerson = () => {
@@ -19,6 +20,7 @@ const UpdatePerson = () => {
   });
 
   const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
+  const { response, setResponse, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
     first_name: false,
@@ -44,13 +46,17 @@ const UpdatePerson = () => {
   });
 
   const getPerson = async () => {
-    const response = await fetchData("get", `/people/${rfcParam}`);
+    try {
+      const response = await fetchData("get", `/people/${rfcParam}`);
 
-    const foundPerson = response.data.person;
-    if (foundPerson.second_name) {
-      setPerson({ ...foundPerson });
-    } else {
-      setPerson({ ...foundPerson, second_name: "" });
+      const foundPerson = response.data.person;
+      if (foundPerson.second_name) {
+        setPerson({ ...foundPerson });
+      } else {
+        setPerson({ ...foundPerson, second_name: "" });
+      }
+    } catch (err) {
+      // Error Page telling the Person doesn't exist
     }
   };
 
@@ -136,10 +142,19 @@ const UpdatePerson = () => {
     try {
       const response = await fetchData("put", `/people/${rfcParam}`, person);
       // Show message that informs the user the person has been updated successfully
-    } catch (error) {
+      setResponse({
+        success: true,
+        msg: "Se ha modificado correctamente la persona",
+      });
+      setShowAlert(true);
+      history.push("/");
+    } catch (err) {
       // Show alert the person couldn't have been updated
+      setIsEmpty({ ...isEmpty, rfc: true });
+      setResponse({ success: false, msg: err.data.msg });
+      setShowAlert(true);
+      ref.rfc.current.focus();
     }
-    history.push("/");
   };
 
   return (
@@ -273,7 +288,9 @@ const UpdatePerson = () => {
             focus.rfc
               ? isEmpty.rfc
                 ? isRfcLongEnough
-                  ? "add-input-container selected empty"
+                  ? !response.success
+                    ? "add-input-container selected duplicated-rfc"
+                    : "add-input-container selected empty"
                   : "add-input-container selected wrong-rfc"
                 : "add-input-container selected"
               : "add-input-container"

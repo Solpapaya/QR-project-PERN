@@ -125,12 +125,12 @@ app.put("/people/:rfc", async (req, res) => {
           req.params.rfc,
         ]
       );
-      if (results.rowCount === 0) {
-        return res.status(404).json({
-          success: false,
-          msg: `No person with RFC ${req.params.rfc}`,
-        });
-      }
+      // if (results.rowCount === 0) {
+      //   return res.status(404).json({
+      //     success: false,
+      //     msg: `No person with RFC ${req.params.rfc}`,
+      //   });
+      // }
       res.status(200).json({
         success: true,
         data: {
@@ -139,7 +139,17 @@ app.put("/people/:rfc", async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error Updating Person" });
+    if (err.code == 23505) {
+      const { rfc } = req.body;
+      return res.status(409).json({
+        success: false,
+        msg: `Ya existe una persona con el RFC: "${rfc}"`,
+      });
+    }
+    res
+      .status(500)
+      .json({ success: false, msg: "No se pudo actualizar la persona" });
+    // res.status(500).json({ success: false, msg: "Error Updating Person" });
   }
 });
 
@@ -188,7 +198,7 @@ app.post("/people", async (req, res) => {
   } catch (err) {
     if (err.code == 23505) {
       const { rfc } = req.body;
-      return res.status(404).json({
+      return res.status(409).json({
         success: false,
         msg: `Ya existe una persona con el RFC: "${rfc}"`,
       });

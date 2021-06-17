@@ -132,6 +132,7 @@ const AddPerson = () => {
       setTimeout(() => {
         ref.rfc.current.focus();
       }, 100);
+      return;
     }
     // Add person
     try {
@@ -145,7 +146,7 @@ const AddPerson = () => {
       cleanInputs();
       ref.first_name.current.focus();
     } catch (err) {
-      // Show alert the person couldn't have been updated
+      // Show alert the person couldn't have been uploaded
       setResponse({ success: false, msg: err.data.msg });
       setShowAlert(true);
       ref.rfc.current.focus();
