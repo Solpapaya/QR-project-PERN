@@ -3,12 +3,15 @@ import React, { useState, createContext } from "react";
 export const AlertContext = createContext();
 
 export const AlertContextProvider = (props) => {
-  const [alert, setAlert] = useState({ success: false, msg: "" });
+  const [alert, setAlert] = useState({
+    success: false,
+    msg: "",
+    removeOnEnter: true,
+  });
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [warning, setWarning] = useState("");
   const [warningOk, setWarningOk] = useState(false);
-  const [classApplied, setClassApplied] = useState("");
   return (
     <AlertContext.Provider
       value={{
@@ -22,8 +25,6 @@ export const AlertContextProvider = (props) => {
         setWarning,
         warningOk,
         setWarningOk,
-        classApplied,
-        setClassApplied,
       }}
     >
       {props.children}

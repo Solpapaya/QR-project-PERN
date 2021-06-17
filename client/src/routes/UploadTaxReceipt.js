@@ -2,11 +2,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
 import { fetchData } from "../functions/fetchData";
 import { ReactComponent as Upload } from "../icons/uploadTax.svg";
+import { LoadingContext } from "../context/LoadingContext";
+import { AlertContext } from "../context/AlertContext";
+import { MonthsContext } from "../context/MonthsContext";
 
 const UploadTaxReceipt = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
   const [isOver, setIsOver] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const { setShowLoading } = useContext(LoadingContext);
+  const { setAlert, setShowAlert, setAlertTax } = useContext(AlertContext);
+  const { months } = useContext(MonthsContext);
 
   function validateFile(files) {
     if (files.length > 1)
@@ -30,16 +36,34 @@ const UploadTaxReceipt = () => {
       files = dt.files;
     }
     const { boolean, errorInfo } = validateFile(files);
-
     if (boolean) {
       // Decode the QR code and retrieve the Date from the PDF Tax Receipt
       const formData = new FormData();
       formData.append("file", files[0]);
       try {
+        // Show Loading Animation
+        setShowLoading(true);
+        // Make the request
         const response = await fetchData("post", "/taxreceipt", formData, true);
-        console.log({ response });
+        const { full_name, month, year } = response.data;
+        // Hide Loading Animation
+        setShowLoading(false);
+        // Show Alert
+        setAlert({
+          success: true,
+          msg: `El comprobante de ${full_name} para el Año: '${year}' y Mes: '${
+            months[month - 1]
+          }' se ha agregado correctamente`,
+          removeOnEnter: false,
+        });
+        setShowAlert(true);
+        // console.log({ response });
       } catch (err) {
-        console.log(err.data.msg);
+        // Hide Loading Animation
+        setShowLoading(false);
+        // Show Alert
+        setAlert({ success: false, msg: err.data.msg, removeOnEnter: false });
+        setShowAlert(true);
       }
     } else {
       // Alert the user the file is not in PDF format

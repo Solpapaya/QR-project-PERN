@@ -2,13 +2,12 @@ import React, { useContext } from "react";
 import { AlertContext } from "../context/AlertContext";
 
 const Warning = (props) => {
-  const { setWarningOk, setShowWarning, warning, classApplied } =
-    useContext(AlertContext);
+  const { setWarningOk, setShowWarning, warning } = useContext(AlertContext);
 
   return (
     <div className="warning-container">
       <div className="warning__background"></div>
-      <div className={`warning ${classApplied}`}>
+      <div className={`warning ${warning.class}`}>
         <div className="warning__icon">
           <svg
             version="1.1"

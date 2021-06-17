@@ -9,7 +9,11 @@ import { SearchSubsectionContextProvider } from "./context/SearchSubsectionConte
 import { DepartmentSubsectionContextProvider } from "./context/DepartmentSubsectionContext";
 import { CurrentSectionContext } from "./context/CurrentSectionContext";
 import { CSSTransition } from "react-transition-group";
+import { AlertContext } from "./context/AlertContext";
+import { LoadingContext } from "./context/LoadingContext";
 import Notification from "./components/Notification";
+import Warning from "./components/Warning";
+import Loading from "./components/Loading";
 
 // pages
 import Home from "./routes/Home";
@@ -21,21 +25,14 @@ import UploadTaxReceipt from "./routes/UploadTaxReceipt";
 import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
 import { ExportBtnContextProvider } from "./context/ExportBtnContext";
 import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
-import { AlertContext } from "./context/AlertContext";
-import Warning from "./components/Warning";
 
 function App() {
+  const { showLoading } = useContext(LoadingContext);
   const { currentSection, isEditPersonSection } = useContext(
     CurrentSectionContext
   );
-  const {
-    alert,
-    showAlert,
-    setShowAlert,
-    warning,
-    showWarning,
-    setShowWarning,
-  } = useContext(AlertContext);
+  const { alert, showAlert, setShowAlert, showWarning } =
+    useContext(AlertContext);
 
   const removeNotification = () => {
     setTimeout(() => {
@@ -55,7 +52,6 @@ function App() {
               : "main-content"
           }
         >
-          {/* <PeopleContextProvider> */}
           <MonthsContextProvider>
             <div className="main-content-container">
               <Switch>
@@ -98,13 +94,12 @@ function App() {
               </Switch>
             </div>
           </MonthsContextProvider>
-          {/* </PeopleContextProvider> */}
           <CSSTransition
             in={showAlert}
             timeout={300}
             classNames="alert"
             unmountOnExit
-            onEnter={() => removeNotification()}
+            onEnter={alert.removeOnEnter ? () => removeNotification() : ""}
           >
             {alert.success ? (
               <Notification header="Operación Exitosa" success={true} />
@@ -115,6 +110,15 @@ function App() {
         </div>
 
         {showWarning && <Warning />}
+
+        <CSSTransition
+          in={showLoading}
+          timeout={300}
+          classNames="loading"
+          unmountOnExit
+        >
+          <Loading />
+        </CSSTransition>
       </div>
     </Router>
   );

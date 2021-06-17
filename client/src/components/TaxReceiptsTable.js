@@ -18,7 +18,6 @@ const TaxReceiptsTable = () => {
     setWarningOk,
     setAlert,
     setShowAlert,
-    setClassApplied,
   } = useContext(AlertContext);
   // Month Array for convertion
   const { months } = useContext(MonthsContext);
@@ -30,8 +29,7 @@ const TaxReceiptsTable = () => {
     const msg = `¿Estás seguro de que quieres eliminar el comprobante de '${full_name}'
     correspondiente al Mes: '${months[month - 1]}' y Año: '${year}'?`;
     const secondaryMsg = "El comprobante ya no se podrá recuperar";
-    setWarning({ msg, secondaryMsg });
-    setClassApplied("warning--delete");
+    setWarning({ msg, secondaryMsg, class: "warning--delete" });
     setShowWarning(true);
     // try {
     //   await fetchData("delete", `/taxreceipts/${id}`);

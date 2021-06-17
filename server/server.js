@@ -921,7 +921,7 @@ app.post("/taxreceipt", async (req, res) => {
     // // Insertion was successful
     res.status(200).json({ success: true, data: newTaxReceipt });
   } catch (err) {
-    return res.status(500).json({ success: false, msg: err });
+    return res.status(err.status).json({ success: false, msg: err.msg });
   }
 });
 
@@ -949,7 +949,12 @@ const createTaxReceipt = (data) => {
         [rfc]
       );
       const fullName = person.rows[0]["full_name"];
-      reject({ fullName, year, month });
+      reject({
+        status: 409,
+        msg: `El comprobante de ${fullName} para el Año: '${year}' y Mes: '${
+          months[month - 1]
+        }' YA EXISTE`,
+      });
     } else {
       // If Tax Receipt doesn't exist, create a new register in the Tax Receipt table
       try {
@@ -973,7 +978,7 @@ const createTaxReceipt = (data) => {
         );
         resolve(newTaxReceipt.rows[0]);
       } catch (err) {
-        reject("Error Inserting into Database");
+        reject({ status: 500, msg: "Error Inserting into Database" });
       }
     }
   });
@@ -1017,7 +1022,7 @@ const decodePDFTaxReceipt = (req) => {
       // When Python Script ends
       process.on("close", (code) => {
         if (code !== 0) {
-          reject("Error on Python Script");
+          reject({ status: 500, msg: "Error on Python Script" });
         } else {
           resolve(dataFromPythonScript);
         }

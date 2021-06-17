@@ -144,6 +144,7 @@ const AddPerson = () => {
       setAlert({
         success: true,
         msg: "Se ha agregado correctamente la nueva persona",
+        removeOnEnter: true,
       });
       setShowAlert(true);
       cleanInputs();
@@ -152,7 +153,7 @@ const AddPerson = () => {
       // Show alert the person couldn't have been uploaded
       setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
-      setAlert({ success: false, msg: err.data.msg });
+      setAlert({ success: false, msg: err.data.msg, removeOnEnter: true });
       setShowAlert(true);
       ref.rfc.current.focus();
     }

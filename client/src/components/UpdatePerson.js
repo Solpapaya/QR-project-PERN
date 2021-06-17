@@ -150,6 +150,7 @@ const UpdatePerson = () => {
       setAlert({
         success: true,
         msg: "Se ha modificado correctamente la persona",
+        removeOnEnter: true,
       });
       setShowAlert(true);
       history.push("/");
@@ -157,7 +158,7 @@ const UpdatePerson = () => {
       // Show alert the person couldn't have been updated
       setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
-      setAlert({ success: false, msg: err.data.msg });
+      setAlert({ success: false, msg: err.data.msg, removeOnEnter: true });
       setShowAlert(true);
       ref.rfc.current.focus();
     }
