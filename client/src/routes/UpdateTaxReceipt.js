@@ -4,6 +4,8 @@ import { fetchData } from "../functions/fetchData";
 import { MonthsContext } from "../context/MonthsContext";
 import { ReactComponent as Upload } from "../icons/uploadTax.svg";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
+import { AlertContext } from "../context/AlertContext";
+import { LoadingContext } from "../context/LoadingContext";
 
 const UpdateTaxReceipt = () => {
   const idParam = useParams().id;
@@ -11,6 +13,8 @@ const UpdateTaxReceipt = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
   const [isOver, setIsOver] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const { setAlert, setShowAlert } = useContext(AlertContext);
+  const { setShowLoading } = useContext(LoadingContext);
 
   function validateFile(files) {
     if (files.length > 1)
@@ -40,15 +44,39 @@ const UpdateTaxReceipt = () => {
       const formData = new FormData();
       formData.append("file", files[0]);
       try {
+        // Show Loading Animation
+        setShowLoading(true);
         const response = await fetchData(
           "put",
           `/taxreceipts/${idParam}`,
           formData,
           true
         );
+        // Hide Loading Animation
+        setShowLoading(false);
+        const { year, month, full_name, rfc } = response.data;
+        setAlert({
+          success: true,
+          msg: [
+            `Se ha modificado correctamente el Comprobante de ${full_name}.`,
+            `Antes: ${tax.year} - ${months[tax.month - 1]}`,
+            `Ahora: ${year} - ${months[month - 1]}`,
+          ],
+          // msg: `El comprobante de ${full_name} para el Año: '${year}' y Mes: '${
+          //   months[month - 1]
+          // }' se ha agregado correctamente`,
+          removeOnEnter: false,
+        });
+        setShowAlert(true);
+        setTax({ year, month, full_name, rfc });
         console.log({ response });
       } catch (err) {
         console.log(err.data.msg);
+        // Hide Loading Animation
+        setShowLoading(false);
+        // Show Alert
+        setAlert({ success: false, msg: err.data.msg, removeOnEnter: false });
+        setShowAlert(true);
       }
     } else {
       // Alert the user the file is not in PDF format

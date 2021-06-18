@@ -37,7 +37,11 @@ const Notification = (props) => {
       </div>
       <div className="toast__content">
         <p className="toast__type">{props.header}</p>
-        <p className="toast__message">{alert.msg}</p>
+        <div className="toast__message">
+          {alert.msg.map((msg) => {
+            return <span>{msg}</span>;
+          })}
+        </div>
       </div>
       <div className="toast__close" onClick={() => setShowAlert(false)}>
         <svg

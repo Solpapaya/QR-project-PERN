@@ -59,7 +59,7 @@ const AddDepartment = () => {
       setDepartmentAlreadyExists(false);
       setAlert({
         success: true,
-        msg: "Se ha agregado correctamente la nueva área",
+        msg: ["Se ha agregado correctamente la nueva área"],
         removeOnEnter: true,
       });
       setDepartment("");
@@ -67,7 +67,7 @@ const AddDepartment = () => {
       // Show alert the person couldn't have been updated
       setIsEmpty(true);
       setDepartmentAlreadyExists(true);
-      setAlert({ success: false, msg: err.data.msg, removeOnEnter: true });
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
     }
     setShowAlert(true);
     setFocus(true);

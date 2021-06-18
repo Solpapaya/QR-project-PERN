@@ -760,7 +760,7 @@ app.put("/taxreceipts/:id", async (req, res) => {
     // Get the RFC and Date of the tax receipt that wants to be updated
     const currentData = await getDataFromCurrentTax(id);
 
-    const { month, year, rfc } = currentData;
+    const { month, year, rfc, full_name } = currentData;
 
     // Decode QR code & get date from the new PDF Tax Receipt
     const decodedData = await decodePDFTaxReceipt(req);
@@ -771,14 +771,16 @@ app.put("/taxreceipts/:id", async (req, res) => {
     if (newData.rfc !== rfc)
       return res.status(400).json({
         success: false,
-        msg: `The tax receipt you want to upload is not from the same person you want to modify it from`,
+        msg: [`El comprobante que deseas subir no pertenece a '${full_name}'`],
+        // msg: `The tax receipt you want to upload is not from the same person you want to modify it from`,
       });
 
     const splittedDate = splitDate(newData.date);
     if (splittedDate.year === year && splittedDate.month === month) {
       return res.status(403).json({
         success: false,
-        msg: `The tax receipt you want to update with is the same as the current one`,
+        msg: [`El Comprobante que deseas subir es el mismo que el actual`],
+        // msg: `The tax receipt you want to update with is the same as the current one`,
       });
     }
 
@@ -786,7 +788,8 @@ app.put("/taxreceipts/:id", async (req, res) => {
     await checkTaxAlreadyExists(
       splittedDate.year,
       splittedDate.month,
-      newData.rfc
+      newData.rfc,
+      full_name
     );
 
     // Updates the tax receipt
@@ -795,19 +798,28 @@ app.put("/taxreceipts/:id", async (req, res) => {
       id
     );
 
-    res.status(200).json({ success: true });
+    res.status(200).json({
+      success: true,
+      data: {
+        full_name,
+        rfc: newData.rfc,
+        year: splittedDate.year,
+        month: splittedDate.month,
+      },
+    });
   } catch (err) {
     if (err.status) {
       res.status(err.status).json({ success: false, msg: err.msg });
     } else {
       res
         .status(500)
-        .json({ success: false, msg: "Error Updating Tax Receipt" });
+        .json({ success: false, msg: ["Error al Actualizar el Comprobante"] });
+      // .json({ success: false, msg: ["Error Updating Tax Receipt"] });
     }
   }
 });
 
-const checkTaxAlreadyExists = (year, month, rfc) => {
+const checkTaxAlreadyExists = (year, month, rfc, full_name) => {
   return new Promise(async (resolve, reject) => {
     try {
       const result = await db.query(
@@ -820,9 +832,18 @@ const checkTaxAlreadyExists = (year, month, rfc) => {
       if (result.rows.length > 0) {
         reject({
           status: 409,
-          msg: `Error, There is already a Tax Receipt with the Month: ${
-            months[month - 1]
-          } and Year: ${year}`,
+          msg: [
+            "Ya existe este comprobante",
+            `De: ${full_name}`,
+            `Año: ${year}`,
+            `Mes: ${months[month - 1]}`,
+          ],
+          // msg: `Ya existe un Comprobante con el Mes: '${
+          //   months[month - 1]
+          // }' y Año: '${year}'`,
+          // msg: `Error, There is already a Tax Receipt with the Month: ${
+          //   months[month - 1]
+          // } and Year: ${year}`,
         });
       } else {
         resolve();
@@ -951,9 +972,15 @@ const createTaxReceipt = (data) => {
       const fullName = person.rows[0]["full_name"];
       reject({
         status: 409,
-        msg: `El comprobante de ${fullName} para el Año: '${year}' y Mes: '${
-          months[month - 1]
-        }' YA EXISTE`,
+        msg: [
+          "Ya existe este comprobante",
+          `De: ${fullName}`,
+          `Año: ${year}`,
+          `Mes: ${months[month - 1]}`,
+        ],
+        // msg: `El comprobante de ${fullName} para el Año: '${year}' y Mes: '${
+        //   months[month - 1]
+        // }' YA EXISTE`,
       });
     } else {
       // If Tax Receipt doesn't exist, create a new register in the Tax Receipt table

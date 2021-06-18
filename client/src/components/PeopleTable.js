@@ -66,8 +66,7 @@ const PeopleTable = () => {
     personName += ` ${person.surname} ${person.second_surname}`;
     const msg = `¿Estás seguro de que quieres ${personNextStatus} a ${personName}?`;
     const secondaryMsg = "Esto hará cambiar su estado";
-    setWarning({ msg, secondaryMsg });
-    setClassApplied("");
+    setWarning({ msg, secondaryMsg, class: "" });
     setShowWarning(true);
   };
 

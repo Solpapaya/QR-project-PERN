@@ -74,6 +74,8 @@
     margin-top: 0;
     margin-bottom: 0;
     color: #878787;
+    display: flex;
+    flex-direction: column;
   }
 
   .toast__content {

@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AlertContext } from "../context/AlertContext";
 import { fetchData } from "../functions/fetchData";
+import { CurrentSectionContext } from "../context/CurrentSectionContext";
 
 const UpdatePerson = () => {
   const rfcParam = useParams().rfc;
   let history = useHistory();
+  const { setIsEditPersonSection } = useContext(CurrentSectionContext);
   const [departments, setDepartments] = useState([]);
   const [isFilterDepartmentExpanded, setIsFilterDepartmentExpanded] =
     useState(false);
@@ -56,6 +58,10 @@ const UpdatePerson = () => {
       } else {
         setPerson({ ...foundPerson, second_name: "" });
       }
+      if (!foundPerson.department_name)
+        setPerson((prevState) => {
+          return { ...prevState, department_name: "" };
+        });
     } catch (err) {
       // Error Page telling the Person doesn't exist
     }
@@ -124,9 +130,11 @@ const UpdatePerson = () => {
           ...isEmpty,
           [prop]: true,
         });
-        setTimeout(() => {
-          ref[prop].current.focus();
-        }, 100);
+        if (!prop === "department_name") {
+          setTimeout(() => {
+            ref[prop].current.focus();
+          }, 100);
+        }
         return;
       }
     }
@@ -149,7 +157,7 @@ const UpdatePerson = () => {
       setRfcAlreadyExists(false);
       setAlert({
         success: true,
-        msg: "Se ha modificado correctamente la persona",
+        msg: ["Se ha modificado correctamente la persona"],
         removeOnEnter: true,
       });
       setShowAlert(true);
@@ -158,14 +166,20 @@ const UpdatePerson = () => {
       // Show alert the person couldn't have been updated
       setRfcAlreadyExists(true);
       setIsEmpty({ ...isEmpty, rfc: true });
-      setAlert({ success: false, msg: err.data.msg, removeOnEnter: true });
+      setIsRfcLongEnough(true);
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
       setShowAlert(true);
       ref.rfc.current.focus();
     }
   };
 
+  useEffect(() => {
+    setIsEditPersonSection(true);
+  }, []);
+
   return (
     <div>
+      {console.log({ person })}
       <form className="form" onSubmit={handleSubmit}>
         <div
           className={

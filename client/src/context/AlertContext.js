@@ -10,7 +10,11 @@ export const AlertContextProvider = (props) => {
   });
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [warning, setWarning] = useState("");
+  const [warning, setWarning] = useState({
+    msg: "",
+    secondaryMsg: "",
+    class: "",
+  });
   const [warningOk, setWarningOk] = useState(false);
   return (
     <AlertContext.Provider
