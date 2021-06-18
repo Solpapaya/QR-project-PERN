@@ -1014,8 +1014,10 @@ const createTaxReceipt = (data) => {
 const decodePDFTaxReceipt = (req) => {
   return new Promise((resolve, reject) => {
     let dataFromPythonScript = [];
+    let tmpFile;
     const busboy = new Busboy({ headers: req.headers });
     busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+      tmpFile = path.join(tmpDirectory, filename);
       busboy.tmpPath = path.join(tmpDirectory, filename);
       // Receives chunk of data, when it receives a chunk of data it is stored in a
       // new file inside the 'tmp' directory. The new file name is the same as the
@@ -1048,9 +1050,15 @@ const decodePDFTaxReceipt = (req) => {
       });
       // When Python Script ends
       process.on("close", (code) => {
-        if (dataFromPythonScript.includes("Python Script Error\n"))
+        if (dataFromPythonScript.includes("Python Script Error\n")) {
           reject({ status: 500, msg: ["No se pudo leer el Código QR"] });
-        else resolve(dataFromPythonScript);
+          try {
+            fs.unlinkSync(tmpFile);
+            //file removed
+          } catch (err) {
+            console.log(err);
+          }
+        } else resolve(dataFromPythonScript);
       });
     });
     req.pipe(busboy);
