@@ -28,7 +28,11 @@ const Warning = (props) => {
           </svg>
         </div>
         <div className="warning__content">
-          <p className="warning__type">{warning.msg}</p>
+          <div className="warning__type">
+            {warning.msg.map((msg) => {
+              return <span>{msg}</span>;
+            })}
+          </div>
           <p className="warning__message">{warning.secondaryMsg}</p>
         </div>
         <div className="warning__buttons">

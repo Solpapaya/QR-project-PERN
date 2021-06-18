@@ -26,8 +26,12 @@ const TaxReceiptsTable = () => {
 
   const deleteHandler = async (tax) => {
     const { full_name, month, year } = tax;
-    const msg = `¿Estás seguro de que quieres eliminar el comprobante de '${full_name}'
-    correspondiente al Mes: '${months[month - 1]}' y Año: '${year}'?`;
+    const msg = [
+      `¿Estás seguro de que quieres eliminar este comprobante?`,
+      `De: ${full_name}`,
+      `Año: ${year}`,
+      `Mes: ${months[month - 1]}`,
+    ];
     const secondaryMsg = "El comprobante ya no se podrá recuperar";
     setWarning({ msg, secondaryMsg, class: "warning--delete" });
     setShowWarning(true);
