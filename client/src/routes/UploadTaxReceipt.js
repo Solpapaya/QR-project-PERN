@@ -74,8 +74,8 @@ const UploadTaxReceipt = () => {
       }
     } else {
       // Alert the user the file is not in PDF format
-      console.log({ errorInfo });
-      // showErrorAlert(errorInfo);
+      setAlert({ success: false, msg: [errorInfo], removeOnEnter: false });
+      setShowAlert(true);
     }
   };
 

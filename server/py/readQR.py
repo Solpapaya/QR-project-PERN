@@ -57,9 +57,9 @@ try:
    # Windows need Poppler Path
    # images = convert_from_path(pdf_path = pdfPath, poppler_path = popplerPath)
 
-   # Mac doesn't need Popple Path
+   # Mac doesn't need Poppler Path
    images = convert_from_path(pdf_path = pdfPath)
-   print(images)
+   # print(images)
    read_barcodes(images[0])
    read_date(images[0])
    delete_file(pdfPath)

@@ -69,9 +69,7 @@ const UpdateTaxReceipt = () => {
         });
         setShowAlert(true);
         setTax({ year, month, full_name, rfc });
-        console.log({ response });
       } catch (err) {
-        console.log(err.data.msg);
         // Hide Loading Animation
         setShowLoading(false);
         // Show Alert
@@ -80,8 +78,8 @@ const UpdateTaxReceipt = () => {
       }
     } else {
       // Alert the user the file is not in PDF format
-      console.log({ errorInfo });
-      // showErrorAlert(errorInfo);
+      setAlert({ success: false, msg: [errorInfo], removeOnEnter: false });
+      setShowAlert(true);
     }
   };
 

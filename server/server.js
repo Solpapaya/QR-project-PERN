@@ -1048,11 +1048,9 @@ const decodePDFTaxReceipt = (req) => {
       });
       // When Python Script ends
       process.on("close", (code) => {
-        if (code !== 0) {
-          reject({ status: 500, msg: "Error on Python Script" });
-        } else {
-          resolve(dataFromPythonScript);
-        }
+        if (dataFromPythonScript.includes("Python Script Error\n"))
+          reject({ status: 500, msg: ["No se pudo leer el Código QR"] });
+        else resolve(dataFromPythonScript);
       });
     });
     req.pipe(busboy);
