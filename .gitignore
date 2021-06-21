@@ -9,6 +9,7 @@
 /server/functions/permutationsTest.js
 /server/serverCopy.js
 /server/tmp
+/server/.env
 
 # ------------------------------------------------------------------- #
 # Client

@@ -37,7 +37,8 @@ const PeopleTable = () => {
       );
       setAlert({
         success: true,
-        msg: "Se ha cambiado correctamente el estado de la persona",
+        msg: ["Se ha cambiado correctamente el estado de la persona"],
+        removeOnEnter: true,
       });
       setShowAlert(true);
       const newPeople = people.map((person) => {
@@ -49,7 +50,7 @@ const PeopleTable = () => {
       setPeople(newPeople);
     } catch (err) {
       // Create Alert
-      setAlert({ success: false, msg: err.data.msg });
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
       setShowAlert(true);
     }
     setWarningOk(false);
