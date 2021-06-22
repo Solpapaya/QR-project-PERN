@@ -7,11 +7,10 @@ const issueJWT = (user) => {
     try {
       const { id } = user;
 
-      const expiresIn = 60 * 2; // 2 minutes
+      const expiresIn = "1h"; // 1hour or 60*60
 
       const payload = {
         sub: id,
-        iat: Date.now(),
       };
 
       const signedToken = await jsonwebtoken.sign(payload, PRIV_KEY, {

@@ -7,7 +7,10 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5001;
 
+// DIRECTORIES
 const { tmpDirectory, keyPairDirectory } = require("./consts/variables");
+
+// Function that generates keys
 const { generateKeyPair } = require("./functions/generateKeyPair");
 
 // Creates new directory for storing temporary files if it doesn't already exist
@@ -34,6 +37,12 @@ app.use("/taxreceipts", require("./routes/taxReceipts"));
 app.use("/person", require("./routes/person"));
 app.use("/users", require("./routes/users"));
 app.use("/login", require("./routes/login"));
+
+const { authUser, authRole } = require("./middleware/authorization");
+app.get("/test", authUser, authRole("Master"), (req, res) => {
+  const { payload } = req;
+  res.send({ success: true, payload });
+});
 
 app.listen(port, () => {
   console.log(`Server Listening on port ${port}`);
