@@ -8,6 +8,7 @@
 /server/functions/permutationsCopy.js
 /server/functions/permutationsTest.js
 /server/serverCopy.js
+/server/keys
 /server/tmp
 /server/.env
 

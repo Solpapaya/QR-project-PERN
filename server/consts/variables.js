@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 
 // Month Array for convertion
 const months = [
@@ -20,7 +21,17 @@ const months = [
 const dirname = path.dirname(__dirname);
 const tmpDirectory = path.resolve(dirname, "tmp");
 
+// Path for saving key pair
+const keyPairDirectory = path.resolve(dirname, "keys");
+
+// Path to keys
+const PRIV_KEY = fs.readFileSync(keyPairDirectory + "/rsa_priv.pem", "utf8");
+const PUB_KEY = fs.readFileSync(keyPairDirectory + "/rsa_pub.pem", "utf8");
+
 module.exports = {
   months,
   tmpDirectory,
+  keyPairDirectory,
+  PRIV_KEY,
+  PUB_KEY,
 };

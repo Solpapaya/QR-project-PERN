@@ -4,7 +4,7 @@ const router = require("express").Router();
 const db = require("../db/index");
 
 // --------------------------------IMPORTING FUNCTIONS--------------------------------
-const { generatePassword } = require("../functions/generatePassword");
+const { generatePassword } = require("../functions/passwords");
 
 // --------------------------------ROUTES--------------------------------
 router.post("/", async (req, res) => {

@@ -7,10 +7,16 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5001;
 
-const { tmpDirectory } = require("./consts/variables");
+const { tmpDirectory, keyPairDirectory } = require("./consts/variables");
+const { generateKeyPair } = require("./functions/generateKeyPair");
+
 // Creates new directory for storing temporary files if it doesn't already exist
-if (!fs.existsSync(tmpDirectory)) {
-  fs.mkdirSync(tmpDirectory);
+if (!fs.existsSync(tmpDirectory)) fs.mkdirSync(tmpDirectory);
+
+// Generate Key Pair For Signing and Verifying JWT Tokens
+if (!fs.existsSync(keyPairDirectory)) {
+  fs.mkdirSync(keyPairDirectory);
+  generateKeyPair(keyPairDirectory);
 }
 
 // Accept request from other domains
@@ -20,9 +26,6 @@ app.use(express.urlencoded({ extended: false }));
 // parse json
 app.use(express.json());
 
-const { getDate } = require("./functions/getDate");
-getDate();
-
 // ------------------------------------ROUTES------------------------------------
 app.use("/people", require("./routes/people"));
 app.use("/departments", require("./routes/departments"));
@@ -30,6 +33,7 @@ app.use("/statuslogs", require("./routes/statusLogs"));
 app.use("/taxreceipts", require("./routes/taxReceipts"));
 app.use("/person", require("./routes/person"));
 app.use("/users", require("./routes/users"));
+app.use("/login", require("./routes/login"));
 
 app.listen(port, () => {
   console.log(`Server Listening on port ${port}`);
