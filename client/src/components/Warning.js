@@ -47,7 +47,10 @@ const Warning = (props) => {
           </button>
           <button
             className="cancel-btn warning-btn"
-            onClick={() => setShowWarning(false)}
+            onClick={() => {
+              setWarningOk(false);
+              setShowWarning(false);
+            }}
           >
             Cancelar
           </button>

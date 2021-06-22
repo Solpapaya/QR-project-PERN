@@ -44,7 +44,12 @@ const UploadTaxReceipt = () => {
         // Show Loading Animation
         setShowLoading(true);
         // Make the request
-        const response = await fetchData("post", "/taxreceipt", formData, true);
+        const response = await fetchData(
+          "post",
+          "/taxreceipts",
+          formData,
+          true
+        );
         const { full_name, month, year } = response.data;
         // Hide Loading Animation
         setShowLoading(false);
