@@ -29,6 +29,7 @@ app.use("/departments", require("./routes/departments"));
 app.use("/statuslogs", require("./routes/statusLogs"));
 app.use("/taxreceipts", require("./routes/taxReceipts"));
 app.use("/person", require("./routes/person"));
+app.use("/users", require("./routes/users"));
 
 app.listen(port, () => {
   console.log(`Server Listening on port ${port}`);

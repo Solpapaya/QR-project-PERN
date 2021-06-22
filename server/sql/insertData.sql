@@ -1,3 +1,12 @@
+INSERT INTO user_type (type) VALUES
+('Master'),
+('Admin'),
+('Consulta');
+
+INSERT INTO users (first_name, second_name, surname, second_surname, email, password,
+salt, type_id) VALUES
+('Bruno', null, 'Mars', 'Jutton', 'bm@gmail.com', 'bm123', 'gfh', 1);
+
 INSERT INTO person (first_name, second_name, surname, second_surname, rfc, department_id, active, creation_date) VALUES 
 ('Cristian', null, 'Castro', 'Perez', 'CAPC760418AZU', '1', '1', '2021-02-23'),
 ('Federico', null, 'Vilar', 'Gutierrez', 'VIGF930125PJK', '1', '1', '2021-05-13'),
@@ -37,16 +46,6 @@ WITH inserted AS (
     ('2018-01-23', 'GRPA920113WSD') 
     RETURNING *
 )
-SELECT EXTRACT(YEAR FROM inserted.date) as year, 
-EXTRACT(MONTH FROM inserted.date) as month,
-person.first_name || ' ' || 
-COALESCE(person.second_name || ' ', '') || 
-person.surname || ' ' || 
-person.second_surname as full_name, person.rfc
-FROM inserted
-INNER JOIN person 
-ON inserted.rfc_emitter = person.rfc;
-
 
 INSERT INTO comprobante_fiscal (fecha_emision, rfc_emisor) VALUES
 ('2019-01-04', 'SUCC961125A15');
