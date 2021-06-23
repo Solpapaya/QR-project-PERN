@@ -1,7 +1,11 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-// import { PeopleContextProvider } from "./context/PeopleContext";
 import AddPerson from "./routes/AddPerson";
 import { MonthsContextProvider } from "./context/MonthsContext";
 import { PersonSubsectionContextProvider } from "./context/PersonSubsectionContext";
@@ -14,6 +18,8 @@ import { LoadingContext } from "./context/LoadingContext";
 import Notification from "./components/Notification";
 import Warning from "./components/Warning";
 import Loading from "./components/Loading";
+import { ExportBtnContextProvider } from "./context/ExportBtnContext";
+import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
 
 // pages
 import Home from "./routes/Home";
@@ -23,8 +29,7 @@ import Departments from "./routes/Departments";
 import DepartmentUpdate from "./routes/DepartmentUpdate";
 import UploadTaxReceipt from "./routes/UploadTaxReceipt";
 import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
-import { ExportBtnContextProvider } from "./context/ExportBtnContext";
-import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
+import Login from "./routes/Login";
 
 function App() {
   const { showLoading } = useContext(LoadingContext);
@@ -39,22 +44,26 @@ function App() {
       setShowAlert(false);
     }, 3000);
   };
+
   return (
     <Router>
-      <div className="main-layout">
-        <Sidebar />
-        <div
-          className={
-            currentSection === 1 && !isEditPersonSection
-              ? "main-content search"
-              : currentSection === 2
-              ? "main-content upload-tax"
-              : "main-content"
-          }
-        >
-          <MonthsContextProvider>
-            <div className="main-content-container">
-              <Switch>
+      <Switch>
+        <Route exact path="/login">
+          <Login />
+        </Route>
+        <div className="main-layout">
+          <Sidebar />
+          <div
+            className={
+              currentSection === 1 && !isEditPersonSection
+                ? "main-content search"
+                : currentSection === 2
+                ? "main-content upload-tax"
+                : "main-content"
+            }
+          >
+            <MonthsContextProvider>
+              <div className="main-content-container">
                 <Route exact path="/">
                   <SearchSubsectionContextProvider>
                     <ExportBtnContextProvider>
@@ -91,35 +100,35 @@ function App() {
                 <Route exact path="/departments/:id/update">
                   <DepartmentUpdate />
                 </Route>
-              </Switch>
-            </div>
-          </MonthsContextProvider>
+              </div>
+            </MonthsContextProvider>
+            <CSSTransition
+              in={showAlert}
+              timeout={300}
+              classNames="alert"
+              unmountOnExit
+              onEnter={alert.removeOnEnter ? () => removeNotification() : ""}
+            >
+              {alert.success ? (
+                <Notification header="Operación Exitosa" success={true} />
+              ) : (
+                <Notification header="Error" success={false} />
+              )}
+            </CSSTransition>
+          </div>
+
+          {showWarning && <Warning />}
+
           <CSSTransition
-            in={showAlert}
+            in={showLoading}
             timeout={300}
-            classNames="alert"
+            classNames="loading"
             unmountOnExit
-            onEnter={alert.removeOnEnter ? () => removeNotification() : ""}
           >
-            {alert.success ? (
-              <Notification header="Operación Exitosa" success={true} />
-            ) : (
-              <Notification header="Error" success={false} />
-            )}
+            <Loading />
           </CSSTransition>
         </div>
-
-        {showWarning && <Warning />}
-
-        <CSSTransition
-          in={showLoading}
-          timeout={300}
-          classNames="loading"
-          unmountOnExit
-        >
-          <Loading />
-        </CSSTransition>
-      </div>
+      </Switch>
     </Router>
   );
 }

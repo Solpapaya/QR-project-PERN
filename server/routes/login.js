@@ -6,10 +6,17 @@ const db = require("../db/index");
 // --------------------------------IMPORTING FUNCTIONS--------------------------------
 const { validatePassword } = require("../functions/passwords");
 const { issueJWT } = require("../functions/issueJWT");
+const { validEmail } = require("../functions/email");
 
 router.post("/", async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!validEmail(email)) {
+      return res
+        .status(401)
+        .json({ success: false, msg: "Credenciales inválidas" });
+    }
 
     const user = await searchUser(email);
     if (validatePassword(password, user.password, user.salt)) {
