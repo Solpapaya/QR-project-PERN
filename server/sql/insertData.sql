@@ -5,7 +5,7 @@ INSERT INTO user_type (type) VALUES
 
 INSERT INTO users (first_name, second_name, surname, second_surname, email, password,
 salt, type_id) VALUES
-('Bruno', null, 'Mars', 'Jutton', 'bm@gmail.com', 'bm123', 'gfh', 1);
+('Bruno', null, 'Mars', 'Jutton', 'bm@gmail.com', '123', 'gfh', 1);
 
 INSERT INTO person (first_name, second_name, surname, second_surname, rfc, department_id, active, creation_date) VALUES 
 ('Cristian', null, 'Castro', 'Perez', 'CAPC760418AZU', '1', '1', '2021-02-23'),

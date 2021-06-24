@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
-import { Route, Switch } from "react-router";
+import React from "react";
 
 const NotFound = () => {
-  return <div>Not Found</div>;
+  return <div>Not Found :(</div>;
 };
 
 export default NotFound;

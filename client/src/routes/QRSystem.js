@@ -1,22 +1,23 @@
-import React from "react";
-import { Route, Switch } from "react-router";
-import NotFound from "./NotFound";
+import React, { useContext } from "react";
+import { Redirect } from "react-router";
+import { AuthContext } from "../context/AuthContext";
+import { CurrentSectionContextProvider } from "../context/CurrentSectionContext";
+import { LoadingContextProvider } from "../context/LoadingContext";
+import Admin from "./admin/Admin";
+import Master from "./master/Master";
+import OnlyView from "./onlyView/OnlyView";
+import Routes from "./Routes";
 
 const QRSystem = () => {
+  const { user } = useContext(AuthContext);
   return (
-    <>
-      <Switch>
-        <Route exact path={["/", "/people", "test"]}>
-          <div className="container">
-            <div>QR System</div>
-            <div>Home</div>
-          </div>
-        </Route>
-        <Route exact path="*">
-          <NotFound />
-        </Route>
-      </Switch>
-    </>
+    <CurrentSectionContextProvider>
+      <LoadingContextProvider>
+        {user.type === "Master" && <Master />}
+        {(user.type === "Admin" || user.type === "Master") && <Admin />}
+        {user.type === "Consulta" && <OnlyView />}
+      </LoadingContextProvider>
+    </CurrentSectionContextProvider>
   );
 };
 
