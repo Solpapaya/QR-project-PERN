@@ -6,15 +6,15 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import { AlertContextProvider } from "./context/AlertContext";
+import { AlertContextProvider } from "./global/context/AlertContext";
 
-import { AuthContext } from "./context/AuthContext";
-import { fetchData } from "./functions/fetchData";
+import { AuthContext } from "./global/context/AuthContext";
+import { fetchData } from "./global/functions/fetchData";
 
 // pages
-import Login from "./routes/Login";
-import NotFound from "./routes/NotFound";
-import QRSystem from "./routes/QRSystem";
+import Login from "./global/routes/Login";
+import NotFound from "./global/routes/NotFound";
+import QRSystem from "./global/routes/QRSystem";
 
 function App() {
   const { user, setUser, authIsDone, setAuthIsDone } = useContext(AuthContext);

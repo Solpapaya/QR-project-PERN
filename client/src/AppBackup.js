@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-import AddPerson from "./routes/AddPerson";
+import AddPerson from "./users/admin/routes/AddPerson";
 import { MonthsContextProvider } from "./context/MonthsContext";
 import { PersonSubsectionContextProvider } from "./context/PersonSubsectionContext";
 import { SearchSubsectionContextProvider } from "./context/SearchSubsectionContext";
@@ -24,11 +24,11 @@ import { PersonDetailContextProvider } from "./context/PersonDetailsContext";
 // pages
 import Home from "./routes/Home";
 import PersonDetailPage from "./routes/PersonDetailPage";
-import UpdatePage from "./routes/UpdatePage";
+import UpdatePage from "./routes/admin/UpdatePage";
 import Departments from "./routes/Departments";
 import DepartmentUpdate from "./routes/DepartmentUpdate";
 import UploadTaxReceipt from "./routes/UploadTaxReceipt";
-import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
+import UpdateTaxReceipt from "./routes/admin/UpdateTaxReceipt";
 import Login from "./routes/Login";
 import { fetchData } from "./functions/fetchData";
 import NotFound from "./routes/NotFound";
