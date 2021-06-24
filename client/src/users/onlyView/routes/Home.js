@@ -10,6 +10,8 @@ import { SearchTaxReceiptsContextProvider } from "../context/SearchTaxReceiptsCo
 import { SearchStatusLogsContextProvider } from "../context/SearchStatusLogsContext";
 import { ExportBtnContext } from "../context/ExportBtnContext";
 import People from "../components/People";
+import TaxReceipts from "../components/TaxReceipts";
+import StatusLogs from "../components/StatusLogs";
 
 const Home = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
@@ -36,13 +38,11 @@ const Home = () => {
         </SearchContextProvider>
       ) : searchSection === 2 ? (
         <SearchTaxReceiptsContextProvider>
-          {/* <TaxReceipts /> */}
-          <div>Taxes</div>
+          <TaxReceipts />
         </SearchTaxReceiptsContextProvider>
       ) : (
         <SearchStatusLogsContextProvider>
-          {/* <StatusLogs /> */}
-          <div>StatusLogsss</div>
+          <StatusLogs />
         </SearchStatusLogsContextProvider>
       )}
     </>

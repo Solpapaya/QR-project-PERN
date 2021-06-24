@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import SearchForm from "./SearchForm";
-// import PeopleList from "./PeopleList";
+import PeopleList from "./PeopleList";
 import { fetchData } from "../../../global/functions/fetchData";
 import { SearchContext } from "../context/SearchContext";
 
@@ -29,7 +29,7 @@ const People = () => {
       {initialSearch && (
         <>
           <SearchForm />
-          {/* <PeopleList /> */}
+          <PeopleList />
         </>
       )}
     </>

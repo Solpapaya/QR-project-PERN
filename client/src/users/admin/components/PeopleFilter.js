@@ -106,7 +106,7 @@ const PeopleFilter = () => {
           style={
             isFilterDepartmentExpanded
               ? {
-                  minHeight: `${(departments.length + 2) * 3.5}rem`,
+                  minHeight: `${(departments.length + 3) * 3.5}rem`,
                 }
               : {}
           }
