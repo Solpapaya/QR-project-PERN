@@ -21,7 +21,8 @@ router.post("/", async (req, res) => {
     const user = await searchUser(email);
     if (validatePassword(password, user.password, user.salt)) {
       const { token, expires } = await issueJWT(user);
-      res.send({ token, expires });
+      const { type } = user;
+      res.send({ token, expires, userType: type });
     } else {
       res.status(401).json({ success: false, msg: "Credenciales inválidas" });
     }
@@ -39,14 +40,17 @@ const searchUser = (email) => {
   return new Promise(async (resolve, reject) => {
     try {
       const results = await db.query(
-        `SELECT * 
-            FROM users WHERE email = $1`,
+        `SELECT users.*, user_type.type                              
+        FROM users INNER JOIN user_type                                  
+        ON users.type_id = user_type.id                                  
+        WHERE users.email = $1`,
         [email]
       );
 
       if (results.rowCount > 0) resolve(results.rows[0]);
       else reject({ status: 401, msg: "Credenciales inválidas" });
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   });

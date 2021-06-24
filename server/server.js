@@ -37,12 +37,13 @@ app.use("/taxreceipts", require("./routes/taxReceipts"));
 app.use("/person", require("./routes/person"));
 app.use("/users", require("./routes/users"));
 app.use("/login", require("./routes/login"));
+app.use("/auth", require("./routes/auth"));
 
-const { authUser, authRole } = require("./middleware/authorization");
-app.get("/test", authUser, authRole("Master"), (req, res) => {
-  const { payload } = req;
-  res.send({ success: true, payload });
-});
+// const { authUser, authRole } = require("./middleware/authorization");
+// app.get("/test", authUser, authRole("Master"), (req, res) => {
+//   const { payload } = req;
+//   res.send({ success: true, payload });
+// });
 
 app.listen(port, () => {
   console.log(`Server Listening on port ${port}`);

@@ -4,7 +4,7 @@ import Notification from "../components/Notification";
 import { AlertContext } from "../context/AlertContext";
 import { fetchData } from "../functions/fetchData";
 
-const Login = () => {
+const Login = (props) => {
   const { setAlert, showAlert, setShowAlert } = useContext(AlertContext);
 
   const [user, setUser] = useState({
@@ -83,7 +83,10 @@ const Login = () => {
     // Send User Credentials
     try {
       const response = await fetchData("post", "/login", user);
-      console.log("Logged in");
+      const { token, expires, userType } = response;
+      localStorage.setItem("token", token);
+      props.setUser({ isAuth: true, type: userType });
+      props.askIsAuth(expires);
     } catch (err) {
       // Show alert credentials are invalid
       setFocus({ email: true, password: true });
@@ -92,6 +95,7 @@ const Login = () => {
       // setAlert({ ...alert, msg: [err.data.msg] });
       setShowAlert(true);
     }
+    props.setAuthIsDone(true);
   };
 
   const removeNotification = () => {
@@ -113,7 +117,6 @@ const Login = () => {
           <h3>Inicia Sesión</h3>
         </div>
         <div className="login-inputs">
-          {console.log({ isInvalid, focus, isEmpty })}
           <div
             className={
               isInvalid.email

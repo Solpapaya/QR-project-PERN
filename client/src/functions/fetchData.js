@@ -5,7 +5,9 @@ export const fetchData = (method, url, obj, uploadFile = false) => {
     switch (method) {
       case "get":
         try {
-          const response = await PeopleFinder.get(url);
+          let response;
+          if (obj) response = await PeopleFinder.get(url, obj);
+          else response = await PeopleFinder.get(url);
           resolve(response.data);
         } catch (err) {
           // Check if can generate an alert from this function

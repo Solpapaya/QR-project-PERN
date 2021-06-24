@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -30,9 +30,20 @@ import DepartmentUpdate from "./routes/DepartmentUpdate";
 import UploadTaxReceipt from "./routes/UploadTaxReceipt";
 import UpdateTaxReceipt from "./routes/UpdateTaxReceipt";
 import Login from "./routes/Login";
+import { fetchData } from "./functions/fetchData";
+import NotFound from "./routes/NotFound";
+import Test from "./routes/QRSystem";
+import QRSystem from "./routes/QRSystem";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
   const { showLoading } = useContext(LoadingContext);
+  //   const [user, setUser] = useState({
+  //     isAuth: false,
+  //     type: "",
+  //   });
+  //   const [authIsDone, setAuthIsDone] = useState(false);
+  const { user, setUser, authIsDone, setAuthIsDone } = useContext(AuthContext);
   const { currentSection, isEditPersonSection } = useContext(
     CurrentSectionContext
   );
@@ -45,90 +56,51 @@ function App() {
     }, 3000);
   };
 
+  const isAuth = async () => {
+    try {
+      const headers = { token: localStorage.token };
+      const response = await fetchData("get", "/auth", { headers });
+      setUser({ isAuth: response.isAuth, type: response.userType });
+    } catch (err) {
+      setUser({ isAuth: false, type: "" });
+    }
+    setAuthIsDone(true);
+  };
+
+  const askIsAuth = (time) => {
+    const timeInterval = parseInt(time + "000");
+    setInterval(() => {
+      isAuth();
+    }, timeInterval);
+  };
+
+  useEffect(() => {
+    isAuth();
+  }, []);
+
   return (
     <Router>
-      <Switch>
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <div className="main-layout">
-          <Sidebar />
-          <div
-            className={
-              currentSection === 1 && !isEditPersonSection
-                ? "main-content search"
-                : currentSection === 2
-                ? "main-content upload-tax"
-                : "main-content"
-            }
-          >
-            <MonthsContextProvider>
-              <div className="main-content-container">
-                <Route exact path="/">
-                  <SearchSubsectionContextProvider>
-                    <ExportBtnContextProvider>
-                      <Home />
-                    </ExportBtnContextProvider>
-                  </SearchSubsectionContextProvider>
-                </Route>
-                <Route exact path="/taxreceipt">
-                  <UploadTaxReceipt />
-                </Route>
-                <Route exact path="/taxreceipt/:id/update">
-                  <UpdateTaxReceipt />
-                </Route>
-                <Route exact path="/people/:rfc">
-                  <PersonSubsectionContextProvider>
-                    <ExportBtnContextProvider>
-                      <PersonDetailContextProvider>
-                        <PersonDetailPage />
-                      </PersonDetailContextProvider>
-                    </ExportBtnContextProvider>
-                  </PersonSubsectionContextProvider>
-                </Route>
-                <Route exact path="/people/:rfc/update">
-                  <UpdatePage />
-                </Route>
-                <Route exact path="/create/people">
-                  <AddPerson />
-                </Route>
-                <Route exact path="/departments">
-                  <DepartmentSubsectionContextProvider>
-                    <Departments />
-                  </DepartmentSubsectionContextProvider>
-                </Route>
-                <Route exact path="/departments/:id/update">
-                  <DepartmentUpdate />
-                </Route>
-              </div>
-            </MonthsContextProvider>
-            <CSSTransition
-              in={showAlert}
-              timeout={300}
-              classNames="alert"
-              unmountOnExit
-              onEnter={alert.removeOnEnter ? () => removeNotification() : ""}
-            >
-              {alert.success ? (
-                <Notification header="Operación Exitosa" success={true} />
-              ) : (
-                <Notification header="Error" success={false} />
-              )}
-            </CSSTransition>
-          </div>
-
-          {showWarning && <Warning />}
-
-          <CSSTransition
-            in={showLoading}
-            timeout={300}
-            classNames="loading"
-            unmountOnExit
-          >
-            <Loading />
-          </CSSTransition>
-        </div>
-      </Switch>
+      {authIsDone ? (
+        <Switch>
+          <Route exact path="/login">
+            {user.isAuth ? (
+              <Redirect to="/" />
+            ) : (
+              <Login
+                setUser={setUser}
+                user={user}
+                setAuthIsDone={setAuthIsDone}
+                askIsAuth={askIsAuth}
+              />
+            )}
+          </Route>
+          <Route>
+            <QRSystem />
+          </Route>
+        </Switch>
+      ) : (
+        ""
+      )}
     </Router>
   );
 }

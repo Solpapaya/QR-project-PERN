@@ -7,7 +7,7 @@ const issueJWT = (user) => {
     try {
       const { id } = user;
 
-      const expiresIn = "1h"; // 1hour or 60*60
+      const expiresIn = 30; // 1hour or 60*60
 
       const payload = {
         sub: id,
