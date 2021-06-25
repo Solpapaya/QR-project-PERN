@@ -18,7 +18,6 @@ const Home = () => {
 
   const { searchSection } = useContext(SearchSubsectionContext);
   const sections = ["Personas", "Comprobantes Fiscales", "Cambios de Estado"];
-  const { exportBtn } = useContext(ExportBtnContext);
 
   useEffect(() => {
     setCurrentSection(1);
@@ -27,9 +26,6 @@ const Home = () => {
     <>
       <div className="search-header">
         <h2>{`Lista de ${sections[searchSection - 1]}`}</h2>
-        <button className="add-btn" ref={exportBtn}>
-          Exportar Tabla
-        </button>
       </div>
       <SearchSubsections />
       {searchSection === 1 ? (

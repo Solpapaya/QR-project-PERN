@@ -152,7 +152,6 @@ const AddUser = () => {
       ref.first_name.current.focus();
     } catch (err) {
       // Show alert the user couldn't have been uploaded
-      console.log(err);
       if (err.status === 400)
         setEmail({ alreadyExists: false, isValid: false });
       else if (err.status === 409)
@@ -161,13 +160,6 @@ const AddUser = () => {
       setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
       setShowAlert(true);
       ref.email.current.focus();
-
-      //   setRfcAlreadyExists(true);
-      //   setIsEmpty({ ...isEmpty, rfc: true });
-      //   setIsRfcLongEnough(true);
-      //   setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
-      //   setShowAlert(true);
-      //   ref.rfc.current.focus();
     }
   };
 
