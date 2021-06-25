@@ -3,9 +3,11 @@ import { Route, Switch } from "react-router";
 import { MonthsContextProvider } from "../../../global/context/MonthsContext";
 import { SearchSubsectionContextProvider } from "../context/SearchSubsectionContext";
 import Sidebar from "../components/Sidebar";
-import { ExportBtnContextProvider } from "../context/ExportBtnContext";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
 import Home from "./Home";
+import { PersonSubsectionContextProvider } from "../context/PersonSubsectionContext";
+import { PersonDetailContextProvider } from "../context/PersonDetailsContext";
+import PersonDetailPage from "./PersonDetailPage";
 
 const Routes = () => {
   const { currentSection, isEditPersonSection } = useContext(
@@ -24,20 +26,16 @@ const Routes = () => {
             <div className="main-content-container">
               <Route exact path="/">
                 <SearchSubsectionContextProvider>
-                  <ExportBtnContextProvider>
-                    <Home />
-                  </ExportBtnContextProvider>
+                  <Home />
                 </SearchSubsectionContextProvider>
               </Route>
-              {/* <Route exact path="/people/:rfc">
+              <Route exact path="/people/:rfc">
                 <PersonSubsectionContextProvider>
-                  <ExportBtnContextProvider>
-                    <PersonDetailContextProvider>
-                      <PersonDetailPage />
-                    </PersonDetailContextProvider>
-                  </ExportBtnContextProvider>
+                  <PersonDetailContextProvider>
+                    <PersonDetailPage />
+                  </PersonDetailContextProvider>
                 </PersonSubsectionContextProvider>
-              </Route> */}
+              </Route>
             </div>
           </MonthsContextProvider>
         </div>

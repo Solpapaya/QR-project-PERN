@@ -1,81 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { fetchData } from "../../../global/functions/fetchData";
 import { compareValues } from "../../../global/functions/compareValues";
 import { SearchContext } from "../context/SearchContext";
 import { MonthsContext } from "../../../global/context/MonthsContext";
-import { CurrentSectionContext } from "../context/CurrentSectionContext";
-import { AlertContext } from "../../../global/context/AlertContext";
 
 const PeopleTable = () => {
-  const [person, setPerson] = useState({});
   const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
-  const { setIsEditPersonSection } = useContext(CurrentSectionContext);
-  const {
-    setShowWarning,
-    setWarning,
-    warningOk,
-    setWarningOk,
-    setAlert,
-    setShowAlert,
-    setClassApplied,
-  } = useContext(AlertContext);
 
   let history = useHistory();
-
-  const changePersonStatus = async () => {
-    const { rfc } = person;
-    const newActive = { active: !person.active };
-    try {
-      const response = await fetchData(
-        "put",
-        `/people/${rfc}?field=active`,
-        newActive
-      );
-      setAlert({
-        success: true,
-        msg: ["Se ha cambiado correctamente el estado de la persona"],
-        removeOnEnter: true,
-      });
-      setShowAlert(true);
-      const newPeople = people.map((person) => {
-        if (person.rfc === rfc) {
-          return { ...person, active: !person.active };
-        }
-        return person;
-      });
-      setPeople(newPeople);
-    } catch (err) {
-      // Create Alert
-      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
-      setShowAlert(true);
-    }
-    setWarningOk(false);
-  };
-
-  const changeStatusHandler = async (e, person) => {
-    e.stopPropagation();
-    setPerson(person);
-    let personNextStatus;
-    if (person.active) personNextStatus = "Desactivar";
-    else personNextStatus = "Activar";
-    let personName = `${person.first_name}`;
-    if (person.second_name) personName += ` ${person.second_name}`;
-    personName += ` ${person.surname} ${person.second_surname}`;
-    const msg = [
-      `¿Estás seguro de que quieres ${personNextStatus} a ${personName}?`,
-    ];
-    const secondaryMsg = "Esto hará cambiar su estado";
-    setWarning({ msg, secondaryMsg, class: "" });
-    setShowWarning(true);
-  };
-
-  const updateHandler = (e, rfc) => {
-    e.stopPropagation();
-    setIsEditPersonSection(true);
-    history.push(`/people/${rfc}/update`);
-  };
 
   const personSelectHandler = (rfc) => {
     history.push(`/people/${rfc}`);
@@ -90,10 +23,6 @@ const PeopleTable = () => {
   useEffect(() => {
     sortPeople();
   }, [sort]);
-
-  useEffect(() => {
-    warningOk && changePersonStatus();
-  }, [warningOk]);
 
   return (
     <table className="table">
