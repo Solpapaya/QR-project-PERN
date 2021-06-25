@@ -162,7 +162,6 @@ const AddPerson = () => {
 
   return (
     <div>
-      <h2>Agregar Persona</h2>
       <form className="form" onSubmit={handleSubmit}>
         <div
           className={

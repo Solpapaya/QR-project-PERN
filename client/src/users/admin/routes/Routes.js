@@ -14,7 +14,6 @@ import { PersonSubsectionContextProvider } from "../context/PersonSubsectionCont
 import { PersonDetailContextProvider } from "../context/PersonDetailsContext";
 import PersonDetailPage from "./PersonDetailPage";
 import UpdatePage from "./UpdatePage";
-import AddPerson from "./AddPerson";
 import { DepartmentSubsectionContextProvider } from "../context/DepartmentSubsectionContext";
 import Departments from "./Departments";
 import DepartmentUpdate from "./DepartmentUpdate";
@@ -22,6 +21,8 @@ import Notification from "../../../global/components/Notification";
 import Warning from "../../../global/components/Warning";
 import Loading from "../components/Loading";
 import Home from "./Home";
+import AddSection from "./AddSection";
+import { AddPersonSubsectionContextProvider } from "../context/AddPersonSubsectionContext";
 
 const Routes = () => {
   const { showLoading } = useContext(LoadingContext);
@@ -79,7 +80,9 @@ const Routes = () => {
                 <UpdatePage />
               </Route>
               <Route exact path="/create/people">
-                <AddPerson />
+                <AddPersonSubsectionContextProvider>
+                  <AddSection />
+                </AddPersonSubsectionContextProvider>
               </Route>
               <Route exact path="/departments">
                 <DepartmentSubsectionContextProvider>
