@@ -8,11 +8,14 @@ import Home from "./Home";
 import { PersonSubsectionContextProvider } from "../context/PersonSubsectionContext";
 import { PersonDetailContextProvider } from "../context/PersonDetailsContext";
 import PersonDetailPage from "./PersonDetailPage";
+import { AlertContext } from "../../../global/context/AlertContext";
+import Warning from "../../../global/components/Warning";
 
 const Routes = () => {
-  const { currentSection, isEditPersonSection } = useContext(
-    CurrentSectionContext
-  );
+  const { currentSection } = useContext(CurrentSectionContext);
+
+  const { showWarning } = useContext(AlertContext);
+
   return (
     <Switch>
       <div className="main-layout">
@@ -39,6 +42,9 @@ const Routes = () => {
             </div>
           </MonthsContextProvider>
         </div>
+
+        {showWarning && <Warning />}
+
         {/* <CSSTransition
           in={showAlert}
           timeout={300}
