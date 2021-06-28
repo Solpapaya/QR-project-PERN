@@ -1,16 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
-// import { ReactComponent as QR } from "../icons/qr.svg";
-// import { ReactComponent as Search } from "../icons/search.svg";
-// import { ReactComponent as UploadFile } from "../icons/uploadFile.svg";
-// import { ReactComponent as Department } from "../icons/department.svg";
+import { AlertContext } from "../../../global/context/AlertContext";
+import { AuthContext } from "../../../global/context/AuthContext";
 
 const Sidebar = () => {
+  const { user, setUser } = useContext(AuthContext);
   const { currentSection, setCurrentSection } = useContext(
     CurrentSectionContext
   );
   let history = useHistory();
+
+  const { setShowWarning, setWarning, warningOk, setWarningOk } =
+    useContext(AlertContext);
+
+  const logOutHandler = () => {
+    const msg = [`¿Estás seguro de que quieres cerrar tu sesión?`];
+    const secondaryMsg = "";
+    setWarning({ msg, secondaryMsg, class: "", type: "logOut" });
+    setShowWarning(true);
+  };
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    setUser({ ...user, isAuth: false });
+    setWarningOk({ ...warningOk, logOut: false });
+  };
 
   const clickHandler = (e) => {
     const newSection = parseInt(e.currentTarget.dataset.section);
@@ -31,6 +46,10 @@ const Sidebar = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    warningOk.logOut && logOut();
+  }, [warningOk]);
 
   return (
     <aside className="sidebar">
@@ -128,7 +147,7 @@ const Sidebar = () => {
           {/* <i className="sidebar-item-icon">
             <Department />
           </i> */}
-          <span className="btn-text">Areas</span>
+          <span className="btn-text">Áreas</span>
         </button>
       </div>
       <span
@@ -138,6 +157,13 @@ const Sidebar = () => {
             : "right-border"
         }
       ></span>
+
+      <div className="sidebar-item-container right-border">
+        <button onClick={() => logOutHandler()} className="sidebar-item">
+          <i class="fas fa-power-off sidebar-item-icon"></i>
+          <span className="btn-text">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
   );
 };

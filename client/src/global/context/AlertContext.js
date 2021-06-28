@@ -14,8 +14,12 @@ export const AlertContextProvider = (props) => {
     msg: "",
     secondaryMsg: "",
     class: "",
+    type: "",
   });
-  const [warningOk, setWarningOk] = useState(false);
+  const [warningOk, setWarningOk] = useState({
+    changePersonStatus: false,
+    logOut: false,
+  });
   return (
     <AlertContext.Provider
       value={{

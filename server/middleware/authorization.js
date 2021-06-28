@@ -1,6 +1,9 @@
 const jsonwebtoken = require("jsonwebtoken");
+const fs = require("fs");
 
-const { PUB_KEY } = require("../consts/variables");
+// ------------------------------------KEY------------------------------------
+const { keyPairDirectory } = require("../consts/variables");
+const PUB_KEY = fs.readFileSync(keyPairDirectory + "/rsa_pub.pem", "utf8");
 
 // Connection to Database
 const db = require("../db/index");

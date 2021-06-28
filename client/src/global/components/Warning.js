@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { AlertContext } from "../context/AlertContext";
 
-const Warning = (props) => {
-  const { setWarningOk, setShowWarning, warning } = useContext(AlertContext);
-
+const Warning = () => {
+  const { setWarningOk, setShowWarning, warning, warningOk } =
+    useContext(AlertContext);
   return (
     <div className="warning-container">
       <div className="warning__background"></div>
@@ -39,7 +39,7 @@ const Warning = (props) => {
           <button
             className="ok-btn warning-btn"
             onClick={() => {
-              setWarningOk(true);
+              setWarningOk({ ...warningOk, [warning.type]: true });
               setShowWarning(false);
             }}
           >
@@ -48,7 +48,7 @@ const Warning = (props) => {
           <button
             className="cancel-btn warning-btn"
             onClick={() => {
-              setWarningOk(false);
+              setWarningOk({ ...warningOk, [warning.type]: false });
               setShowWarning(false);
             }}
           >

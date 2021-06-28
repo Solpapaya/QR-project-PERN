@@ -1,6 +1,9 @@
 const jsonwebtoken = require("jsonwebtoken");
+const fs = require("fs");
 
-const { PRIV_KEY } = require("../consts/variables");
+// ------------------------------------KEY------------------------------------
+const { keyPairDirectory } = require("../consts/variables");
+const PRIV_KEY = fs.readFileSync(keyPairDirectory + "/rsa_priv.pem", "utf8");
 
 const issueJWT = (user) => {
   return new Promise(async (resolve, reject) => {

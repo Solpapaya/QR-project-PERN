@@ -15,6 +15,16 @@ CREATE TABLE users (
             REFERENCES user_type(id)
 );
 
+CREATE TABLE deleted_tax_receipts (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    tax_receipt_date DATE NOT NULL,    
+    tax_receipt_emitter VARCHAR(13) NOT NULL,
+    deleted_on TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_by uuid  DEFAULT uuid_generate_v4(),
+    why_was_deleted VARCHAR(255) NOT NULL
+    
+)
+
 CREATE TABLE user_type (
     id SMALLSERIAL NOT NULL PRIMARY KEY,
     type VARCHAR(255) NOT NULL
