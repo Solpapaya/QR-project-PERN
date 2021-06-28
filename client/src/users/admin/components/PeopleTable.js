@@ -21,7 +21,6 @@ const PeopleTable = () => {
     setWarningOk,
     setAlert,
     setShowAlert,
-    setClassApplied,
   } = useContext(AlertContext);
 
   let history = useHistory();
@@ -69,7 +68,7 @@ const PeopleTable = () => {
       `¿Estás seguro de que quieres ${personNextStatus} a ${personName}?`,
     ];
     const secondaryMsg = "Esto hará cambiar su estado";
-    setWarning({ msg, secondaryMsg, class: "" });
+    setWarning({ msg, secondaryMsg, class: "", type: "changePersonStatus" });
     setShowWarning(true);
   };
 
@@ -94,7 +93,7 @@ const PeopleTable = () => {
   }, [sort]);
 
   useEffect(() => {
-    warningOk && changePersonStatus();
+    warningOk.changePersonStatus && changePersonStatus();
   }, [warningOk]);
 
   return (
