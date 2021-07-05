@@ -15,6 +15,9 @@ const { months } = require("../consts/variables");
 // Path for saving submitted file
 const { tmpDirectory } = require("../consts/variables");
 
+// --------------------------------IMPORTING MIDDLEWARE--------------------------------
+const { authUser, getRole } = require("../middleware/authorization");
+
 router.get("/", async (req, res) => {
   const { get } = req.query;
   try {
@@ -178,31 +181,57 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authUser, getRole, async (req, res) => {
   try {
-    const { id } = req.params;
-    const results = await db.query(
-      `DELETE FROM tax_receipt WHERE id = $1 
-          RETURNING 
-          EXTRACT(MONTH FROM tax_receipt.date) as month,
+    const userId = req.payload.sub;
+    const { why_tax_deleted } = req.body;
+    const taxReceiptID = req.params.id;
+    let results = await db.query(
+      `DELETE FROM tax_receipt WHERE id = $1
+          RETURNING
           EXTRACT(YEAR FROM tax_receipt.date) as year,
+          EXTRACT(MONTH FROM tax_receipt.date) as month,
+          EXTRACT(DAY FROM tax_receipt.date) as day,
           rfc_emitter`,
-      [id]
+      [taxReceiptID]
     );
-    // If there was no tax_receipt with the ID
     if (results.rowCount === 0) {
-      return res
-        .status(404)
-        .json({ success: false, msg: `No Tax Receipt with the ID: ${id}` });
+      return res.status(404).json({
+        success: false,
+        msg: "No existe el Comprobante Fiscal que deseas eliminar",
+      });
     }
-    // If there was a tax receipt with the specified ID, informs the user that the delete
-    // operation was successful and returns the Date and RFC of the deleted tax receipt
+
+    const { year, month, day, rfc_emitter } = results.rows[0];
+    const taxReceiptDate = `${year}-${month}-${day}`;
+
+    results = await db.query(
+      `WITH inserted AS (
+        INSERT INTO deleted_tax_receipts 
+        (tax_receipt_date, tax_receipt_emitter, deleted_by, why_was_deleted) VALUES 
+        ($1, $2, $3, $4) 
+        RETURNING *
+      )
+      SELECT person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+      || person.surname || ' ' || person.second_surname as full_name
+      FROM inserted
+      INNER JOIN person 
+      ON inserted.tax_receipt_emitter = person.rfc;`,
+      [taxReceiptDate, rfc_emitter, userId, why_tax_deleted]
+    );
     res.status(200).json({
       success: true,
-      tax: results.rows[0],
+      data: {
+        full_name: results.rows[0].full_name,
+        year,
+        month,
+      },
     });
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error Deleting Tax Receipt" });
+    res
+      .status(500)
+      .json({ success: false, msg: "No se pudo borrar el Comprobante" });
+    // res.status(500).json({ success: false, msg: "Error Deleting Tax Receipt" });
   }
 });
 

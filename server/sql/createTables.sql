@@ -1,4 +1,11 @@
+CREATE DATABASE qr;
+
 create extension if not exists "uuid-ossp";
+
+CREATE TABLE user_type (
+    id SMALLSERIAL NOT NULL PRIMARY KEY,
+    type VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE users (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -15,19 +22,9 @@ CREATE TABLE users (
             REFERENCES user_type(id)
 );
 
-CREATE TABLE deleted_tax_receipts (
+CREATE TABLE department (
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    tax_receipt_date DATE NOT NULL,    
-    tax_receipt_emitter VARCHAR(13) NOT NULL,
-    deleted_on TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    deleted_by uuid  DEFAULT uuid_generate_v4(),
-    why_was_deleted VARCHAR(255) NOT NULL
-    
-)
-
-CREATE TABLE user_type (
-    id SMALLSERIAL NOT NULL PRIMARY KEY,
-    type VARCHAR(255) NOT NULL
+    department_name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE person (
@@ -54,9 +51,20 @@ CREATE TABLE tax_receipt (
             REFERENCES person(rfc)
 );
 
-CREATE TABLE department (
+
+CREATE TABLE deleted_tax_receipts (
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    department_name VARCHAR(50) NOT NULL
+    tax_receipt_date DATE NOT NULL,    
+    tax_receipt_emitter VARCHAR(13) NOT NULL,
+    deleted_on TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_by uuid  DEFAULT uuid_generate_v4() NOT NULL,
+    why_was_deleted VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_user
+        FOREIGN KEY(deleted_by)
+            REFERENCES users(id),
+    CONSTRAINT fk_person
+        FOREIGN KEY(tax_receipt_emitter)
+            REFERENCES person(rfc)
 );
 
 CREATE TABLE status_logs (
@@ -69,8 +77,6 @@ CREATE TABLE status_logs (
             REFERENCES person(rfc)
 );
 
-ALTER TABLE person
-ADD COLUMN department_id BIGINT NOT NULL;
 
 ALTER TABLE person
 ADD CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department (id);

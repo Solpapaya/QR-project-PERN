@@ -3,6 +3,11 @@ INSERT INTO user_type (type) VALUES
 ('Admin'),
 ('Consulta');
 
+INSERT INTO department (department_name) VALUES
+('Ventas'), 
+('Finanzas'),
+('Recursos Humanos');
+
 INSERT INTO users (first_name, second_name, surname, second_surname, email, password,
 salt, type_id) VALUES
 ('Bruno', null, 'Mars', 'Jutton', 'bm@gmail.com', '123', 'gfh', 1);
@@ -22,10 +27,6 @@ INSERT INTO status_logs (person_rfc, log_date, new_status) VALUES
 ('SOPD970125HDF', '2021-04-11', '0'),
 ('SOPD970125HDF', '2021-04-20', '1');
 
-INSERT INTO department (department_name) VALUES
-('Ventas'), 
-('Finanzas'),
-('Recursos Humanos');
 
 INSERT INTO tax_receipt (date, rfc_emitter) VALUES 
 ('2020-02-12', 'MEFI851023M9A'),
@@ -77,3 +78,15 @@ INSERT INTO tax_receipt (date, rfc_emitter) VALUES
 ('2019-04-04', 'SUCC961125A15'),
 ('2019-09-04', 'SUCC961125A15'),
 ('2019-10-04', 'SUCC961125A15');
+
+WITH inserted AS (
+    INSERT INTO deleted_tax_receipts 
+    (tax_receipt_date, tax_receipt_emitter, deleted_by, why_was_deleted) VALUES 
+    ('2019-03-04', 'SUCC961125A15', 'ede0c762-5332-4afb-ae00-1083b7e901ff', 'Se subió otro archivo que no era') 
+    RETURNING *
+)
+SELECT person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+|| person.surname || ' ' || person.second_surname as full_name
+FROM inserted
+INNER JOIN person 
+ON inserted.tax_receipt_emitter = person.rfc;
