@@ -63,8 +63,8 @@ router.post("/", async (req, res) => {
 
 router.get("/", authUser, getRole, async (req, res) => {
   const { types } = req.query;
+  const { userType } = req;
   if (types) {
-    const { userType } = req;
     let results;
     switch (userType) {
       case "Master":
@@ -88,6 +88,37 @@ router.get("/", authUser, getRole, async (req, res) => {
     }
 
     res.status(200).json({ success: true, user_types: results.rows });
+  } else {
+    let results;
+    switch (userType) {
+      case "Master":
+        results = await db.query(
+          `SELECT first_name, second_name, surname, second_surname, email
+      FROM users 
+      EXCEPT 
+      SELECT first_name, second_name, surname, second_surname, email
+      FROM users WHERE type_id = 1`,
+          []
+        );
+        break;
+      case "Admin":
+        results = await db.query(
+          `SELECT first_name, second_name, surname, second_surname, email
+          FROM users 
+          EXCEPT 
+          SELECT first_name, second_name, surname, second_surname, email
+          FROM users
+          WHERE (type_id = 1 OR type_id = 2)`,
+          []
+        );
+        break;
+      default:
+        return res.status(401).json({
+          success: false,
+          msg: "No tienes permiso para acceder a este recurso",
+        });
+    }
+    res.status(200).json({ success: true, users: results.rows });
   }
 });
 

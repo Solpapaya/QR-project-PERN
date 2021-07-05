@@ -9,6 +9,8 @@ import People from "../components/People";
 import StatusLogs from "../components/StatusLogs";
 import { SearchStatusLogsContextProvider } from "../context/SearchStatusLogsContext";
 import { ExportBtnContext } from "../context/ExportBtnContext";
+import { SearchUsersContextProvider } from "../context/SearchUsersContext";
+import Users from "../components/Users";
 
 const Home = () => {
   const { setCurrentSection, setIsEditPersonSection } = useContext(
@@ -16,7 +18,12 @@ const Home = () => {
   );
 
   const { searchSection } = useContext(SearchSubsectionContext);
-  const sections = ["Personas", "Comprobantes Fiscales", "Cambios de Estado"];
+  const sections = [
+    "Personas",
+    "Comprobantes Fiscales",
+    "Cambios de Estado",
+    "Usuarios",
+  ];
   const { exportBtn } = useContext(ExportBtnContext);
 
   useEffect(() => {
@@ -40,10 +47,14 @@ const Home = () => {
         <SearchTaxReceiptsContextProvider>
           <TaxReceipts />
         </SearchTaxReceiptsContextProvider>
-      ) : (
+      ) : searchSection === 3 ? (
         <SearchStatusLogsContextProvider>
           <StatusLogs />
         </SearchStatusLogsContextProvider>
+      ) : (
+        <SearchUsersContextProvider>
+          <Users />
+        </SearchUsersContextProvider>
       )}
     </>
   );

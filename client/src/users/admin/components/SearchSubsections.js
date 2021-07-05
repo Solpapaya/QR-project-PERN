@@ -34,6 +34,15 @@ const SearchSubsections = () => {
       >
         Cambios de Estado
       </div>
+      <div
+        onClick={() => {
+          localStorage.setItem("searchSubsection", 4);
+          setSearchSection(4);
+        }}
+        className={searchSection === 4 ? "subsection selected" : "subsection"}
+      >
+        Usuarios
+      </div>
     </div>
   );
 };
