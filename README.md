@@ -15,3 +15,8 @@ Web System that keeps track of Workers PDF Tax Receipts. Made with PostgreSQL, E
 
 # Install
 npm install xlsx file-saver --save
+## Install Python Libraries
+pytesseract -> pip install pytesseract
+https://pypi.org/project/pytesseract/
+
+
