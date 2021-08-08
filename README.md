@@ -18,5 +18,10 @@ npm install xlsx file-saver --save
 ## Install Python Libraries
 pytesseract -> pip install pytesseract
 https://pypi.org/project/pytesseract/
+pdf2image -> pip install pdf2image
+https://pypi.org/project/pdf2image/
+pyzbar -> pip install pyzbar
+https://pypi.org/project/pyzbar/
+
 
 
