@@ -59,9 +59,10 @@ try:
 
    # Mac doesn't need Poppler Path
    images = convert_from_path(pdf_path = pdfPath)
-   # print(images)
    read_barcodes(images[0])
    read_date(images[0])
    delete_file(pdfPath)
 except:
    print("Python Script Error")
+
+

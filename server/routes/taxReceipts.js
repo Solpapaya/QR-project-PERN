@@ -421,7 +421,8 @@ const decodePDFTaxReceipt = (req) => {
       });
       // When Python Script ends
       process.on("close", (code) => {
-        if (dataFromPythonScript.includes("Python Script Error\n")) {
+        dataFromPythonScript = dataFromPythonScript[0].split("\n");
+        if (dataFromPythonScript.includes("Python Script Error")) {
           reject({ status: 500, msg: ["No se pudo leer el Código QR"] });
           try {
             fs.unlinkSync(tmpFile);
@@ -438,14 +439,11 @@ const decodePDFTaxReceipt = (req) => {
 
 const formatData = (dataFromPythonScript) => {
   // Remove blank spaces from the start and end of the string
-  const data = dataFromPythonScript[0].trim();
+  const startRFC = dataFromPythonScript[0].search("&re=");
+  const endRFC = dataFromPythonScript[0].search("&rr=");
+  const rfc = dataFromPythonScript[0].substring(startRFC + 4, endRFC);
 
-  const startRFC = data.search("&re=");
-  const endRFC = data.search("&rr=");
-  const rfc = data.substring(startRFC + 4, endRFC);
-
-  const endDate = data.length;
-  const date = data.substring(endDate - 10, endDate);
+  const date = dataFromPythonScript[1];
 
   return { rfc, date };
 };

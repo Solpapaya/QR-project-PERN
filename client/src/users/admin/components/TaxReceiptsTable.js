@@ -12,6 +12,7 @@ const TaxReceiptsTable = () => {
     SearchTaxReceiptsContext
   );
   const {
+    warning,
     setShowWarning,
     setWarning,
     warningOk,
@@ -33,7 +34,13 @@ const TaxReceiptsTable = () => {
       `Mes: ${months[month - 1]}`,
     ];
     const secondaryMsg = "El comprobante ya no se podrá recuperar";
-    setWarning({ msg, secondaryMsg, class: "warning--delete" });
+    setWarning({
+      msg,
+      secondaryMsg,
+      class: "warning--delete warning--deleteTaxReceipt",
+      type: "deleteTaxReceipt",
+      activeMenu: "areYouSure",
+    });
     setShowWarning(true);
     // try {
     //   await fetchData("delete", `/taxreceipts/${id}`);

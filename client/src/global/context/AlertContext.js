@@ -15,10 +15,13 @@ export const AlertContextProvider = (props) => {
     secondaryMsg: "",
     class: "",
     type: "",
+    activeMenu: "",
+    menuHeight: null,
   });
   const [warningOk, setWarningOk] = useState({
     changePersonStatus: false,
     logOut: false,
+    deleteTaxReceipt: false,
   });
   return (
     <AlertContext.Provider
