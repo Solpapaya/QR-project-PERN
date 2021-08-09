@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useRef } from "react";
 
 export const AlertContext = createContext();
 
@@ -16,7 +16,7 @@ export const AlertContextProvider = (props) => {
     class: "",
     type: "",
     activeMenu: "",
-    menuHeight: null,
+    whyTaxDeleted: "",
   });
   const [warningOk, setWarningOk] = useState({
     changePersonStatus: false,

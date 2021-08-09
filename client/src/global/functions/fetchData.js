@@ -46,7 +46,15 @@ export const fetchData = (method, url, obj, uploadFile = false) => {
         break;
       case "delete":
         try {
-          const response = await PeopleFinder.delete(url);
+          let response;
+          if (obj) {
+            response = await PeopleFinder.delete(url, {
+              headers: obj.headers,
+              data: {
+                why_tax_deleted: obj.why_tax_deleted,
+              },
+            });
+          } else response = await PeopleFinder.delete(url);
           resolve(response.data);
         } catch (err) {
           reject(err.response);

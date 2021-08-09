@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { SearchTaxReceiptsContext } from "../context/SearchTaxReceiptsContext";
 import { MonthsContext } from "../../../global/context/MonthsContext";
@@ -6,11 +6,13 @@ import { ReactComponent as Pencil } from "../../../global/icons/pencil.svg";
 import { ReactComponent as Trash } from "../../../global/icons/trash.svg";
 // import { fetchData } from "../functions/fetchData";
 import { AlertContext } from "../../../global/context/AlertContext";
+import { fetchData } from "../../../global/functions/fetchData";
 
 const TaxReceiptsTable = () => {
   const { filteredTaxReceipts, setFilteredTaxReceipts } = useContext(
     SearchTaxReceiptsContext
   );
+  const [tax, setTax] = useState({});
   const {
     warning,
     setShowWarning,
@@ -26,6 +28,7 @@ const TaxReceiptsTable = () => {
   let history = useHistory();
 
   const deleteHandler = async (tax) => {
+    setTax(tax);
     const { full_name, month, year } = tax;
     const msg = [
       `¿Estás seguro de que quieres eliminar este comprobante?`,
@@ -42,18 +45,32 @@ const TaxReceiptsTable = () => {
       activeMenu: "areYouSure",
     });
     setShowWarning(true);
-    // try {
-    //   await fetchData("delete", `/taxreceipts/${id}`);
-    //   const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
-    //     return tax.id !== id;
-    //   });
-    //   setFilteredTaxReceipts(newTaxReceipts);
-
-    //   // Tell user that the receipt was successfully deleted
-    // } catch (err) {
-    //   // Alert that tells the user that the tax receipt could not be deleted
-    // }
   };
+
+  const deleteTaxReceipt = async () => {
+    try {
+      const id = tax.id;
+
+      const headers = { token: localStorage.token };
+      const response = await fetchData("delete", `/taxreceipts/${id}`, {
+        why_tax_deleted: warning.whyTaxDeleted,
+        headers,
+      });
+      console.log({ response });
+      const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
+        return tax.id !== id;
+      });
+      setFilteredTaxReceipts(newTaxReceipts);
+
+      // Tell user that the receipt was successfully deleted
+    } catch (err) {
+      // Alert that tells the user that the tax receipt could not be deleted
+    }
+  };
+
+  useEffect(() => {
+    warningOk.deleteTaxReceipt && deleteTaxReceipt();
+  }, [warningOk]);
 
   return (
     <table className="table">
