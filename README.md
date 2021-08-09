@@ -15,3 +15,17 @@ Web System that keeps track of Workers PDF Tax Receipts. Made with PostgreSQL, E
 
 # Install
 npm install xlsx file-saver --save
+## Install Python Libraries
+tesseract -> brew install tesseract
+pytesseract -> pip install pytesseract
+https://pypi.org/project/pytesseract/
+poppler ->  brew install poppler
+pdf2image -> pip install pdf2image
+https://pypi.org/project/pdf2image/
+zbar -> brew install zbar, pip install zbar
+https://pypi.org/project/zbar/
+pyzbar -> pip install pyzbar
+https://pypi.org/project/pyzbar/
+
+
+
