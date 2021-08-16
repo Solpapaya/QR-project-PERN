@@ -71,6 +71,7 @@ function App() {
               "/create/people",
               "/departments",
               "/departments/:id/update",
+              "/deleted",
             ]}
           >
             {user.isAuth ? (

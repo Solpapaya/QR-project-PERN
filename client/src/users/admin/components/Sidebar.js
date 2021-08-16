@@ -44,6 +44,9 @@ const Sidebar = () => {
       case 4:
         history.push("/departments");
         break;
+      case 5:
+        history.push("/deleted");
+        break;
     }
   };
 
@@ -135,6 +138,8 @@ const Sidebar = () => {
             ? "sidebar-item-container selected"
             : currentSection === 3
             ? "sidebar-item-container right-top-border"
+            : currentSection === 5
+            ? "sidebar-item-container right-bottom-border"
             : "sidebar-item-container right-border"
         }
       >
@@ -150,9 +155,30 @@ const Sidebar = () => {
           <span className="btn-text">Áreas</span>
         </button>
       </div>
+      <div
+        className={
+          currentSection === 5
+            ? "sidebar-item-container selected"
+            : currentSection === 4
+            ? "sidebar-item-container right-top-border"
+            : "sidebar-item-container right-border"
+        }
+      >
+        <button
+          onClick={clickHandler}
+          className="sidebar-item"
+          data-section="5"
+        >
+          <i class="fas fa-trash-alt sidebar-item-icon"></i>
+          {/* <i className="sidebar-item-icon">
+            <Department />
+          </i> */}
+          <span className="btn-text">Eliminados</span>
+        </button>
+      </div>
       <span
         className={
-          currentSection === 4
+          currentSection === 5
             ? "sidebar-item-container right-top-border"
             : "right-border"
         }

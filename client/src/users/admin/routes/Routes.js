@@ -23,6 +23,8 @@ import Loading from "../components/Loading";
 import Home from "./Home";
 import AddSection from "./AddSection";
 import { AddPersonSubsectionContextProvider } from "../context/AddPersonSubsectionContext";
+import Deleted from "./Deleted";
+import { DeletedSubsectionContextProvider } from "../context/DeletedSubsectionContext";
 
 const Routes = () => {
   const { showLoading } = useContext(LoadingContext);
@@ -83,6 +85,11 @@ const Routes = () => {
                 <AddPersonSubsectionContextProvider>
                   <AddSection />
                 </AddPersonSubsectionContextProvider>
+              </Route>
+              <Route exact path="/deleted">
+                <DeletedSubsectionContextProvider>
+                  <Deleted />
+                </DeletedSubsectionContextProvider>
               </Route>
               <Route exact path="/departments">
                 <DepartmentSubsectionContextProvider>
