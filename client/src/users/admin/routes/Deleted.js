@@ -1,7 +1,9 @@
 import React, { useContext, useEffect } from "react";
 import DeletedSubsections from "../components/DeletedSubsections";
+import { DeletedTaxReceiptsContextProvider } from "../context/DeletedTaxReceiptsContext";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
 import { DeletedSubsectionContext } from "../context/DeletedSubsectionContext";
+import DeletedTaxReceipts from "../components/DeletedTaxReceipts";
 
 const Deleted = () => {
   const { setCurrentSection } = useContext(CurrentSectionContext);
@@ -16,7 +18,13 @@ const Deleted = () => {
     <>
       <h2>{`${sections[deletedSection - 1]} Eliminados`}</h2>
       <DeletedSubsections />
-      {/* {departmentSection === 1 ? <AddDepartment /> : <EditDepartmentsTable />} */}
+      {deletedSection === 1 ? (
+        <DeletedTaxReceiptsContextProvider>
+          <DeletedTaxReceipts />
+        </DeletedTaxReceiptsContextProvider>
+      ) : (
+        <div>Users</div>
+      )}
     </>
   );
 };

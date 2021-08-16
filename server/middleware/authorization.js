@@ -47,7 +47,6 @@ const getRole = async (req, res, next) => {
     );
 
     const userType = results.rows[0].type;
-
     req.userType = userType;
     next();
   } catch (err) {
@@ -55,7 +54,16 @@ const getRole = async (req, res, next) => {
   }
 };
 
+const forbiddenRole = (forbiddenRole) => {
+  return (req, res, next) => {
+    const { userType } = req;
+    if (userType !== forbiddenRole) next();
+    else res.status(401).json({ success: false, msg: "No estás Autorizado" });
+  };
+};
+
 module.exports = {
   authUser,
   getRole,
+  forbiddenRole,
 };

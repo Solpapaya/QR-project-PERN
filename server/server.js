@@ -34,6 +34,7 @@ app.use("/people", require("./routes/people"));
 app.use("/departments", require("./routes/departments"));
 app.use("/statuslogs", require("./routes/statusLogs"));
 app.use("/taxreceipts", require("./routes/taxReceipts"));
+app.use("/deleted/taxreceipts", require("./routes/deletedTaxReceipts"));
 app.use("/person", require("./routes/person"));
 app.use("/users", require("./routes/users"));
 app.use("/login", require("./routes/login"));
