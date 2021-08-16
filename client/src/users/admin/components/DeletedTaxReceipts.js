@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import DeletedTaxReceiptFilter from "./DeletedTaxReceiptFilter";
 import { fetchData } from "../../../global/functions/fetchData";
 import { DeletedTaxReceiptsContext } from "../context/DeletedTaxReceiptsContext";
-import TaxReceiptsList from "./TaxReceiptsList";
+import DeletedTaxReceiptsList from "./DeletedTaxReceiptsList";
 
 const DeletedTaxReceipts = () => {
   const {
@@ -14,7 +14,7 @@ const DeletedTaxReceipts = () => {
 
   const getAllTaxReceipts = async () => {
     try {
-      const response = await fetchData("get", "/taxreceipts");
+      const response = await fetchData("get", "/deleted/taxreceipts");
       setTaxReceipts(response.data.tax_receipts);
       setIsSearchSuccessful(true);
     } catch (err) {
@@ -31,7 +31,7 @@ const DeletedTaxReceipts = () => {
       {initialSearch && (
         <>
           <DeletedTaxReceiptFilter />
-          {/* <SearchTaxReceiptFilter /> <TaxReceiptsList /> */}
+          <DeletedTaxReceiptsList />
         </>
       )}
     </>

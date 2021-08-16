@@ -40,30 +40,32 @@ router.get(
           },
         });
       } else {
-        res.send("Hello");
-        //   const results = await db.query(
-        //     `SELECT tax_receipt.id, EXTRACT(YEAR FROM tax_receipt.date) as year,
-        //         EXTRACT(MONTH FROM tax_receipt.date) as month,
-        //         person.first_name || ' ' || COALESCE(person.second_name || ' ', '')
-        //         || person.surname || ' ' || person.second_surname as full_name, person.rfc
-        //         FROM person INNER JOIN tax_receipt
-        //         ON person.rfc = tax_receipt.rfc_emitter
-        //         ORDER BY tax_receipt.date DESC`,
-        //     []
-        //   );
-        //   if (results.rowCount === 0) {
-        //     return res.status(404).json({
-        //       success: false,
-        //       msg: `No tax receipts`,
-        //     });
-        //   }
-        //   res.status(200).json({
-        //     success: true,
-        //     length: results.rows.length,
-        //     data: {
-        //       tax_receipts: results.rows,
-        //     },
-        //   });
+        const results = await db.query(
+          `SELECT dtx.*, p.first_name || ' ' || COALESCE(p.second_name || ' ', '') 
+            || p.surname || ' ' || p.second_surname as tax_emitter_full_name,
+            u.first_name || ' ' || COALESCE(u.second_name || ' ', '') 
+            || u.surname || ' ' || u.second_surname as user_full_name
+            FROM deleted_tax_receipts as dtx
+            INNER JOIN person as p
+            ON dtx.tax_receipt_emitter = p.rfc
+            INNER JOIN users as u
+            ON dtx.deleted_by = u.id
+            ORDER BY dtx.deleted_on`,
+          []
+        );
+        if (results.rowCount === 0) {
+          return res.status(404).json({
+            success: false,
+            msg: `No Deleted Tax Receipts`,
+          });
+        }
+        res.status(200).json({
+          success: true,
+          length: results.rows.length,
+          data: {
+            tax_receipts: results.rows,
+          },
+        });
       }
     } catch (err) {
       res

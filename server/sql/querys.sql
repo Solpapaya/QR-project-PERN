@@ -1,10 +1,13 @@
-SELECT primer_nombre || ' ' || COALESCE(segundo_nombre || ' ', '') 
-|| primer_apellido || ' ' || segundo_apellido as nombre_completo, rfc
-FROM persona INNER JOIN comprobante_fiscal
-ON persona.rfc = comprobante_fiscal.rfc_emisor
-WHERE rfc_emisor = 'SUCC961125A15' 
-AND EXTRACT(MONTH FROM fecha_emision) = 1 
-AND EXTRACT(YEAR FROM fecha_emision) = 2019;
+SELECT dtx.*, p.first_name || ' ' || COALESCE(p.second_name || ' ', '') 
+|| p.surname || ' ' || p.second_surname as tax_emitter_full_name,
+u.first_name || ' ' || COALESCE(u.second_name || ' ', '') 
+|| u.surname || ' ' || u.second_surname as user_full_name
+FROM deleted_tax_receipts as dtx
+INNER JOIN person as p
+ON dtx.tax_receipt_emitter = p.rfc
+INNER JOIN users as u
+ON dtx.deleted_by = u.id
+ORDER BY dtx.deleted_on;
 
 SELECT person.first_name, 
 person.second_name, 
@@ -189,3 +192,11 @@ ORDER BY surname
 SELECT id, extract(month from date) AS month, extract(year from date) AS year  FROM tax_receipt WHERE rfc_emitter = 'SUCC961125A15';
 
 SELECT id, extract(month from date) AS month, extract(year from date) AS year FROM tax_receipt WHERE rfc_emitter = 'SUCC961125A15' ORDER BY extract(year from date) DESC;
+
+SELECT primer_nombre || ' ' || COALESCE(segundo_nombre || ' ', '') 
+|| primer_apellido || ' ' || segundo_apellido as nombre_completo, rfc
+FROM persona INNER JOIN comprobante_fiscal
+ON persona.rfc = comprobante_fiscal.rfc_emisor
+WHERE rfc_emisor = 'SUCC961125A15' 
+AND EXTRACT(MONTH FROM fecha_emision) = 1 
+AND EXTRACT(YEAR FROM fecha_emision) = 2019;
