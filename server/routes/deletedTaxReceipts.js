@@ -41,7 +41,14 @@ router.get(
         });
       } else {
         const results = await db.query(
-          `SELECT dtx.*, p.first_name || ' ' || COALESCE(p.second_name || ' ', '') 
+          `SELECT 
+            TO_CHAR(dtx.tax_receipt_date, 'dd/mm/yyyy') as tax_receipt_date,
+            dtx.tax_receipt_emitter as rfc_tax_receipt_emitter, 
+            TO_CHAR(DATE(dtx.deleted_on), 'dd/mm/yyyy') as deleted_on_date,
+            TO_TIMESTAMP( CAST (dtx.deleted_on AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as deleted_on_time,
+            dtx.why_was_deleted, 
+            u.email,
+            p.first_name || ' ' || COALESCE(p.second_name || ' ', '') 
             || p.surname || ' ' || p.second_surname as tax_emitter_full_name,
             u.first_name || ' ' || COALESCE(u.second_name || ' ', '') 
             || u.surname || ' ' || u.second_surname as user_full_name

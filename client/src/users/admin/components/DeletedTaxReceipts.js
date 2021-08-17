@@ -14,7 +14,11 @@ const DeletedTaxReceipts = () => {
 
   const getAllTaxReceipts = async () => {
     try {
-      const response = await fetchData("get", "/deleted/taxreceipts");
+      const headers = { token: localStorage.token };
+      const response = await fetchData("get", "/deleted/taxreceipts", {
+        headers,
+      });
+      console.log(response.data.tax_receipts);
       setTaxReceipts(response.data.tax_receipts);
       setIsSearchSuccessful(true);
     } catch (err) {

@@ -17,7 +17,6 @@ const DeletedTaxReceiptFilter = () => {
     const response = await fetchData("get", `/deleted/taxreceipts?get=years`, {
       headers,
     });
-    console.log(response.data.tax_receipts_years);
     setYears(response.data.tax_receipts_years);
   };
 

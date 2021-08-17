@@ -21,43 +21,58 @@ const TaxReceiptsTable = () => {
     <table className="table">
       <thead>
         <tr>
-          <th>Año</th>
-          <th>Mes</th>
-          <th>Nombre Completo</th>
-          <th>RFC</th>
-          <th className="center-column">Editar</th>
-          <th className="center-column">Borrar</th>
+          <th>Fecha del Comprobante</th>
+          <th>Emisor del Comprobante</th>
+          <th>Fecha de Eliminación</th>
+          <th>Eliminado Por</th>
+          <th>Motivo de Eliminación</th>
         </tr>
       </thead>
       <tbody>
         {filteredTaxReceipts.map((tax) => {
-          const { id, year, month, full_name, rfc } = tax;
+          const {
+            id,
+            tax_receipt_date,
+            tax_emitter_full_name,
+            rfc_tax_receipt_emitter,
+            deleted_on_date,
+            deleted_on_time,
+            user_full_name,
+            why_was_deleted,
+            email,
+          } = tax;
+          const taxIssueSplittedDate = tax_receipt_date.split("/");
+          const taxIssueFormattedDate = `${
+            months[parseInt(taxIssueSplittedDate[1]) - 1]
+          }, ${taxIssueSplittedDate[2]}`;
+          const taxDeletedSplittedDate = deleted_on_date.split("/");
+          const taxDeletedFormattedDate = `${
+            months[parseInt(taxDeletedSplittedDate[1]) - 1]
+          } ${taxDeletedSplittedDate[0]}, ${taxDeletedSplittedDate[2]}`;
           return (
             <tr key={id}>
-              <td>{year}</td>
-              <td>{months[month - 1]}</td>
-              <td>{full_name}</td>
-              <td>{rfc}</td>
+              <td className="w-18">{taxIssueFormattedDate}</td>
               <td>
-                <div className="center-container">
-                  <button
-                    className="table-btn edit-btn"
-                    onClick={() => history.push(`/taxreceipt/${id}/update`)}
-                  >
-                    <Pencil />
-                  </button>
+                <div className="flex-column">
+                  <span>{tax_emitter_full_name}</span>
+                  <span className="second-value">
+                    {rfc_tax_receipt_emitter}
+                  </span>
                 </div>
               </td>
               <td>
-                <div className="center-container">
-                  <button
-                    onClick={() => deleteHandler(tax)}
-                    className="table-btn delete-btn"
-                  >
-                    <Trash />
-                  </button>
+                <div className="flex-column">
+                  <span>{taxDeletedFormattedDate}</span>
+                  <span className="second-value">{deleted_on_time}</span>
                 </div>
               </td>
+              <td className="w-20">
+                <div className="flex-column">
+                  <span>{user_full_name}</span>
+                  <span className="second-value">{email}</span>
+                </div>
+              </td>
+              <td>{why_was_deleted}</td>
             </tr>
           );
         })}
