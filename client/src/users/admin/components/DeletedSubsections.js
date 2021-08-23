@@ -16,15 +16,6 @@ const DeletedSubsections = () => {
       >
         Comprobantes Fiscales
       </div>
-      <div
-        onClick={() => {
-          localStorage.setItem("deletedSubsection", 2);
-          setDeletedSection(2);
-        }}
-        className={deletedSection === 2 ? "subsection selected" : "subsection"}
-      >
-        Usuarios
-      </div>
     </div>
   );
 };

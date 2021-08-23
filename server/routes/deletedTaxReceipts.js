@@ -42,6 +42,8 @@ router.get(
       } else {
         const results = await db.query(
           `SELECT 
+            EXTRACT(YEAR FROM dtx.deleted_on) as year, 
+            EXTRACT(MONTH FROM dtx.deleted_on) as month,
             TO_CHAR(dtx.tax_receipt_date, 'dd/mm/yyyy') as tax_receipt_date,
             dtx.tax_receipt_emitter as rfc_tax_receipt_emitter, 
             TO_CHAR(DATE(dtx.deleted_on), 'dd/mm/yyyy') as deleted_on_date,
@@ -57,7 +59,7 @@ router.get(
             ON dtx.tax_receipt_emitter = p.rfc
             INNER JOIN users as u
             ON dtx.deleted_by = u.id
-            ORDER BY dtx.deleted_on`,
+            ORDER BY dtx.deleted_on DESC`,
           []
         );
         if (results.rowCount === 0) {
