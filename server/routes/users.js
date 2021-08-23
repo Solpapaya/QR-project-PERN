@@ -100,18 +100,38 @@ router.get(
     } else {
       let results;
       try {
-        results = await db.query(
-          `SELECT u.id, u.first_name, u.second_name, 
-          u.surname, u.second_surname, u.email,
-          t.type, 
-          TO_CHAR(DATE(u.creation_date), 'dd/mm/yyyy') as creation_date,
-          TO_TIMESTAMP( CAST (u.creation_date AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as creation_time
-          FROM users as u
-          INNER JOIN user_type as t
-          ON u.type_id = t.id
-          ORDER BY u.creation_date DESC`,
-          []
-        );
+        switch (userType) {
+          case "Master":
+            results = await db.query(
+              `SELECT u.id, u.first_name, u.second_name, 
+                u.surname, u.second_surname, u.email,
+                t.type, 
+                TO_CHAR(DATE(u.creation_date), 'dd/mm/yyyy') as creation_date,
+                TO_TIMESTAMP( CAST (u.creation_date AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as creation_time
+                FROM users as u
+                INNER JOIN user_type as t
+                ON u.type_id = t.id
+                WHERE t.type != 'Master'
+                ORDER BY u.creation_date DESC`,
+              []
+            );
+            break;
+          case "Admin":
+            results = await db.query(
+              `SELECT u.id, u.first_name, u.second_name, 
+                u.surname, u.second_surname, u.email,
+                t.type, 
+                TO_CHAR(DATE(u.creation_date), 'dd/mm/yyyy') as creation_date,
+                TO_TIMESTAMP( CAST (u.creation_date AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as creation_time
+                FROM users as u
+                INNER JOIN user_type as t
+                ON u.type_id = t.id
+                WHERE t.type != 'Master' AND t.type != 'Admin'
+                ORDER BY u.creation_date DESC`,
+              []
+            );
+            break;
+        }
       } catch (err) {
         res
           .status(500)
@@ -121,6 +141,84 @@ router.get(
     }
   }
 );
+
+router.get(
+  "/:id",
+  authUser,
+  getRole,
+  forbiddenRole("Consulta"),
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const results = await db.query(
+        `SELECT u.first_name, u.second_name, u.surname,
+                  u.second_surname, u.email, 
+                  t.type
+                  FROM users as u
+                  LEFT JOIN user_type as t
+                  ON u.type_id = t.id
+                  WHERE u.id = $1`,
+        [id]
+      );
+      if (results.rowCount === 0) {
+        return res
+          .status(404)
+          .json({ success: false, msg: `No person with ID ${id}` });
+      }
+      const { userType } = req;
+      if (userType !== "Master") {
+        if (results.rows[0].type === "Admin") {
+          return res
+            .status(401)
+            .json({ success: false, msg: "No estás Autorizado" });
+        }
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          person: results.rows[0],
+        },
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, msg: "Error Getting User" });
+    }
+  }
+);
+
+router.put("/:id", async (req, res) => {
+  try {
+    const { first_name, second_name, surname, second_surname, type } = req.body;
+
+    let results = await db.query(
+      `SELECT id
+                        FROM user_type
+                        WHERE type = $1`,
+      [type]
+    );
+
+    const type_id = results.rows[0].id;
+
+    results = await db.query(
+      `UPDATE users SET first_name = $1, second_name = $2,
+                            surname = $3, second_surname = $4, type_id = $5
+                            WHERE id = $6 RETURNING *`,
+      [first_name, second_name, surname, second_surname, type_id, req.params.id]
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        person: results.rows[0],
+      },
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, msg: "No se pudo actualizar la persona" });
+    // res.status(500).json({ success: false, msg: "Error Updating Person" });
+  }
+});
 
 // --------------------------------FUNCTIONS--------------------------------
 const checkIfUserAlreadyExists = (email) => {

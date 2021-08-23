@@ -15,7 +15,6 @@ const Users = () => {
       setUsers(response.users);
       setIsSearchSuccessful(true);
     } catch (err) {
-      console.log(err);
       // No users in database alert
       setIsSearchSuccessful(false);
     }

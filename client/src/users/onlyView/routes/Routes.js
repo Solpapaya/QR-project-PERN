@@ -10,6 +10,7 @@ import { PersonDetailContextProvider } from "../context/PersonDetailsContext";
 import PersonDetailPage from "./PersonDetailPage";
 import { AlertContext } from "../../../global/context/AlertContext";
 import Warning from "../../../global/components/Warning";
+import Unauthorized from "../../../global/routes/Unauthorized";
 
 const Routes = () => {
   const { currentSection } = useContext(CurrentSectionContext);
@@ -38,6 +39,9 @@ const Routes = () => {
                     <PersonDetailPage />
                   </PersonDetailContextProvider>
                 </PersonSubsectionContextProvider>
+              </Route>
+              <Route exact path="*">
+                <Unauthorized />
               </Route>
             </div>
           </MonthsContextProvider>

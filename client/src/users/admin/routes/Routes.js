@@ -14,6 +14,8 @@ import { PersonSubsectionContextProvider } from "../context/PersonSubsectionCont
 import { PersonDetailContextProvider } from "../context/PersonDetailsContext";
 import PersonDetailPage from "./PersonDetailPage";
 import UpdatePage from "./UpdatePage";
+import UpdateUser from "./UpdateUser";
+import Unauthorized from "../../../global/routes/Unauthorized";
 import { DepartmentSubsectionContextProvider } from "../context/DepartmentSubsectionContext";
 import Departments from "./Departments";
 import DepartmentUpdate from "./DepartmentUpdate";
@@ -98,6 +100,12 @@ const Routes = () => {
               </Route>
               <Route exact path="/departments/:id/update">
                 <DepartmentUpdate />
+              </Route>
+              <Route exact path="/user/:id/update">
+                <UpdateUser />
+              </Route>
+              <Route exact path="/unauthorized">
+                <Unauthorized />
               </Route>
             </div>
           </MonthsContextProvider>

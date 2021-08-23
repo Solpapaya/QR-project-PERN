@@ -89,6 +89,12 @@ const UsersTable = () => {
     setUsers(sortedUsers);
   };
 
+  const updateHandler = (e, id) => {
+    e.stopPropagation();
+    setIsEditPersonSection(true);
+    history.push(`/user/${id}/update`);
+  };
+
   useEffect(() => {
     sortUsers();
   }, [sort]);
@@ -121,21 +127,18 @@ const UsersTable = () => {
               <span>Segundo </span> <span>Apellido</span>
             </div>
           </th>
-          <th>Rol</th>
+          {/* <th>Rol</th> */}
+          <th>
+            <div className="flex-column">
+              <span>Tipo de</span> <span>Usuario</span>
+            </div>
+          </th>
           <th>
             <div className="flex-column">
               <span>Fecha</span> <span>de Alta</span>
             </div>
           </th>
           <th>Email</th>
-          {/* <th className="center-column">Email</th> */}
-          {/* <th className="center-column">Area</th>
-          <th className="center-column">
-            <div className="flex-column">
-              <span>Fecha</span> <span>de Alta</span>
-            </div>
-          </th>
-          <th className="center-column">Estado</th> */}
           <th className="center-column">Editar</th>
           <th className="center-column">Borrar</th>
         </tr>
@@ -175,41 +178,11 @@ const UsersTable = () => {
                 </div>
               </td>
               <td>{email}</td>
-              {/* <td className="center-column">
-                <div className="flex-column">
-                  {department_name ? (
-                    department_name
-                      .split(" ")
-                      .map((name, index) => <span key={index}>{name}</span>)
-                  ) : (
-                    <>
-                      <span>Sin</span>
-                      <span>Asignar</span>
-                    </>
-                  )}
-                </div>
-              </td>
-              <td className="center-column">{formattedDate}</td>
-              <td>
-                <div className="person-status">
-                  {active ? (
-                    <>
-                      <span className="icon active"></span>
-                      <span className="status-text">Activo</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="icon disabled"></span>
-                      <span className="status-text">Inactivo</span>
-                    </>
-                  )}
-                </div>
-              </td> */}
               <td>
                 <div className="center-container">
                   <button
                     className="table-btn edit-btn"
-                    onClick={() => history.push(`/user/${id}/update`)}
+                    onClick={(e) => updateHandler(e, id)}
                   >
                     <Pencil />
                   </button>

@@ -72,6 +72,8 @@ function App() {
               "/departments",
               "/departments/:id/update",
               "/deleted",
+              "/user/:id/update",
+              "/unauthorized",
             ]}
           >
             {user.isAuth ? (

@@ -4,25 +4,23 @@ import { AlertContext } from "../../../global/context/AlertContext";
 import { fetchData } from "../../../global/functions/fetchData";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
 
-const UpdatePerson = () => {
-  const rfcParam = useParams().rfc;
+const UpdateUser = () => {
+  const userID = useParams().id;
   let history = useHistory();
   const { setIsEditPersonSection } = useContext(CurrentSectionContext);
-  const [departments, setDepartments] = useState([]);
-  const [isFilterDepartmentExpanded, setIsFilterDepartmentExpanded] =
-    useState(false);
+  const [type, setType] = useState([]);
+  const [isFilterTypeExpanded, setIsFilterTypeExpanded] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
 
   const [person, setPerson] = useState({
     first_name: "",
     second_name: "",
     surname: "",
     second_surname: "",
-    rfc: "",
-    department_name: "",
+    email: "",
+    type: "",
   });
 
-  const [isRfcLongEnough, setIsRfcLongEnough] = useState(true);
-  const [rfcAlreadyExists, setRfcAlreadyExists] = useState(false);
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
   const [focus, setFocus] = useState({
@@ -30,7 +28,6 @@ const UpdatePerson = () => {
     second_name: false,
     surname: false,
     second_surname: false,
-    rfc: false,
   });
 
   const [isEmpty, setIsEmpty] = useState({
@@ -38,19 +35,18 @@ const UpdatePerson = () => {
     second_name: false,
     surname: false,
     second_surname: false,
-    rfc: false,
   });
 
   const [ref, setRef] = useState({
     first_name: useRef(null),
     surname: useRef(null),
     second_surname: useRef(null),
-    rfc: useRef(null),
   });
 
   const getPerson = async () => {
     try {
-      const response = await fetchData("get", `/people/${rfcParam}`);
+      const headers = { token: localStorage.token };
+      const response = await fetchData("get", `/users/${userID}`, { headers });
 
       const foundPerson = response.data.person;
       if (foundPerson.second_name) {
@@ -58,23 +54,27 @@ const UpdatePerson = () => {
       } else {
         setPerson({ ...foundPerson, second_name: "" });
       }
-      if (!foundPerson.department_name)
-        setPerson((prevState) => {
-          return { ...prevState, department_name: "" };
-        });
+
+      setIsAuth(true);
     } catch (err) {
+      if (err.status === 401) {
+        // Error page telling the user doesn't have the
+        // permissions to access that source
+        history.push(`/unauthorized`);
+      }
       // Error Page telling the Person doesn't exist
     }
   };
 
-  const getDepartments = async () => {
-    const response = await fetchData("get", "/departments");
-    setDepartments(response.data.departments);
+  const getType = async () => {
+    const headers = { token: localStorage.token };
+    const response = await fetchData("get", "/users?types=true", { headers });
+    setType(response.user_types);
   };
 
   useEffect(() => {
     getPerson();
-    getDepartments();
+    getType();
   }, []);
 
   const changePerson = (e) => {
@@ -82,18 +82,10 @@ const UpdatePerson = () => {
     let value = e.target.value;
     // Prevent inserting only blank spaces
     value = value.trimStart();
-    if (attribute === "rfc") {
-      // No blank spaces allowed in RFC
-      if (value[value.length - 1] === " ") {
-        value = value.slice(0, -1);
-      }
-      // RFC must be in Uppercases
-      value = value.toUpperCase();
-    } else {
-      // Prevent inserting double blank spaces after any word
-      if (value[value.length - 1] === " " && value[value.length - 2] === " ") {
-        value = value.slice(0, -1);
-      }
+
+    // Prevent inserting double blank spaces after any word
+    if (value[value.length - 1] === " " && value[value.length - 2] === " ") {
+      value = value.slice(0, -1);
     }
     // If the value is not Empty
     if (value) {
@@ -122,15 +114,12 @@ const UpdatePerson = () => {
     for (const prop in person) {
       person[prop] = person[prop].trim();
       if (!person[prop] && prop !== "second_name") {
-        if (prop === "rfc") {
-          setIsRfcLongEnough(true);
-          setRfcAlreadyExists(false);
-        }
+        console.log(`${prop} is empty`);
         setIsEmpty({
           ...isEmpty,
           [prop]: true,
         });
-        if (!prop === "department_name") {
+        if (prop !== "type") {
           setTimeout(() => {
             ref[prop].current.focus();
           }, 100);
@@ -138,23 +127,11 @@ const UpdatePerson = () => {
         return;
       }
     }
-    // Check if RFC has 12 or 13 characters
-    if (!(person.rfc.length <= 13 && person.rfc.length >= 12)) {
-      setIsRfcLongEnough(false);
-      setIsEmpty({
-        ...isEmpty,
-        rfc: true,
-      });
-      setTimeout(() => {
-        ref.rfc.current.focus();
-      }, 100);
-      return;
-    }
+
     // Update Person
     try {
-      const response = await fetchData("put", `/people/${rfcParam}`, person);
+      const response = await fetchData("put", `/users/${userID}`, person);
       // Show message that informs the user the person has been updated successfully
-      setRfcAlreadyExists(false);
       setAlert({
         success: true,
         msg: ["Se ha modificado correctamente la persona"],
@@ -163,13 +140,10 @@ const UpdatePerson = () => {
       setShowAlert(true);
       history.push("/");
     } catch (err) {
+      console.log({ err });
       // Show alert the person couldn't have been updated
-      setRfcAlreadyExists(true);
-      setIsEmpty({ ...isEmpty, rfc: true });
-      setIsRfcLongEnough(true);
       setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
       setShowAlert(true);
-      ref.rfc.current.focus();
     }
   };
 
@@ -177,9 +151,9 @@ const UpdatePerson = () => {
     setIsEditPersonSection(true);
   }, []);
 
-  return (
+  return isAuth ? (
     <div>
-      {/* {console.log({ person })} */}
+      <h2>Actualizar Usuario</h2>
       <form className="form" onSubmit={handleSubmit}>
         <div
           className={
@@ -242,6 +216,7 @@ const UpdatePerson = () => {
             }
           />
         </div>
+
         <div
           className={
             focus.surname
@@ -272,6 +247,7 @@ const UpdatePerson = () => {
             }
           />
         </div>
+
         <div
           className={
             focus.second_surname
@@ -304,107 +280,71 @@ const UpdatePerson = () => {
             }
           />
         </div>
-        <div
-          className={
-            focus.rfc
-              ? isEmpty.rfc
-                ? isRfcLongEnough
-                  ? rfcAlreadyExists
-                    ? "add-input-container selected duplicated-rfc"
-                    : "add-input-container selected empty"
-                  : "add-input-container selected wrong-rfc"
-                : "add-input-container selected"
-              : "add-input-container"
-          }
-        >
-          <span className={person.rfc ? "" : "hide"}>RFC</span>
-          <input
-            type="text"
-            id="rfc"
-            value={person.rfc}
-            ref={ref.rfc}
-            onChange={changePerson}
-            onFocus={() =>
-              setFocus({
-                ...focus,
-                rfc: true,
-              })
-            }
-            onBlur={() =>
-              setFocus({
-                ...focus,
-                rfc: false,
-              })
-            }
-          />
-        </div>
 
+        <div className="add-input-container unselectable">
+          <span className={person.email ? "" : "hide"}>Email</span>
+          <input disabled type="text" id="email" value={person.email} />
+        </div>
         <div
           className={
-            isEmpty.department_name
+            isEmpty.type
               ? "add-input-container department empty"
-              : isFilterDepartmentExpanded
+              : isFilterTypeExpanded
               ? "add-input-container department expanded"
               : "add-input-container department"
           }
         >
-          <span className={person.department_name ? "" : "hide"}>Area</span>
+          <span className={person.type ? "" : "hide"}>Tipo de Usuario</span>
           <div className="department-relative-container">
             <ul
               className="department-ul-container"
               style={
-                isFilterDepartmentExpanded
-                  ? person.department_name
+                isFilterTypeExpanded
+                  ? person.type
                     ? {
-                        minHeight: `${departments.length * 3.5}rem`,
+                        minHeight: `${type.length * 3.5}rem`,
                       }
                     : {
-                        minHeight: `${(departments.length + 1) * 3.5}rem`,
+                        minHeight: `${(type.length + 1) * 3.5}rem`,
                       }
                   : {}
               }
               onClick={() => {
-                setIsFilterDepartmentExpanded(!isFilterDepartmentExpanded);
+                setIsFilterTypeExpanded(!isFilterTypeExpanded);
               }}
             >
               <li
                 className="selected"
-                id="department_name"
+                id="type"
                 onClick={(e) => {
-                  setIsFilterDepartmentExpanded(!isFilterDepartmentExpanded);
+                  setIsFilterTypeExpanded(!isFilterTypeExpanded);
                   setPerson({
                     ...person,
-                    department_name: person.department_name,
+                    type: person.type,
                   });
-                  setIsEmpty({ ...isEmpty, department_name: false });
+                  setIsEmpty({ ...isEmpty, type: false });
                 }}
               >
-                {person.department_name}
+                {person.type}
               </li>
-              {departments.map((department) => {
-                const { id, department_name } = department;
-                if (department_name !== person.department_name) {
+              {type.map((department) => {
+                const { id, type } = department;
+                if (type !== person.type) {
                   return (
                     <li
                       key={id}
-                      id="department_name"
-                      className={
-                        person.department_name === department_name
-                          ? "selected"
-                          : ""
-                      }
+                      id="type"
+                      className={person.type === type ? "selected" : ""}
                       onClick={(e) => {
-                        setIsFilterDepartmentExpanded(
-                          !isFilterDepartmentExpanded
-                        );
+                        setIsFilterTypeExpanded(!isFilterTypeExpanded);
                         setPerson({
                           ...person,
-                          department_name: department_name,
+                          type: type,
                         });
-                        setIsEmpty({ ...isEmpty, department_name: false });
+                        setIsEmpty({ ...isEmpty, type: false });
                       }}
                     >
-                      {department_name}
+                      {type}
                     </li>
                   );
                 }
@@ -418,7 +358,9 @@ const UpdatePerson = () => {
         </button>
       </form>
     </div>
+  ) : (
+    ""
   );
 };
 
-export default UpdatePerson;
+export default UpdateUser;
