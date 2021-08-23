@@ -147,6 +147,9 @@ const PeopleList = () => {
   }, [people, statusFilter, departmentFilter]);
 
   useEffect(() => {
+    // Code for showing 'Export Table' Button
+    exportBtn.current.style.display = "block";
+
     // Code for resetting click events listeners in Export Button
     const new_element = exportBtn.current.cloneNode(true);
     exportBtn.current.parentNode.replaceChild(new_element, exportBtn.current);
