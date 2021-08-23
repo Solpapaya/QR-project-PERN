@@ -1,3 +1,11 @@
+SELECT u.id, u.first_name, u.second_name, 
+u.surname, u.second_surname, u.email,
+t.type
+FROM users as u
+INNER JOIN user_type as t
+ON u.type_id = t.id
+ORDER BY u.second_name;
+
 SELECT 
 TO_CHAR(dtx.tax_receipt_date, 'dd/mm/yyyy') as tax_receipt_date,
 dtx.tax_receipt_emitter as rfc_tax_receipt_emitter, 

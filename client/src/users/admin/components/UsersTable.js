@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { fetchData } from "../../../global/functions/fetchData";
 import { compareValues } from "../../../global/functions/compareValues";
 import { ReactComponent as Pencil } from "../../../global/icons/pencil.svg";
-import { ReactComponent as Switch } from "../../../global/icons/switch.svg";
+import { ReactComponent as Trash } from "../../../global/icons/trash.svg";
 import { MonthsContext } from "../../../global/context/MonthsContext";
 import { CurrentSectionContext } from "../context/CurrentSectionContext";
 import { AlertContext } from "../../../global/context/AlertContext";
@@ -121,6 +121,7 @@ const UsersTable = () => {
               <span>Segundo </span> <span>Apellido</span>
             </div>
           </th>
+          <th>Rol</th>
           <th>Email</th>
           {/* <th className="center-column">Email</th> */}
           {/* <th className="center-column">Area</th>
@@ -147,14 +148,8 @@ const UsersTable = () => {
             surname,
             second_surname,
             email,
-            // active,
-            // department_name,
-            // creation_date,
+            type,
           } = user;
-          // const splittedDate = creation_date.split("/");
-          // const formattedDate = `${months[parseInt(splittedDate[1]) - 1]} ${
-          //   splittedDate[0]
-          // }, ${splittedDate[2]}`;
           return (
             <tr
               key={id}
@@ -165,6 +160,7 @@ const UsersTable = () => {
               <td>{second_name}</td>
               <td>{surname}</td>
               <td>{second_surname}</td>
+              <td>{type}</td>
               <td>{email}</td>
               {/* <td className="center-column">
                 <div className="flex-column">
@@ -200,7 +196,7 @@ const UsersTable = () => {
                 <div className="center-container">
                   <button
                     className="table-btn edit-btn"
-                    // onClick={(e) => updateHandler(e, rfc)}
+                    onClick={() => history.push(`/user/${id}/update`)}
                   >
                     <Pencil />
                   </button>
@@ -210,9 +206,9 @@ const UsersTable = () => {
                 <div className="center-container">
                   <button
                     // onClick={(e) => changeStatusHandler(e, { ...person })}
-                    className="table-btn switch-btn"
+                    className="table-btn delete-btn"
                   >
-                    <Switch />
+                    <Trash />
                   </button>
                 </div>
               </td>

@@ -8,7 +8,11 @@ const { generatePassword } = require("../functions/passwords");
 const { validEmail } = require("../functions/email");
 
 // --------------------------------IMPORTING MIDDLEWARE--------------------------------
-const { authUser, getRole } = require("../middleware/authorization");
+const {
+  authUser,
+  getRole,
+  forbiddenRole,
+} = require("../middleware/authorization");
 
 // --------------------------------ROUTES--------------------------------
 router.post("/", async (req, res) => {
@@ -61,66 +65,60 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", authUser, getRole, async (req, res) => {
-  const { types } = req.query;
-  const { userType } = req;
-  if (types) {
-    let results;
-    switch (userType) {
-      case "Master":
-        results = await db.query(
-          `SELECT * 
-      FROM user_type EXCEPT select * from user_type WHERE type = 'Master'`,
-          []
-        );
-        break;
-      case "Admin":
-        results = await db.query(
-          `SELECT * 
-          FROM user_type 
-          EXCEPT 
-          SELECT * 
-          FROM user_type 
-          WHERE (type = 'Master' OR type = 'Admin')`,
-          []
-        );
-        break;
-    }
+router.get(
+  "/",
+  authUser,
+  getRole,
+  forbiddenRole("Consulta"),
+  async (req, res) => {
+    const { types } = req.query;
+    const { userType } = req;
+    if (types) {
+      let results;
+      switch (userType) {
+        case "Master":
+          results = await db.query(
+            `SELECT * 
+            FROM user_type EXCEPT select * from user_type WHERE type = 'Master'`,
+            []
+          );
+          break;
+        case "Admin":
+          results = await db.query(
+            `SELECT * 
+            FROM user_type 
+            EXCEPT 
+            SELECT * 
+            FROM user_type 
+            WHERE (type = 'Master' OR type = 'Admin')`,
+            []
+          );
+          break;
+      }
 
-    res.status(200).json({ success: true, user_types: results.rows });
-  } else {
-    let results;
-    switch (userType) {
-      case "Master":
+      res.status(200).json({ success: true, user_types: results.rows });
+    } else {
+      let results;
+      try {
         results = await db.query(
-          `SELECT first_name, second_name, surname, second_surname, email
-      FROM users 
-      EXCEPT 
-      SELECT first_name, second_name, surname, second_surname, email
-      FROM users WHERE type_id = 1`,
+          `SELECT u.id, u.first_name, u.second_name, 
+            u.surname, u.second_surname, u.email,
+            t.type
+            FROM users as u
+            INNER JOIN user_type as t
+            ON u.type_id = t.id
+            ORDER BY u.second_name`,
           []
         );
-        break;
-      case "Admin":
-        results = await db.query(
-          `SELECT first_name, second_name, surname, second_surname, email
-          FROM users 
-          EXCEPT 
-          SELECT first_name, second_name, surname, second_surname, email
-          FROM users
-          WHERE (type_id = 1 OR type_id = 2)`,
-          []
-        );
-        break;
-      default:
-        return res.status(401).json({
-          success: false,
-          msg: "No tienes permiso para acceder a este recurso",
-        });
+      } catch (err) {
+        res
+          .status(500)
+          .json({ success: false, msg: "Error al obtener usuarios" });
+      }
+      res.status(200).json({ success: true, users: results.rows });
     }
-    res.status(200).json({ success: true, users: results.rows });
   }
-});
+);
 
 // --------------------------------FUNCTIONS--------------------------------
 const checkIfUserAlreadyExists = (email) => {
