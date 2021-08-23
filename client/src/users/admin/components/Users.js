@@ -12,7 +12,6 @@ const Users = () => {
     try {
       const headers = { token: localStorage.token };
       const response = await fetchData("get", "/users", { headers });
-      console.log({ response });
       setUsers(response.users);
       setIsSearchSuccessful(true);
     } catch (err) {

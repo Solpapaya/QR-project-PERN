@@ -102,12 +102,14 @@ router.get(
       try {
         results = await db.query(
           `SELECT u.id, u.first_name, u.second_name, 
-            u.surname, u.second_surname, u.email,
-            t.type
-            FROM users as u
-            INNER JOIN user_type as t
-            ON u.type_id = t.id
-            ORDER BY u.second_name`,
+          u.surname, u.second_surname, u.email,
+          t.type, 
+          TO_CHAR(DATE(u.creation_date), 'dd/mm/yyyy') as creation_date,
+          TO_TIMESTAMP( CAST (u.creation_date AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as creation_time
+          FROM users as u
+          INNER JOIN user_type as t
+          ON u.type_id = t.id
+          ORDER BY u.creation_date DESC`,
           []
         );
       } catch (err) {

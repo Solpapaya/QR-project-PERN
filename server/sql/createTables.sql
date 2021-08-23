@@ -17,6 +17,7 @@ CREATE TABLE users (
     password VARCHAR(128) NOT NULL,
     salt VARCHAR(64) NOT NULL,
     type_id SMALLSERIAL NOT NULL,
+    creation_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_user_type
         FOREIGN KEY (type_id)
             REFERENCES user_type(id)

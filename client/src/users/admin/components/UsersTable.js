@@ -122,6 +122,11 @@ const UsersTable = () => {
             </div>
           </th>
           <th>Rol</th>
+          <th>
+            <div className="flex-column">
+              <span>Fecha</span> <span>de Alta</span>
+            </div>
+          </th>
           <th>Email</th>
           {/* <th className="center-column">Email</th> */}
           {/* <th className="center-column">Area</th>
@@ -132,11 +137,7 @@ const UsersTable = () => {
           </th>
           <th className="center-column">Estado</th> */}
           <th className="center-column">Editar</th>
-          <th className="center-column">
-            <div className="flex-column">
-              <span>Activar </span> <span>Desactivar</span>
-            </div>
-          </th>
+          <th className="center-column">Borrar</th>
         </tr>
       </thead>
       <tbody>
@@ -149,7 +150,13 @@ const UsersTable = () => {
             second_surname,
             email,
             type,
+            creation_date,
+            creation_time,
           } = user;
+          const userCreatedSplittedDate = creation_date.split("/");
+          const userCreatedFormattedDate = `${
+            months[parseInt(userCreatedSplittedDate[1]) - 1]
+          } ${userCreatedSplittedDate[0]}, ${userCreatedSplittedDate[2]}`;
           return (
             <tr
               key={id}
@@ -161,6 +168,12 @@ const UsersTable = () => {
               <td>{surname}</td>
               <td>{second_surname}</td>
               <td>{type}</td>
+              <td>
+                <div className="flex-column">
+                  <span>{userCreatedFormattedDate}</span>
+                  <span className="second-value">{creation_time}</span>
+                </div>
+              </td>
               <td>{email}</td>
               {/* <td className="center-column">
                 <div className="flex-column">

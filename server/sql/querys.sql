@@ -1,10 +1,12 @@
 SELECT u.id, u.first_name, u.second_name, 
 u.surname, u.second_surname, u.email,
-t.type
+t.type, 
+TO_CHAR(DATE(u.creation_date), 'dd/mm/yyyy') as creation_date,
+TO_TIMESTAMP( CAST (u.creation_date AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as creation_time
 FROM users as u
 INNER JOIN user_type as t
 ON u.type_id = t.id
-ORDER BY u.second_name;
+ORDER BY u.creation_date DESC;
 
 SELECT 
 TO_CHAR(dtx.tax_receipt_date, 'dd/mm/yyyy') as tax_receipt_date,
@@ -22,7 +24,7 @@ INNER JOIN person as p
 ON dtx.tax_receipt_emitter = p.rfc
 INNER JOIN users as u
 ON dtx.deleted_by = u.id
-ORDER BY dtx.deleted_on;
+ORDER BY dtx.deleted_on DESC;
 
 SELECT 
 TO_TIMESTAMP( CAST (dtx.deleted_on AS VARCHAR), 'YYYY-MM-DD HH24:MI:SS')::time as deleted_on_time
