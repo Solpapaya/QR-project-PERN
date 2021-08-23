@@ -23,6 +23,11 @@ const Sidebar = () => {
 
   const logOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("searchSubsection");
+    localStorage.removeItem("addPersonSubsection");
+    localStorage.removeItem("departmentSubsection");
+    localStorage.removeItem("deletedSubsection");
+    localStorage.removeItem("personSubsection");
     setUser({ ...user, isAuth: false });
     setWarningOk({ ...warningOk, logOut: false });
   };

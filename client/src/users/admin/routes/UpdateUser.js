@@ -140,7 +140,6 @@ const UpdateUser = () => {
       setShowAlert(true);
       history.push("/");
     } catch (err) {
-      console.log({ err });
       // Show alert the person couldn't have been updated
       setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
       setShowAlert(true);

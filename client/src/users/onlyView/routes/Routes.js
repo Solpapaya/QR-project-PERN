@@ -40,7 +40,20 @@ const Routes = () => {
                   </PersonDetailContextProvider>
                 </PersonSubsectionContextProvider>
               </Route>
-              <Route exact path="*">
+              <Route
+                exact
+                path={[
+                  "/taxreceipt",
+                  "/taxreceipt/:id/update",
+                  "/people/:rfc/update",
+                  "/create/people",
+                  "/departments",
+                  "/departments/:id/update",
+                  "/deleted",
+                  "/user/:id/update",
+                  "/unauthorized",
+                ]}
+              >
                 <Unauthorized />
               </Route>
             </div>
