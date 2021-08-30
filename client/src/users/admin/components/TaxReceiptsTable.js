@@ -8,9 +8,8 @@ import { AlertContext } from "../../../global/context/AlertContext";
 import { fetchData } from "../../../global/functions/fetchData";
 
 const TaxReceiptsTable = () => {
-  const { filteredTaxReceipts, setFilteredTaxReceipts } = useContext(
-    SearchTaxReceiptsContext
-  );
+  const { filteredTaxReceipts, setFilteredTaxReceipts, setTaxReceipts } =
+    useContext(SearchTaxReceiptsContext);
   const [tax, setTax] = useState({});
   const {
     warning,
@@ -55,16 +54,31 @@ const TaxReceiptsTable = () => {
         why_tax_deleted: warning.whyTaxDeleted,
         headers,
       });
-      console.log({ response });
+      const { full_name, month, year } = response.data;
+      setAlert({
+        success: true,
+        msg: [
+          "El comprobante se ha borrado correctamente",
+          [`De:`, ` ${full_name}`],
+          [`Año:`, ` ${year}`],
+          [`Mes:`, ` ${months[month - 1]}`],
+        ],
+        removeOnEnter: false,
+      });
+      setShowAlert(true);
+
       const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
         return tax.id !== id;
       });
-      setFilteredTaxReceipts(newTaxReceipts);
+      setTaxReceipts(newTaxReceipts);
 
       // Tell user that the receipt was successfully deleted
     } catch (err) {
       // Alert that tells the user that the tax receipt could not be deleted
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
+      setShowAlert(true);
     }
+    setWarningOk(false);
   };
 
   useEffect(() => {

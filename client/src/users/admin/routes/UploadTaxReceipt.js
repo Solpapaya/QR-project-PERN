@@ -58,15 +58,10 @@ const UploadTaxReceipt = () => {
           success: true,
           msg: [
             "El comprobante se ha agregado correctamente",
-            `De: ${full_name}`,
-            `Año: ${year}`,
-            `Mes: ${months[month - 1]}`,
+            [`De:`, ` ${full_name}`],
+            [`Año:`, ` ${year}`],
+            [`Mes:`, ` ${months[month - 1]}`],
           ],
-          // msg: [
-          //   `El comprobante de ${full_name} para el Año: '${year}' y Mes: '${
-          //     months[month - 1]
-          //   }' se ha agregado correctamente`,
-          // ],
           removeOnEnter: false,
         });
         setShowAlert(true);

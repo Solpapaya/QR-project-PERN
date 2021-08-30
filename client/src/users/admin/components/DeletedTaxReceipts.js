@@ -18,7 +18,6 @@ const DeletedTaxReceipts = () => {
       const response = await fetchData("get", "/deleted/taxreceipts", {
         headers,
       });
-      console.log(response.data.tax_receipts);
       setTaxReceipts(response.data.tax_receipts);
       setIsSearchSuccessful(true);
     } catch (err) {

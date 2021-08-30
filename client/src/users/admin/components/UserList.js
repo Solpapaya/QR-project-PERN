@@ -9,16 +9,8 @@ import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
 const UserList = () => {
-  const {
-    isSearchSuccessful,
-    statusFilter,
-    departmentFilter,
-    setIsSearchSuccessful,
-    users,
-    setFilteredUsers,
-    setStatusFilter,
-    setDepartmentFilter,
-  } = useContext(SearchUsersContext);
+  const { isSearchSuccessful, setIsSearchSuccessful, users, setFilteredUsers } =
+    useContext(SearchUsersContext);
 
   const { exportBtn } = useContext(ExportBtnContext);
   const { searchSection } = useContext(SearchSubsectionContext);
@@ -116,7 +108,10 @@ const UserList = () => {
 
   const filterUsers = () => {
     setFilteredUsers(users);
-    setIsSearchSuccessful(true);
+
+    if (users.length === 0) setIsSearchSuccessful(false);
+    else setIsSearchSuccessful(true);
+
     // let newUsers;
     // switch (statusFilter) {
     //   case "active":
@@ -146,7 +141,7 @@ const UserList = () => {
 
   useEffect(() => {
     filterUsers();
-  }, [users, statusFilter, departmentFilter]);
+  }, [users]);
 
   useEffect(() => {
     // Code for hidding 'Export Table' Button
