@@ -8,8 +8,12 @@ import { AlertContext } from "../../../global/context/AlertContext";
 import { fetchData } from "../../../global/functions/fetchData";
 
 const TaxReceiptsTable = () => {
-  const { filteredTaxReceipts, setFilteredTaxReceipts, setTaxReceipts } =
-    useContext(SearchTaxReceiptsContext);
+  const {
+    filteredTaxReceipts,
+    setFilteredTaxReceipts,
+    setTaxReceipts,
+    taxReceipts,
+  } = useContext(SearchTaxReceiptsContext);
   const [tax, setTax] = useState({});
   const {
     warning,
@@ -67,7 +71,7 @@ const TaxReceiptsTable = () => {
       });
       setShowAlert(true);
 
-      const newTaxReceipts = filteredTaxReceipts.filter((tax) => {
+      const newTaxReceipts = taxReceipts.filter((tax) => {
         return tax.id !== id;
       });
       setTaxReceipts(newTaxReceipts);

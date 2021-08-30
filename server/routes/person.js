@@ -27,7 +27,17 @@ router.get("/taxreceipts/:rfc", async (req, res) => {
       });
     } else {
       const results = await db.query(
-        `SELECT id, extract(month from date) AS month, extract(year from date) AS year FROM tax_receipt WHERE rfc_emitter = $1 ORDER BY date DESC`,
+        `SELECT 
+        tax.id,
+        extract(month from tax.date) AS month, 
+        extract(year from tax.date) AS year,
+        p.first_name || ' ' || COALESCE(p.second_name || ' ', '') 
+        || p.surname || ' ' || p.second_surname as full_name
+        FROM tax_receipt as tax
+        INNER JOIN person as p
+        ON tax.rfc_emitter = p.rfc
+        WHERE rfc_emitter = $1 
+        ORDER BY date DESC`,
         [rfc]
       );
       if (results.rowCount === 0) {

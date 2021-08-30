@@ -1,3 +1,28 @@
+SELECT 
+tax.id,
+extract(month from tax.date) AS month, 
+extract(year from tax.date) AS year,
+p.first_name || ' ' || COALESCE(p.second_name || ' ', '') 
+|| p.surname || ' ' || p.second_surname as full_name
+FROM tax_receipt as tax
+INNER JOIN person as p
+ON tax.rfc_emitter = p.rfc
+WHERE rfc_emitter = $1 
+ORDER BY date DESC;
+
+
+WITH inserted AS (
+INSERT INTO deleted_tax_receipts 
+(tax_receipt_date, tax_receipt_emitter, deleted_by, why_was_deleted) VALUES 
+($1, $2, $3, $4) 
+RETURNING *
+)
+SELECT person.first_name || ' ' || COALESCE(person.second_name || ' ', '') 
+|| person.surname || ' ' || person.second_surname as full_name
+FROM inserted
+INNER JOIN person 
+ON inserted.tax_receipt_emitter = person.rfc;
+
 SELECT u.id, u.first_name, u.second_name, 
 u.surname, u.second_surname, u.email,
 t.type, 
