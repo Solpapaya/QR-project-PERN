@@ -6,13 +6,16 @@ import { DeletedSubsectionContext } from "../context/DeletedSubsectionContext";
 import DeletedTaxReceipts from "../components/DeletedTaxReceipts";
 
 const Deleted = () => {
-  const { setCurrentSection } = useContext(CurrentSectionContext);
+  const { setCurrentSection, setIsEditPersonSection, setIsSpecificPerson } =
+    useContext(CurrentSectionContext);
   const { deletedSection } = useContext(DeletedSubsectionContext);
 
   const sections = ["Comprobantes Fiscales"];
 
   useEffect(() => {
     setCurrentSection(5);
+    setIsEditPersonSection(false);
+    setIsSpecificPerson(false);
   }, []);
   return (
     <>

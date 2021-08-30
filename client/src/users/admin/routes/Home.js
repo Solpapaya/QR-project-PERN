@@ -13,9 +13,8 @@ import { SearchUsersContextProvider } from "../context/SearchUsersContext";
 import Users from "../components/Users";
 
 const Home = () => {
-  const { setCurrentSection, setIsEditPersonSection } = useContext(
-    CurrentSectionContext
-  );
+  const { setCurrentSection, setIsEditPersonSection, setIsSpecificPerson } =
+    useContext(CurrentSectionContext);
 
   const { searchSection } = useContext(SearchSubsectionContext);
   const sections = [
@@ -29,6 +28,7 @@ const Home = () => {
   useEffect(() => {
     setCurrentSection(1);
     setIsEditPersonSection(false);
+    setIsSpecificPerson(false);
   }, []);
   return (
     <>

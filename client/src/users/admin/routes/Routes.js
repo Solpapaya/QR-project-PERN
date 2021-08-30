@@ -33,7 +33,7 @@ const Routes = () => {
   const { alert, showAlert, setShowAlert, showWarning } =
     useContext(AlertContext);
 
-  const { currentSection, isEditPersonSection } = useContext(
+  const { currentSection, isEditPersonSection, isSpecificPerson } = useContext(
     CurrentSectionContext
   );
 
@@ -49,10 +49,16 @@ const Routes = () => {
         <Sidebar />
         <div
           className={
-            currentSection === 1 && !isEditPersonSection
+            (currentSection === 1 || currentSection === 5) &&
+            !isEditPersonSection &&
+            !isSpecificPerson
               ? "main-content search"
+              : currentSection === 1 && isSpecificPerson
+              ? "main-content specific-person"
               : currentSection === 2
               ? "main-content upload-tax"
+              : currentSection === 4
+              ? "main-content departments"
               : "main-content"
           }
         >

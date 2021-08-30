@@ -13,7 +13,9 @@ const PeopleTable = () => {
   const [person, setPerson] = useState({});
   const { sort, people, setPeople, filteredPeople } = useContext(SearchContext);
   const { months } = useContext(MonthsContext);
-  const { setIsEditPersonSection } = useContext(CurrentSectionContext);
+  const { setIsEditPersonSection, setIsSpecificPerson } = useContext(
+    CurrentSectionContext
+  );
   const {
     setShowWarning,
     setWarning,
@@ -79,6 +81,7 @@ const PeopleTable = () => {
   };
 
   const personSelectHandler = (rfc) => {
+    setIsSpecificPerson(true);
     history.push(`/people/${rfc}`);
   };
 

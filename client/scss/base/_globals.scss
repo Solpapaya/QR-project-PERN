@@ -46,6 +46,14 @@ button {
     min-width: 946px;
   }
 
+  &.specific-person {
+    min-width: 700px;
+  }
+
+  &.departments {
+    min-width: 500px;
+  }
+
   &.upload-tax {
     height: 100%;
     display: flex;

@@ -12,7 +12,9 @@ import { ExportBtnContext } from "../context/ExportBtnContext";
 import { PersonDetailContext } from "../context/PersonDetailsContext";
 
 const PersonDetailPage = () => {
-  const { setCurrentSection } = useContext(CurrentSectionContext);
+  const { setCurrentSection, setIsSpecificPerson } = useContext(
+    CurrentSectionContext
+  );
   const { personSection } = useContext(PersonSubsectionContext);
   const { exportBtn } = useContext(ExportBtnContext);
   const { person, setPerson } = useContext(PersonDetailContext);
@@ -28,6 +30,7 @@ const PersonDetailPage = () => {
 
   useEffect(() => {
     setCurrentSection(1);
+    setIsSpecificPerson(true);
     getPerson();
   }, []);
   return (

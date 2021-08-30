@@ -25,11 +25,22 @@
   }
 
   svg {
-    width: 25rem;
-    height: 25rem;
+    width: 10rem;
+    height: 10rem;
+
     fill: #a7b5c4;
     transition: all 500ms;
     // fill: #c0c4e0;
+
+    @include threehundred {
+      width: 15rem;
+      height: 15rem;
+    }
+
+    @include fivehundred {
+      width: 25rem;
+      height: 25rem;
+    }
   }
 
   h3 {
@@ -39,11 +50,18 @@
     color: #a7b5c4;
     text-align: center;
     transition: all 500ms;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
+
+    @include threehundred {
+      font-size: 1.6rem;
+    }
 
     @include mobile-height {
-      font-size: 1.17em;
       margin-top: $baseUnit * 2;
+    }
+
+    @include mobile-height-and-fivehundred {
+      font-size: 1.17em;
     }
   }
 
@@ -58,7 +76,11 @@
     // color: #a7b5c4;
     transition: all 500ms;
 
-    @include mobile-height {
+    // @include mobile-height {
+    //   font-size: 1.3rem;
+    // }
+
+    @include mobile-height-and-fivehundred {
       font-size: 1.3rem;
     }
   }
@@ -77,5 +99,13 @@
   input[type="file"] {
     // width: 0;
     display: none;
+  }
+
+  .add-btn {
+    font-size: 1rem;
+
+    @include threehundred {
+      font-size: 1.2rem;
+    }
   }
 }

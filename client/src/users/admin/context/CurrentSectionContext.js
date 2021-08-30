@@ -5,6 +5,7 @@ export const CurrentSectionContext = createContext();
 export const CurrentSectionContextProvider = (props) => {
   const [currentSection, setCurrentSection] = useState(1);
   const [isEditPersonSection, setIsEditPersonSection] = useState(false);
+  const [isSpecificPerson, setIsSpecificPerson] = useState(false);
   return (
     <CurrentSectionContext.Provider
       value={{
@@ -12,6 +13,8 @@ export const CurrentSectionContextProvider = (props) => {
         setCurrentSection,
         isEditPersonSection,
         setIsEditPersonSection,
+        isSpecificPerson,
+        setIsSpecificPerson,
       }}
     >
       {props.children}
