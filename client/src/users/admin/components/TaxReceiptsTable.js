@@ -31,9 +31,9 @@ const TaxReceiptsTable = () => {
     const { full_name, month, year } = tax;
     const msg = [
       `¿Estás seguro de que quieres eliminar este comprobante?`,
-      `De: ${full_name}`,
-      `Año: ${year}`,
-      `Mes: ${months[month - 1]}`,
+      [`De:`, ` ${full_name}`],
+      [`Año:`, ` ${year}`],
+      [`Mes:`, ` ${months[month - 1]}`],
     ];
     const secondaryMsg = "El comprobante ya no se podrá recuperar";
     setWarning({

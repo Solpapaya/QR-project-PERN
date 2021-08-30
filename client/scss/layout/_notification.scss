@@ -77,6 +77,11 @@
     color: #878787;
     display: flex;
     flex-direction: column;
+    font-weight: 400;
+
+    .toast__message--primary {
+      font-weight: 700;
+    }
   }
 
   .toast__content {

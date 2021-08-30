@@ -220,6 +220,53 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.delete(
+  "/:id",
+  authUser,
+  getRole,
+  forbiddenRole("Consulta"),
+  async (req, res) => {
+    try {
+      const userID = req.params.id;
+      let results = await db.query(
+        `DELETE FROM users as u WHERE u.id = $1
+          RETURNING
+          u.email,
+          u.type_id,
+          u.first_name || ' ' || COALESCE(u.second_name || ' ', '') 
+          || u.surname || ' ' || u.second_surname as user_full_name`,
+        [userID]
+      );
+      if (results.rowCount === 0) {
+        return res.status(404).json({
+          success: false,
+          msg: "No existe el Usuario que deseas eliminar",
+        });
+      }
+
+      const { email, type_id, user_full_name } = results.rows[0];
+
+      results = await db.query(`SELECT type FROM user_type WHERE id = $1`, [
+        type_id,
+      ]);
+      const { type } = results.rows[0];
+      res.status(200).json({
+        success: true,
+        data: {
+          user_full_name,
+          email,
+          type,
+        },
+      });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ success: false, msg: "No se pudo borrar el Usuario" });
+      // res.status(500).json({ success: false, msg: "Error Deleting Tax Receipt" });
+    }
+  }
+);
+
 // --------------------------------FUNCTIONS--------------------------------
 const checkIfUserAlreadyExists = (email) => {
   return new Promise(async (resolve, reject) => {

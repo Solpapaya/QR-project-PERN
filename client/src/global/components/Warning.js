@@ -42,7 +42,20 @@ const Warning = () => {
               <div className="warning__content">
                 <div className="warning__type">
                   {warning.msg.map((msg) => {
-                    return <span>{msg}</span>;
+                    return (
+                      <>
+                        {Array.isArray(msg) ? (
+                          <div className="warning__type--two_msg">
+                            <span>{msg[0]}</span>
+                            <span className="warning__type--secondary">
+                              {msg[1]}
+                            </span>
+                          </div>
+                        ) : (
+                          <span>{msg}</span>
+                        )}
+                      </>
+                    );
                   })}
                 </div>
                 <p className="warning__message">{warning.secondaryMsg}</p>
@@ -149,9 +162,23 @@ const Warning = () => {
           <div className="warning__content">
             <div className="warning__type">
               {warning.msg.map((msg) => {
-                return <span>{msg}</span>;
+                return (
+                  <>
+                    {Array.isArray(msg) ? (
+                      <div className="warning__type--two_msg">
+                        <span>{msg[0]}</span>
+                        <span className="warning__type--secondary">
+                          {msg[1]}
+                        </span>
+                      </div>
+                    ) : (
+                      <span>{msg}</span>
+                    )}
+                  </>
+                );
               })}
             </div>
+
             <p className="warning__message">{warning.secondaryMsg}</p>
           </div>
           <div className="warning__buttons">

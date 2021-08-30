@@ -39,6 +39,18 @@ const Notification = (props) => {
         <p className="toast__type">{props.header}</p>
         <div className="toast__message">
           {alert.msg.map((msg) => {
+            return (
+              <>
+                {Array.isArray(msg) ? (
+                  <div>
+                    <span className="toast__message--primary">{msg[0]}</span>
+                    <span>{msg[1]}</span>
+                  </div>
+                ) : (
+                  <span>{msg}</span>
+                )}
+              </>
+            );
             return <span>{msg}</span>;
           })}
         </div>

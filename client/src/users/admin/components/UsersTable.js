@@ -26,52 +26,58 @@ const UsersTable = () => {
 
   let history = useHistory();
 
-  // const changePersonStatus = async () => {
-  //   const { rfc } = user;
-  //   const newActive = { active: !person.active };
-  //   try {
-  //     const response = await fetchData(
-  //       "put",
-  //       `/people/${rfc}?field=active`,
-  //       newActive
-  //     );
-  //     setAlert({
-  //       success: true,
-  //       msg: ["Se ha cambiado correctamente el estado de la persona"],
-  //       removeOnEnter: true,
-  //     });
-  //     setShowAlert(true);
-  //     const newPeople = people.map((person) => {
-  //       if (person.rfc === rfc) {
-  //         return { ...person, active: !person.active };
-  //       }
-  //       return person;
-  //     });
-  //     setUsers(newPeople);
-  //   } catch (err) {
-  //     // Create Alert
-  //     setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
-  //     setShowAlert(true);
-  //   }
-  //   setWarningOk(false);
-  // };
+  const deleteUser = async () => {
+    const { id } = user;
+    try {
+      const headers = { token: localStorage.token };
+      const response = await fetchData("delete", `/users/${id}`, {
+        headers,
+      });
+      const { user_full_name, email, type } = response.data;
+      setAlert({
+        success: true,
+        msg: [
+          "El usuario se ha borrado correctamente",
+          [`Nombre:`, ` ${user_full_name}`],
+          [`Email:`, ` ${email}`],
+          [`Tipo:`, ` ${type}`],
+        ],
+        removeOnEnter: false,
+      });
+      setShowAlert(true);
 
-  // const changeStatusHandler = async (e, person) => {
-  //   e.stopPropagation();
-  //   setUser(person);
-  //   let personNextStatus;
-  //   if (person.active) personNextStatus = "Desactivar";
-  //   else personNextStatus = "Activar";
-  //   let personName = `${person.first_name}`;
-  //   if (person.second_name) personName += ` ${person.second_name}`;
-  //   personName += ` ${person.surname} ${person.second_surname}`;
-  //   const msg = [
-  //     `¿Estás seguro de que quieres ${personNextStatus} a ${personName}?`,
-  //   ];
-  //   const secondaryMsg = "Esto hará cambiar su estado";
-  //   setWarning({ msg, secondaryMsg, class: "", type: "changePersonStatus" });
-  //   setShowWarning(true);
-  // };
+      const newUsers = users.filter((user) => user.id !== id);
+      setUsers(newUsers);
+    } catch (err) {
+      // Create Alert
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: true });
+      setShowAlert(true);
+    }
+    setWarningOk(false);
+  };
+
+  const deleteHandler = async (user) => {
+    setUser(user);
+    const { first_name, second_name, surname, second_surname, email, type } =
+      user;
+    let personName = `${first_name}`;
+    if (second_name) personName += ` ${second_name}`;
+    personName += ` ${surname} ${second_surname}`;
+    const msg = [
+      `¿Estás seguro de que quieres eliminar este usuario?`,
+      [`Nombre:`, ` ${personName}`],
+      [`Email:`, ` ${email}`],
+      [`Tipo:`, ` ${type}`],
+    ];
+    const secondaryMsg = "El usuario ya no se podrá recuperar";
+    setWarning({
+      msg,
+      secondaryMsg,
+      class: "warning--delete warning--deleteTaxReceipt",
+      type: "changePersonStatus",
+    });
+    setShowWarning(true);
+  };
 
   // const updateHandler = (e, rfc) => {
   //   e.stopPropagation();
@@ -99,9 +105,9 @@ const UsersTable = () => {
     sortUsers();
   }, [sort]);
 
-  // useEffect(() => {
-  //   warningOk.changePersonStatus && changePersonStatus();
-  // }, [warningOk]);
+  useEffect(() => {
+    warningOk.changePersonStatus && deleteUser();
+  }, [warningOk]);
 
   return (
     <table className="table">
@@ -161,11 +167,7 @@ const UsersTable = () => {
             months[parseInt(userCreatedSplittedDate[1]) - 1]
           } ${userCreatedSplittedDate[0]}, ${userCreatedSplittedDate[2]}`;
           return (
-            <tr
-              key={id}
-              className="person-row"
-              // onClick={() => personSelectHandler(rfc)}
-            >
+            <tr key={id} className="user-row">
               <td>{first_name}</td>
               <td>{second_name}</td>
               <td>{surname}</td>
@@ -191,7 +193,7 @@ const UsersTable = () => {
               <td>
                 <div className="center-container">
                   <button
-                    // onClick={(e) => changeStatusHandler(e, { ...person })}
+                    onClick={(e) => deleteHandler(user)}
                     className="table-btn delete-btn"
                   >
                     <Trash />

@@ -36,6 +36,18 @@
     .warning__icon {
       transform: translateY(-50%);
     }
+
+    .warning__message {
+      margin-top: 1rem;
+    }
+
+    .warning__type {
+      span {
+        &:first-of-type {
+          margin-bottom: 1rem;
+        }
+      }
+    }
   }
 
   &.warning--deleteTaxReceipt {
@@ -114,6 +126,30 @@
 
     @include fivehundred {
       font-size: 1.6rem;
+    }
+
+    .warning__type--secondary {
+      font-weight: 400;
+    }
+
+    .warning__type--two_msg {
+      font-size: 1.2rem;
+      margin-top: 0.2rem;
+
+      @include fivehundred {
+        font-size: 1.4rem;
+      }
+    }
+
+    span {
+      &:not(:first-of-type) {
+        font-size: 1.2rem;
+        margin-top: 0.2rem;
+
+        @include fivehundred {
+          font-size: 1.4rem;
+        }
+      }
     }
   }
 
