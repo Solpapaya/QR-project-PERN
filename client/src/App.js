@@ -15,6 +15,7 @@ import { fetchData } from "./global/functions/fetchData";
 import Login from "./global/routes/Login";
 import NotFound from "./global/routes/NotFound";
 import QRSystem from "./global/routes/QRSystem";
+import ForgotPassword from "./global/routes/ForgotPassword";
 
 function App() {
   const { user, setUser, authIsDone, setAuthIsDone } = useContext(AuthContext);
@@ -58,6 +59,11 @@ function App() {
                   askIsAuth={askIsAuth}
                 />
               )}
+            </AlertContextProvider>
+          </Route>
+          <Route exact path="/forgot-password">
+            <AlertContextProvider>
+              <ForgotPassword />
             </AlertContextProvider>
           </Route>
           <Route

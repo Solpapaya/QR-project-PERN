@@ -38,6 +38,11 @@
 
   .login-heading {
     padding: 48px 0 24px;
+
+    &.forgot-password {
+      padding: 48px 0 10px;
+      text-align: center;
+    }
   }
 
   .login-btn {
@@ -59,6 +64,11 @@
 .form.login-form {
   display: flex;
   flex-direction: column;
+  width: 95%;
+
+  @include fivehundred {
+    width: 40rem;
+  }
 
   .add-input-container {
     border: 1px solid #d4d4d4;
@@ -82,5 +92,20 @@
         color: #ff5571;
       }
     }
+  }
+
+  .forgot-password--text {
+    font-size: 10px;
+    margin-top: 1.6rem;
+    text-align: right;
+    color: #1f69fc;
+    text-decoration: none;
+  }
+
+  .forgot-password-textinfo {
+    font-size: 12px;
+    width: 100%;
+    text-align: justify;
+    color: #808080;
   }
 }

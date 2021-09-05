@@ -5,33 +5,36 @@ import { AlertContext } from "../context/AlertContext";
 import { fetchData } from "../functions/fetchData";
 import { Link } from "react-router-dom";
 
-const Login = (props) => {
+const ForgotPassword = () => {
   const { setAlert, showAlert, setShowAlert } = useContext(AlertContext);
 
   const [user, setUser] = useState({
     email: "",
-    password: "",
   });
 
   const [focus, setFocus] = useState({
     email: false,
-    password: false,
   });
 
   const [isEmpty, setIsEmpty] = useState({
     email: false,
-    password: false,
   });
 
   const [isInvalid, setIsInvalid] = useState({
     email: false,
-    password: false,
   });
 
   const [ref, setRef] = useState({
     email: useRef(null),
-    password: useRef(null),
   });
+
+  const validateEmail = (email) => {
+    // const regex = new RegExp(
+    //   "/^([a-zd.-]+)@([a-zd-]+).([a-z]{2,8})(.[a-z]{2,8})?$/"
+    // );
+    const regex = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
+    return regex.test(email);
+  };
 
   const changePerson = (e) => {
     const attribute = e.target.id;
@@ -59,7 +62,7 @@ const Login = (props) => {
       email: false,
       password: false,
     });
-    setShowAlert(false);
+    // setShowAlert(false);
     setUser({ ...user, [attribute]: value });
   };
 
@@ -81,41 +84,49 @@ const Login = (props) => {
       }
     }
 
+    console.log(validateEmail(ref.email.current.value));
+
     // Send User Credentials
-    try {
-      const response = await fetchData("post", "/login", user);
-      const { token, expires, userType } = response;
-      localStorage.setItem("token", token);
-      props.setUser({ isAuth: true, type: userType });
-      props.askIsAuth(expires);
-    } catch (err) {
-      // Show alert credentials are invalid
-      setFocus({ email: true, password: true });
-      setIsInvalid({ email: true, password: true });
-      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: false });
-      // setAlert({ ...alert, msg: [err.data.msg] });
-      setShowAlert(true);
-    }
-    props.setAuthIsDone(true);
+    // try {
+    //   const response = await fetchData("post", "/login", user);
+    //   const { token, expires, userType } = response;
+    //   localStorage.setItem("token", token);
+    //   props.setUser({ isAuth: true, type: userType });
+    //   props.askIsAuth(expires);
+    // } catch (err) {
+    //   // Show alert credentials are invalid
+    //   setFocus({ email: true, password: true });
+    //   setIsInvalid({ email: true, password: true });
+    //   setAlert({ success: false, msg: [err.data.msg], removeOnEnter: false });
+    //   // setAlert({ ...alert, msg: [err.data.msg] });
+    //   setShowAlert(true);
+    // }
   };
 
   const removeNotification = () => {
     setTimeout(() => {
-      setShowAlert(false);
+      //   setShowAlert(false);
     }, 3000);
   };
 
   useEffect(() => {
     ref.email.current.focus();
   }, []);
+
   return (
     <div className="login">
       <form className="form login-form" onSubmit={handleSubmit}>
         <div className="login-logo">
           <i className="fas fa-qrcode login-icon"></i>
         </div>
-        <div className="login-heading">
-          <h3>Inicia Sesión</h3>
+        <div className="login-heading forgot-password">
+          <h3>¿Problemas para iniciar sesión?</h3>
+        </div>
+        <div className="forgot-password-textinfo">
+          <p>
+            ¡No te preocupes! Nosotros lo solucionaremos. Solo ingresa tu email
+            y te enviaremos un link con el cual puedes restaurar tu contraseña
+          </p>
         </div>
         <div className="login-inputs">
           <div
@@ -131,7 +142,6 @@ const Login = (props) => {
           >
             <span className={user.email ? "" : "hide"}>Email</span>
             <input
-              className="input-login"
               ref={ref.email}
               type="text"
               id="email"
@@ -151,48 +161,13 @@ const Login = (props) => {
               }
             />
           </div>
-          <div
-            className={
-              isInvalid.password
-                ? "add-input-container selected invalid"
-                : focus.password
-                ? isEmpty.password
-                  ? "add-input-container selected empty"
-                  : "add-input-container selected"
-                : "add-input-container"
-            }
-          >
-            <span className={user.password ? "" : "hide"}>Password</span>
-            <input
-              className="input-login"
-              ref={ref.password}
-              type="password"
-              id="password"
-              value={user.password}
-              onChange={changePerson}
-              onFocus={() =>
-                setFocus({
-                  ...focus,
-                  password: true,
-                })
-              }
-              onBlur={() =>
-                setFocus({
-                  ...focus,
-                  password: false,
-                })
-              }
-            />
-          </div>
         </div>
         <button type="submit" className="login-btn">
-          Iniciar Sesión
+          Enviar
         </button>
-        <Link className="forgot-password--text" to="/forgot-password">
-          ¿Olvidaste tu contraseña?
+        <Link className="forgot-password--text" to="/login">
+          Iniciar Sesión
         </Link>
-
-        {/* <div className="forgot-password--text">¿Olvidaste tu contraseña?</div> */}
       </form>
       <CSSTransition
         in={showAlert}
@@ -211,4 +186,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
