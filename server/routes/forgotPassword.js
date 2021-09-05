@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     const { token } = await issueJWT(results.rows[0], timeExpiration);
     sendEmail(email, token);
 
-    res.status(200).json({ success: true, token });
+    res.status(200).json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, msg: "Error Trying to Get User" });
   }
@@ -60,7 +60,7 @@ const sendEmail = async (email, token) => {
     // send mail with defined transport object
     let info = await transporter.sendMail({
       from: `"Tax Receipt System 🚀" <${systemEmail}>`, // sender address
-      to: `${testEmail}`, // list of receivers
+      to: `${email}`, // list of receivers
       subject: "Cambio de Contraseña 🔄", // Subject line
       text: `¡Hola! 😄 Recibimos su solicitud de cambio de contraseña, 
 si usted no la solicitó por favor ignore este mensaje, de lo 

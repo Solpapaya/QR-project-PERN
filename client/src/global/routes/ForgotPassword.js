@@ -98,20 +98,25 @@ const ForgotPassword = () => {
     setShowAlert(false);
 
     // Send User Credentials
-    // try {
-    //   const response = await fetchData("post", "/login", user);
-    //   const { token, expires, userType } = response;
-    //   localStorage.setItem("token", token);
-    //   props.setUser({ isAuth: true, type: userType });
-    //   props.askIsAuth(expires);
-    // } catch (err) {
-    //   // Show alert credentials are invalid
-    //   setFocus({ email: true, password: true });
-    //   setIsInvalid({ email: true, password: true });
-    //   setAlert({ success: false, msg: [err.data.msg], removeOnEnter: false });
-    //   // setAlert({ ...alert, msg: [err.data.msg] });
-    //   setShowAlert(true);
-    // }
+    try {
+      const response = await fetchData("post", "/forgot-password", {
+        email: ref.email.current.value,
+      });
+      setAlert({
+        success: true,
+        msg: ["Te hemos enviado el link a tu Email 😄"],
+        removeOnEnter: false,
+      });
+
+      setUser({ email: "" });
+    } catch (err) {
+      // Show alert credentials are invalid
+      setFocus({ email: true, password: true });
+      setIsInvalid({ email: true, password: true });
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: false });
+      // setAlert({ ...alert, msg: [err.data.msg] });
+    }
+    setShowAlert(true);
   };
 
   const removeNotification = () => {
