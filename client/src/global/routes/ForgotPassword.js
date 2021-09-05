@@ -6,7 +6,7 @@ import { fetchData } from "../functions/fetchData";
 import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
-  const { setAlert, showAlert, setShowAlert } = useContext(AlertContext);
+  const { alert, setAlert, showAlert, setShowAlert } = useContext(AlertContext);
 
   const [user, setUser] = useState({
     email: "",
@@ -29,14 +29,13 @@ const ForgotPassword = () => {
   });
 
   const validateEmail = (email) => {
-    // const regex = new RegExp(
-    //   "/^([a-zd.-]+)@([a-zd-]+).([a-z]{2,8})(.[a-z]{2,8})?$/"
-    // );
-    const regex = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
+    const regex =
+      /^([a-z\d]+)([a-z\d\.-]*)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
     return regex.test(email);
   };
 
   const changePerson = (e) => {
+    setShowAlert(false);
     const attribute = e.target.id;
     let value = e.target.value;
 
@@ -84,7 +83,19 @@ const ForgotPassword = () => {
       }
     }
 
-    console.log(validateEmail(ref.email.current.value));
+    if (!validateEmail(ref.email.current.value)) {
+      setFocus({ email: true });
+      setIsInvalid({ email: true });
+      setAlert({
+        success: false,
+        msg: ["Ingresa un Email Válido"],
+        removeOnEnter: false,
+      });
+      setShowAlert(true);
+      return;
+    }
+
+    setShowAlert(false);
 
     // Send User Credentials
     // try {
@@ -105,7 +116,7 @@ const ForgotPassword = () => {
 
   const removeNotification = () => {
     setTimeout(() => {
-      //   setShowAlert(false);
+      setShowAlert(false);
     }, 3000);
   };
 

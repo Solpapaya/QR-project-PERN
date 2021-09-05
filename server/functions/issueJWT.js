@@ -5,12 +5,12 @@ const fs = require("fs");
 const { keyPairDirectory } = require("../consts/variables");
 const PRIV_KEY = fs.readFileSync(keyPairDirectory + "/rsa_priv.pem", "utf8");
 
-const issueJWT = (user) => {
+const issueJWT = (user, timeExpiration) => {
   return new Promise(async (resolve, reject) => {
     try {
       const { id } = user;
 
-      const expiresIn = 60 * 60; // 1hour or 60*60
+      const expiresIn = 60 * timeExpiration; // 1hour -> 60*60, 15min -> 60 * 15
 
       const payload = {
         sub: id,

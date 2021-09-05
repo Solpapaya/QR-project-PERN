@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
 
     const user = await searchUser(email);
     if (validatePassword(password, user.password, user.salt)) {
-      const { token, expires } = await issueJWT(user);
+      const { token, expires } = await issueJWT(user, 60); // Passes 60 indicating you want the token to expire in 60 minutes
       const { type } = user;
       res.send({ token, expires, userType: type });
     } else {

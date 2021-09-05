@@ -6,7 +6,7 @@ import { fetchData } from "../functions/fetchData";
 import { Link } from "react-router-dom";
 
 const Login = (props) => {
-  const { setAlert, showAlert, setShowAlert } = useContext(AlertContext);
+  const { alert, setAlert, showAlert, setShowAlert } = useContext(AlertContext);
 
   const [user, setUser] = useState({
     email: "",

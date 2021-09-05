@@ -39,6 +39,7 @@ app.use("/person", require("./routes/person"));
 app.use("/users", require("./routes/users"));
 app.use("/login", require("./routes/login"));
 app.use("/auth", require("./routes/auth"));
+app.use("/forgot-password", require("./routes/forgotPassword"));
 
 app.listen(port, () => {
   console.log(`Server Listening on port ${port}`);
