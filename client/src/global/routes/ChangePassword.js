@@ -7,15 +7,18 @@ const ChangePassword = () => {
   const { token } = useParams();
   const [render, setRender] = useState(false);
   const [hasValidatedLink, setHasValidatedLink] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const isValidLink = async () => {
     try {
       const headers = { token };
-      const response = await fetchData("get", "/auth", { headers });
-      console.log({ response });
+      await fetchData("get", "/change-password", { headers });
       setRender(true);
     } catch (err) {
-      console.log({ err });
+      if (err.status === 401)
+        setErrorMsg("Lo sentimos 😞, este link ha expirado");
+      else setErrorMsg(err.data.msg);
+
       setRender(false);
     }
     setHasValidatedLink(true);
@@ -30,7 +33,7 @@ const ChangePassword = () => {
         render ? (
           <ChangePasswordForm isValidLink={isValidLink} />
         ) : (
-          <div>Sorry, this link has expired</div>
+          <div style={{ textAlign: "center" }}>{errorMsg}</div>
         )
       ) : (
         ""

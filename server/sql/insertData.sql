@@ -12,6 +12,11 @@ INSERT INTO users (first_name, second_name, surname, second_surname, email, pass
 salt, type_id) VALUES
 ('Bruno', null, 'Mars', 'Jutton', 'bm@gmail.com', '123', 'gfh', 1);
 
+INSERT INTO recover_password (issue_time, expire_time, 
+already_changed_password, user_id) VALUES
+(current_timestamp, current_timestamp + (15 * interval '1 minute'), 
+false, '9aa63a6e-fa22-468c-b7d8-364d19d9ab15');
+
 INSERT INTO person (first_name, second_name, surname, second_surname, rfc, department_id, active, creation_date) VALUES 
 ('Cristian', null, 'Castro', 'Perez', 'CAPC760418AZU', '1', '1', '2021-02-23'),
 ('Federico', null, 'Vilar', 'Gutierrez', 'VIGF930125PJK', '1', '1', '2021-05-13'),

@@ -23,6 +23,17 @@ CREATE TABLE users (
             REFERENCES user_type(id)
 );
 
+CREATE TABLE recover_password (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    issue_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    expire_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    already_changed_password BOOLEAN NOT NULL,
+    user_id uuid NOT NULL,
+    CONSTRAINT fk_user_id
+        FOREIGN KEY (user_id)
+            REFERENCES users(id)
+);
+
 CREATE TABLE department (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     department_name VARCHAR(50) NOT NULL

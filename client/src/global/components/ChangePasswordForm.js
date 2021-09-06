@@ -3,9 +3,11 @@ import { CSSTransition } from "react-transition-group";
 import Notification from "../components/Notification";
 import { AlertContext } from "../context/AlertContext";
 import { fetchData } from "../functions/fetchData";
-import { Link } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 const ChangePasswordForm = (props) => {
+  const history = useHistory();
+  const { token } = useParams();
   const { alert, setAlert, showAlert, setShowAlert } = useContext(AlertContext);
   const { isValidLink } = props;
 
@@ -93,20 +95,25 @@ const ChangePasswordForm = (props) => {
     setIsEmpty({ password1: false, password2: false });
 
     // Send New Password
-    // try {
-    //   const response = await fetchData("post", "/login", user);
-    //   const { token, expires, userType } = response;
-    //   localStorage.setItem("token", token);
-    //   props.setUser({ isAuth: true, type: userType });
-    //   props.askIsAuth(expires);
-    // } catch (err) {
-    //   // Show alert credentials are invalid
-    //   setFocus({ email: true, password: true });
-    //   setIsInvalid({ email: true, password: true });
-    //   setAlert({ success: false, msg: [err.data.msg], removeOnEnter: false });
-    //   // setAlert({ ...alert, msg: [err.data.msg] });
-    //   setShowAlert(true);
-    // }
+    try {
+      const headers = { token: token };
+      await fetchData("put", "/change-password", {
+        password: user.password1,
+        headers,
+      });
+      setAlert({
+        success: true,
+        msg: ["Se ha cambiado correctamente tu contraseña"],
+        removeOnEnter: false,
+      });
+      history.push("/login");
+    } catch (err) {
+      // Show alert credentials are invalid
+      setFocus({ email: true, password: true });
+      setIsInvalid({ email: true, password: true });
+      setAlert({ success: false, msg: [err.data.msg], removeOnEnter: false });
+    }
+    setShowAlert(true);
   };
 
   const removeNotification = () => {

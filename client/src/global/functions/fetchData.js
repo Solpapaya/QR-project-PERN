@@ -36,6 +36,13 @@ export const fetchData = (method, url, obj, uploadFile = false) => {
             response = await PeopleFinder.put(url, obj, {
               headers: { "Content-Type": "multipart/form-data" },
             });
+          } else if (obj.password) {
+            const password = obj.password;
+            response = await PeopleFinder.put(
+              url,
+              { password },
+              { headers: obj.headers }
+            );
           } else {
             response = await PeopleFinder.put(url, obj);
           }

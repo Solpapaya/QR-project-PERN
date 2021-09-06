@@ -1,3 +1,19 @@
+UPDATE recover_password 
+SET 
+issue_time = current_timestamp,
+expire_time = current_timestamp + (15 * interval '1 minute')
+WHERE user_id = '9aa63a6e-fa22-468c-b7d8-364d19d9ab15';
+
+UPDATE recover_password 
+SET 
+already_changed_password = true
+WHERE user_id = '9aa63a6e-fa22-468c-b7d8-364d19d9ab15';
+
+UPDATE users
+SET password = ,
+salt = ,
+WHERE id = ;
+
 UPDATE users
 SET second_name = null
 WHERE first_name = 'Lionel';

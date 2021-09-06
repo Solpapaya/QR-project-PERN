@@ -1,3 +1,17 @@
+SELECT * FROM recover_password
+WHERE already_changed_password = true
+AND user_id = '9aa63a6e-fa22-468c-b7d8-364d19d9ab15'
+AND current_timestamp >= issue_time 
+AND current_timestamp <= expire_time;
+
+SELECT * FROM recover_password 
+WHERE current_timestamp >= issue_time 
+AND current_timestamp <= expire_time
+AND user_id = '9aa63a6e-fa22-468c-b7d8-364d19d9ab15';
+
+SELECT * FROM recover_password
+WHERE user_id = '9aa63a6e-fa22-468c-b7d8-364d19d9ab15';
+
 SELECT 
 tax.id,
 extract(month from tax.date) AS month, 
@@ -9,7 +23,6 @@ INNER JOIN person as p
 ON tax.rfc_emitter = p.rfc
 WHERE rfc_emitter = $1 
 ORDER BY date DESC;
-
 
 WITH inserted AS (
 INSERT INTO deleted_tax_receipts 
