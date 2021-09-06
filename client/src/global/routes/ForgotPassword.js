@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
-import { CSSTransition } from "react-transition-group";
-import Notification from "../components/Notification";
+// import { CSSTransition } from "react-transition-group";
+// import Notification from "../components/Notification";
 import { AlertContext } from "../context/AlertContext";
 import { fetchData } from "../functions/fetchData";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const history = useHistory();
   const { alert, setAlert, showAlert, setShowAlert } = useContext(AlertContext);
 
   const [user, setUser] = useState({
@@ -109,6 +110,7 @@ const ForgotPassword = () => {
       });
 
       setUser({ email: "" });
+      history.push("/login");
     } catch (err) {
       // Show alert credentials are invalid
       setFocus({ email: true, password: true });
@@ -119,86 +121,86 @@ const ForgotPassword = () => {
     setShowAlert(true);
   };
 
-  const removeNotification = () => {
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
-  };
+  // const removeNotification = () => {
+  //   setTimeout(() => {
+  //     setShowAlert(false);
+  //   }, 3000);
+  // };
 
   useEffect(() => {
     ref.email.current.focus();
   }, []);
 
   return (
-    <div className="login">
-      <form className="form login-form" onSubmit={handleSubmit}>
-        <div className="login-logo">
-          <i className="fas fa-qrcode login-icon"></i>
-        </div>
-        <div className="login-heading forgot-password">
-          <h3>¿Problemas para iniciar sesión?</h3>
-        </div>
-        <div className="forgot-password-textinfo">
-          <p>
-            ¡No te preocupes! Nosotros lo solucionaremos. Solo ingresa tu email
-            y te enviaremos un link con el cual puedes restaurar tu contraseña
-          </p>
-        </div>
-        <div className="login-inputs">
-          <div
-            className={
-              isInvalid.email
-                ? "add-input-container selected invalid"
-                : focus.email
-                ? isEmpty.email
-                  ? "add-input-container selected empty"
-                  : "add-input-container selected"
-                : "add-input-container"
+    // <div className="login">
+    <form className="form login-form" onSubmit={handleSubmit}>
+      <div className="login-logo">
+        <i className="fas fa-qrcode login-icon"></i>
+      </div>
+      <div className="login-heading forgot-password">
+        <h3>¿Problemas para iniciar sesión?</h3>
+      </div>
+      <div className="forgot-password-textinfo">
+        <p>
+          ¡No te preocupes! Nosotros lo solucionaremos. Solo ingresa tu email y
+          te enviaremos un link con el cual puedes restaurar tu contraseña
+        </p>
+      </div>
+      <div className="login-inputs">
+        <div
+          className={
+            isInvalid.email
+              ? "add-input-container selected invalid"
+              : focus.email
+              ? isEmpty.email
+                ? "add-input-container selected empty"
+                : "add-input-container selected"
+              : "add-input-container"
+          }
+        >
+          <span className={user.email ? "" : "hide"}>Email</span>
+          <input
+            ref={ref.email}
+            type="text"
+            id="email"
+            value={user.email}
+            onChange={changePerson}
+            onFocus={() =>
+              setFocus({
+                ...focus,
+                email: true,
+              })
             }
-          >
-            <span className={user.email ? "" : "hide"}>Email</span>
-            <input
-              ref={ref.email}
-              type="text"
-              id="email"
-              value={user.email}
-              onChange={changePerson}
-              onFocus={() =>
-                setFocus({
-                  ...focus,
-                  email: true,
-                })
-              }
-              onBlur={() =>
-                setFocus({
-                  ...focus,
-                  email: false,
-                })
-              }
-            />
-          </div>
+            onBlur={() =>
+              setFocus({
+                ...focus,
+                email: false,
+              })
+            }
+          />
         </div>
-        <button type="submit" className="login-btn">
-          Enviar
-        </button>
-        <Link className="forgot-password--text" to="/login">
-          Iniciar Sesión
-        </Link>
-      </form>
-      <CSSTransition
-        in={showAlert}
-        timeout={300}
-        classNames="alert"
-        unmountOnExit
-        onEnter={alert.removeOnEnter ? () => removeNotification() : ""}
-      >
-        {alert.success ? (
-          <Notification header="Operación Exitosa" success={true} />
-        ) : (
-          <Notification header="Error" success={false} />
-        )}
-      </CSSTransition>
-    </div>
+      </div>
+      <button type="submit" className="login-btn">
+        Enviar
+      </button>
+      <Link className="forgot-password--text" to="/login">
+        Iniciar Sesión
+      </Link>
+    </form>
+    // <CSSTransition
+    //   in={showAlert}
+    //   timeout={300}
+    //   classNames="alert"
+    //   unmountOnExit
+    //   onEnter={alert.removeOnEnter ? () => removeNotification() : ""}
+    // >
+    //   {alert.success ? (
+    //     <Notification header="Operación Exitosa" success={true} />
+    //   ) : (
+    //     <Notification header="Error" success={false} />
+    //   )}
+    // </CSSTransition>
+    // </div>
   );
 };
 

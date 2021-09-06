@@ -16,6 +16,7 @@ import Login from "./global/routes/Login";
 import NotFound from "./global/routes/NotFound";
 import QRSystem from "./global/routes/QRSystem";
 import ForgotPassword from "./global/routes/ForgotPassword";
+import LoginAspectRoutes from "./users/admin/routes/LoginAspectRoutes";
 
 function App() {
   const { user, setUser, authIsDone, setAuthIsDone } = useContext(AuthContext);
@@ -47,7 +48,20 @@ function App() {
     <Router>
       {authIsDone ? (
         <Switch>
-          <Route exact path="/login">
+          <Route
+            exact
+            path={["/login", "/forgot-password", "/change-password/:token"]}
+          >
+            <AlertContextProvider>
+              <LoginAspectRoutes
+                setUser={setUser}
+                user={user}
+                setAuthIsDone={setAuthIsDone}
+                askIsAuth={askIsAuth}
+              />
+            </AlertContextProvider>
+          </Route>
+          {/* <Route exact path="/login">
             <AlertContextProvider>
               {user.isAuth ? (
                 <Redirect to="/" />
@@ -65,7 +79,7 @@ function App() {
             <AlertContextProvider>
               <ForgotPassword />
             </AlertContextProvider>
-          </Route>
+          </Route> */}
           <Route
             exact
             path={[
