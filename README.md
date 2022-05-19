@@ -2,7 +2,8 @@
 https://qr-project-pern.herokuapp.com/
 
 In order to Log into the System, Here are the credentials:
--Log In as an Admin 
+</br>
++ Log In as an Admin 
 Email: admin@gmail.com 
 Password: 123
 
